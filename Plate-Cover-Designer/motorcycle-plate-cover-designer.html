@@ -2,17 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lexan Plate Cover Designer</title>
+<title>Motorcycle Plate Cover Designer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Anton&family=Bebas+Neue&family=Racing+Sans+One&family=Teko:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Orbitron:wght@500;700;800&family=Big+Shoulders+Display:wght@600;800&family=Staatliches&family=Saira+Condensed:wght@500;600;700&family=Fjalla+One&family=Titan+One&family=Russo+One&family=Squada+One&family=Pathway+Gothic+One&family=Khand:wght@500;600;700&family=Exo+2:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Michroma&family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lexan-plate-cover-designer.css">
-
-
 <style>
-
   :root{
-
     --red:#c9171f;
     --red-dark:#a11119;
     --ink:#17181c;
@@ -34,8 +29,7 @@
   .app{
     display:flex;
     min-height:100vh;
-    max-width:1400px;
-    max-width:var(--designer-width);
+    max-width:1600px;
     margin:0 auto;
   }
   @media (min-width:961px){
@@ -94,7 +88,7 @@
   #stage{
     position:relative;
     width:100%;
-    aspect-ratio: 800 / 445;
+    aspect-ratio: 700 / 400;
     container-type: inline-size;
     filter: drop-shadow(0 18px 30px rgba(0,0,0,0.28));
   }
@@ -194,6 +188,7 @@
     margin-top:6px;
     padding-top:18px;
     border-top:1px solid var(--line);
+    padding-bottom:18px;
   }
   .below-stage-controls .panel-block{
     min-width:0;
@@ -434,6 +429,25 @@
     outline-offset:2px;
   }
 
+  /* Compact, consistent product controls. */
+  #plate-frame-designer .below-stage-controls .swatch-grid{
+    grid-template-columns:repeat(12,42px) !important;
+    gap:8px !important;
+    margin:0 !important;
+  }
+  #plate-frame-designer .below-stage-controls .swatch-chip{
+    width:42px !important;
+    height:42px !important;
+    aspect-ratio:auto !important;
+  }
+  #plate-frame-designer .below-stage-controls .border-thickness-field{
+    max-width:220px;
+  }
+  #plate-frame-designer .material-options[hidden]{display:none !important;}
+  @media (max-width:640px){
+    #plate-frame-designer .below-stage-controls .swatch-grid{grid-template-columns:repeat(6,42px) !important;}
+  }
+
   .layers-list{
     display:flex;
     flex-direction:column;
@@ -514,9 +528,8 @@
 #plate-frame-designer {
     display: flex !important;
     width: 100% !important;
-    max-width: 1400px !important;
-    max-width: var(--designer-width) !important;
-    min-height: 100vh !important;
+   max-width: none !important;
+width: 100% !important;
     margin: 0 auto !important;
     padding: 0 !important;
     font-family: 'Inter', sans-serif !important;
@@ -634,6 +647,25 @@
 }
 
 /* TEXT INPUT */
+
+#plate-frame-designer input[type="number"] {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    border: 1px solid #c9c6ba !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #17181c !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    box-shadow: none !important;
+}
+
 #plate-frame-designer input[type="text"] {
     display: block !important;
     width: 100% !important;
@@ -782,38 +814,6 @@
     }
 }
 
-/* Full-preview window */
-html:has(.wheels-preview), body.wheels-preview {
-  margin: 0;
-  height: 100%;
-}
-body.wheels-preview {
-  background: #2b2b2c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-}
-.wheels-preview-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-.wheels-preview #livePreviewImg {
-  max-width: 88vw;
-  max-height: 78vh;
-  box-shadow: 0 24px 60px rgba(0,0,0,.5);
-  border-radius: 6px;
-  background: #fff;
-}
-.wheels-preview-label {
-  color: #cfcfcf;
-  font-size: 13px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
 /* Bottom-hole option beside the frame controls */
 #plate-frame-designer .holes-control .bottom-hole-option {
     display: inline-flex !important;
@@ -945,85 +945,194 @@ body.wheels-preview {
     }
 }
 
-/* Lexan: no border-colour controls.  Styles live in the right sidebar. */
+#plate-frame-designer .below-stage-controls .swatch-grid {
+    grid-template-columns: repeat(12, 42px) !important;
+    gap: 8px !important;
+    margin: 0 !important;
+}
+#plate-frame-designer .below-stage-controls .swatch-chip {
+    width: 42px !important;
+    height: 42px !important;
+    aspect-ratio: auto !important;
+}
+@media (max-width: 640px) {
+    #plate-frame-designer .below-stage-controls .swatch-grid { grid-template-columns: repeat(6, 42px) !important; }
+}
+
+/* Keep each product option on its own line; palettes never collide. */
+#plate-frame-designer .below-stage-controls {
+    grid-template-columns: 1fr !important;
+    row-gap: 22px !important;
+    order: 2;
+}
+#plate-frame-designer .product-selector { order: 1; }
+#plate-frame-designer .stage-wrap { order: 3; }
+#plate-frame-designer .hint { order: 4; }
+
+/* Studio layout: controls on the left, live plate viewer on the right. */
+@media (min-width: 961px) {
+  #plate-frame-designer.app {
+    display: grid !important;
+    grid-template-columns: 380px minmax(0, 1fr) !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+  }
+  #plate-frame-designer .sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 380px !important;
+    min-width: 380px !important;
+    max-width: 380px !important;
+    height: 100vh !important;
+    border-left: 0 !important;
+    border-right: 1px solid #e2e0d8 !important;
+  }
+  #plate-frame-designer .stage-col {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  #plate-frame-designer .sidebar .below-stage-controls {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 0 22px !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid #e2e0d8 !important;
+    grid-template-columns: 1fr !important;
+  }
+  #plate-frame-designer .sidebar .below-stage-controls .swatch-grid {
+    grid-template-columns: repeat(6, 42px) !important;
+  }
+}
+
+/* White design-studio shell with a dedicated checkerboard viewer. */
 #plate-frame-designer.app { background: #fff !important; }
 #plate-frame-designer .studio-toolbar {
-  grid-column: 1 / -1; grid-row: 1; min-height: 58px; padding: 10px 16px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  color: #fff; background: #111216; border-bottom: 1px solid #292c34;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-height: 58px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #fff;
+  background: #111216;
+  border-bottom: 1px solid #292c34;
 }
-#plate-frame-designer .studio-brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:800; }
-#plate-frame-designer .studio-mark { width:28px; height:28px; display:grid; place-items:center; color:#fff; background:#df242b; border-radius:8px; font-weight:900; }
-#plate-frame-designer .studio-actions { display:flex; gap:8px; }
-#plate-frame-designer .studio-actions .btn { min-height:34px !important; padding:8px 12px !important; }
-#plate-frame-designer .studio-actions #openPreviewBtn { color:#fff; border-color:#343842; background:#262a32; }
+#plate-frame-designer .studio-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 800;
+}
+#plate-frame-designer .studio-mark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #df242b;
+  border-radius: 8px;
+  font-weight: 900;
+}
+#plate-frame-designer .studio-actions { display: flex; gap: 8px; }
+#plate-frame-designer .studio-actions .btn { min-height: 34px !important; padding: 8px 12px !important; }
+#plate-frame-designer .studio-actions #topPreviewBtn { color: #fff; border-color: #343842; background: #262a32; }
+
 @media (min-width: 961px) {
-  #plate-frame-designer.app { display:grid !important; grid-template-columns:320px minmax(0,1fr) 340px !important; grid-template-rows:58px minmax(0,1fr) !important; height:100vh !important; overflow:hidden !important; }
-  #plate-frame-designer .sidebar { grid-column:1; grid-row:2; width:320px !important; min-width:320px !important; max-width:320px !important; height:calc(100vh - 58px) !important; padding:22px 26px 36px !important; border-left:0 !important; border-right:1px solid #e2e0d8 !important; }
-  #plate-frame-designer .stage-col { grid-column:2; grid-row:2; height:calc(100vh - 58px) !important; padding:0 !important; gap:0 !important; overflow:hidden !important; background:#f3f4f6 !important; }
+  #plate-frame-designer.app { grid-template-rows: 58px minmax(0, 1fr) !important; }
+  #plate-frame-designer .sidebar { grid-row: 2 !important; height: calc(100vh - 58px) !important; }
+  #plate-frame-designer .stage-col {
+    grid-row: 2 !important;
+    height: calc(100vh - 58px) !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    background: #f3f4f6 !important;
+  }
   #plate-frame-designer .stage-col .brand-row {
-    display:flex !important;
-    width:100% !important;
-    padding:22px 30px 14px !important;
-    margin:0 !important;
-    background:#ffffff !important;
-    border-bottom:1px solid #e2e0d8 !important;
-    align-items:baseline !important;
-    justify-content:space-between !important;
-    gap:12px !important;
-    flex:0 0 auto !important;
+    display: flex !important;
+    width: 100% !important;
+    padding: 22px 30px 14px !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e0d8 !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
   }
   #plate-frame-designer .stage-col .brand-row h1 {
-    margin:0 !important;
-    font-family:'Oswald',sans-serif !important;
-    font-size:26px !important;
-    font-weight:600 !important;
-    line-height:1.1 !important;
-    letter-spacing:.02em !important;
-    text-transform:uppercase !important;
-  }
-  #plate-frame-designer .stage-col .brand-row h1 span {
-    color:#c9171f !important;
+    margin: 0 !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+    line-height: 1.1 !important;
+    letter-spacing: .02em !important;
+    text-transform: uppercase !important;
   }
   #plate-frame-designer .stage-col .brand-row p {
-    margin:4px 0 0 !important;
-    font-family:'Inter',sans-serif !important;
-    font-size:13px !important;
-    line-height:1.3 !important;
-    color:#8b93a1 !important;
+    margin: 4px 0 0 !important;
+    font-size: 13px !important;
+    color: #8b93a1 !important;
   }
-  #plate-frame-designer .lexan-types-panel { grid-column:3; grid-row:2; height:calc(100vh - 58px); padding:22px 20px 36px; overflow-y:auto; background:#fff; border-left:1px solid #e2e0d8; }
-  #plate-frame-designer .stage-wrap { position:relative !important; top:auto !important; flex:1 1 auto !important; width:100% !important; max-width:none !important; min-height:0 !important; margin:0 !important; padding:30px !important; display:flex !important; align-items:center !important; justify-content:center !important; background-color:#f3f4f6 !important; background-image:linear-gradient(45deg,rgba(219,223,229,.55) 25%,transparent 25%),linear-gradient(-45deg,rgba(219,223,229,.55) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(219,223,229,.55) 75%),linear-gradient(-45deg,transparent 75%,rgba(219,223,229,.55) 75%) !important; background-size:28px 28px !important; background-position:0 0,0 14px,14px -14px,-14px 0 !important; }
-  #plate-frame-designer #stage { width:min(900px,100%) !important; }
-  #plate-frame-designer .hint { display:none !important; }
-  #plate-frame-designer #colourDock { width:100%; padding:18px 30px 14px; background:#fff; border-bottom:1px solid #e2e0d8; }
-  #plate-frame-designer #colourDock .swatch-grid { grid-template-columns:repeat(12,36px) !important; gap:7px !important; }
-  #plate-frame-designer #colourDock .swatch-chip { width:36px !important; height:36px !important; }
+  #plate-frame-designer .stage-wrap {
+    position: relative !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: calc(100vh - 58px) !important;
+    margin: 0 !important;
+    padding: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #f3f4f6 !important;
+    background-image:
+      linear-gradient(45deg, rgba(219,223,229,.55) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(219,223,229,.55) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(219,223,229,.55) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(219,223,229,.55) 75%) !important;
+    background-size: 28px 28px !important;
+    background-position: 0 0, 0 14px, 14px -14px, -14px 0 !important;
+  }
+  #plate-frame-designer #stage { width: min(900px, 100%) !important; }
+  #plate-frame-designer .hint { display: none !important; }
 }
-#plate-frame-designer .lexan-style-sidebar {
-  padding-top: 0;
-  border-top: 0;
-}
-#plate-frame-designer .lexan-style-sidebar .style-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-#plate-frame-designer .lexan-style-sidebar .style-btn {
-  min-width: 0;
-  padding: 8px 6px 7px;
-}
-#plate-frame-designer .lexan-style-sidebar .style-btn canvas {
-  width: 100%;
-  height: auto;
-}
-#plate-frame-designer .lexan-style-sidebar .style-btn span {
-  display: block;
-  margin-top: 4px;
-  text-align: center;
-}
-@media (max-width: 960px) {
-  #plate-frame-designer .lexan-types-panel { padding:22px 26px 36px; background:#fff; border-top:1px solid var(--line); }
+
+@media (min-width: 961px) {
+  #plate-frame-designer.app { grid-template-columns: 320px minmax(0, 1fr) !important; }
+  #plate-frame-designer .sidebar { width: 320px !important; min-width: 320px !important; max-width: 320px !important; }
+  #plate-frame-designer #colourDock {
+    width: 100%;
+    padding: 18px 30px 14px;
+    background: #fff;
+    border-bottom: 1px solid #e2e0d8;
+  }
+  #plate-frame-designer #colourDock .below-stage-controls {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 28px !important;
+    row-gap: 0 !important;
+  }
+  #plate-frame-designer #colourDock .below-stage-controls .swatch-grid {
+    grid-template-columns: repeat(12, 36px) !important;
+    gap: 7px !important;
+  }
+  #plate-frame-designer #colourDock .below-stage-controls .swatch-chip {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  #plate-frame-designer .stage-wrap {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 30px !important;
+  }
 }
 </style>
 </head>
@@ -1033,25 +1142,19 @@ body.wheels-preview {
   <header class="studio-toolbar">
     <div class="studio-brand"><span class="studio-mark">W</span> Wheels Design Studio</div>
     <div class="studio-actions">
-      <button class="btn" id="openPreviewBtn">Full Preview</button>
-      <button class="btn btn-primary" id="downloadBtn">Download PNG</button>
+      <button class="btn" id="topPreviewBtn">Full Preview</button>
+      <button class="btn btn-primary" id="topDownloadBtn">Download PNG</button>
     </div>
   </header>
-
   <div class="stage-col">
     <div class="brand-row">
       <div>
-        <h1>Lexan Plate <span>Designer</span></h1>
-        <p>Create a full-colour custom Lexan plate cover before you order.</p>
+        <h1>Motorcycle Plate <span>Designer</span></h1>
+        <p>Create a full-colour motorcycle plate cover before you order.</p>
       </div>
     </div>
 
-    <div id="colourDock">
-      <div class="panel-block">
-        <div class="panel-label" id="colourLabel">Background Colour</div>
-        <div class="swatch-grid" id="colourRow"></div>
-      </div>
-    </div>
+    <div id="colourDock"></div>
 
     <div class="stage-wrap">
       <div id="stage">
@@ -1059,8 +1162,19 @@ body.wheels-preview {
         <div id="objLayer"></div>
       </div>
     </div>
-    <p class="hint">Drag to move. Drag the red dot to resize an image. Click an item on the frame - or in the Layers list - to edit it.</p>
+    <p class="hint">Drag to move. Drag the red dot to resize an image. Click an item on the plate - or in the Layers list - to edit it.</p>
 
+    <div class="below-stage-controls">
+      <div class="panel-block">
+        <div class="panel-label" id="colourLabel">Background Colour</div>
+        <div class="swatch-grid" id="colourRow"></div>
+      </div>
+
+      <div class="panel-block">
+        <div class="panel-label">Border Colour</div>
+        <div class="swatch-grid" id="borderColourRow"></div>
+      </div>
+    </div>
   </div>
 
   <div class="sidebar">
@@ -1072,6 +1186,60 @@ body.wheels-preview {
         <button class="btn" id="addTextBtn">+ Add Text</button>
       </div>
       <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-label">Plate Size</div>
+      <div class="row2">
+        <div class="field">
+          <label>Width</label>
+          <input type="text" value='7.000"' disabled>
+        </div>
+        <div class="field">
+          <label for="plateHeightInput">Height</label>
+          <input type="number" id="plateHeightInput" min="4" step="0.5" value="4">
+        </div>
+      </div>
+      <div class="field-hint">Width is fixed at 7". Height starts at 4" and changes in 0.500" increments.</div>
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-label">Border Options</div>
+      <div class="field">
+        <label for="borderWidthSelect">Border Thickness</label>
+        <select id="borderWidthSelect">
+          <option value="0">No Border</option>
+          <option value="4" selected>Thin</option>
+          <option value="8">Medium</option>
+          <option value="14">Thick</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="borderInsetSelect">Border Position</label>
+        <select id="borderInsetSelect">
+          <option value="0">At Edge</option>
+          <option value="10" selected>Inset 1/8 in</option>
+          <option value="17">Inset 1/4 in</option>
+          <option value="25">Inset 3/8 in</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="borderRadiusSelect">Border Corner Radius</label>
+        <select id="borderRadiusSelect">
+          <option value="0">Square</option>
+          <option value="8">Small</option>
+          <option value="16" selected>Medium</option>
+          <option value="28">Large</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel-block material-options" id="metalOptions">
+      <div class="panel-label">Embossing</div>
+      <label class="bottom-hole-option">
+        <input type="checkbox" id="embossingToggle">
+        <span>Embossed finish</span>
+      </label>
     </div>
 
     <div class="panel-block holes-control">
@@ -1098,7 +1266,7 @@ body.wheels-preview {
 
     <div class="panel-block">
       <div class="panel-label">File Name</div>
-      <input type="text" id="downloadName" value="my-lexan-cover" placeholder="Enter file name">
+      <input type="text" id="downloadName" value="my-motorcycle-cover" placeholder="Enter file name">
       <div class="field-hint" id="fileNamePreview"></div>
     </div>
 
@@ -1107,13 +1275,6 @@ body.wheels-preview {
     </div>
 
   </div>
-
-  <aside class="lexan-types-panel">
-    <div class="panel-block frame-style-control lexan-style-sidebar">
-      <div class="panel-label" id="styleLabel">Lexan Style</div>
-      <div class="style-row" id="styleRow"></div>
-    </div>
-  </aside>
 </div>
 
 <script>
@@ -1121,7 +1282,11 @@ body.wheels-preview {
   "use strict";
 
   // ---------------- geometry / style config ----------------
-  const VW = 800, VH = 445;
+  // Motorcycle plate cover builder.
+  // Width is fixed at 7 inches. Height is user-selectable in 0.500-inch increments,
+  // starting at 4 inches. The design canvas uses 100 px per inch.
+  const VW = 700;
+  let VH = 400;
   // The frame retains the original four styles exactly.  Lexan has its own
   // four layouts; the printed bands are intentionally independent of frame
   // material and colour choices.
@@ -1136,16 +1301,11 @@ body.wheels-preview {
              tab:null, label:'Style 104' }
   };
 
-  // The eight Lexan layouts shown in the approved style selector.
+  // Rigid, digitally printed plastic plate layouts.  The selected colour
+  // covers the full face of the plate, rather than only a frame or band.
   const LEXAN_STYLE_CFG = {
-    '101': { radius:32, holes:'top2', insetT:49, insetB:44, frameStyle:'101', label:'Style 101' },
-    '102': { radius:30, holes:'top2', insetT:48, insetB:91, frameStyle:'102', label:'Style 102' },
-    '103': { radius:30, holes:'top2', insetT:49, insetB:109, frameStyle:'103', label:'Style 103' },
-    '104': { radius:24, holes:'four', insetT:42, insetB:40, frameStyle:'104', label:'Style 104' },
-    '105': { radius:32, holes:'top2', insetT:49, insetB:44, label:'Style 105' },
-    '106': { radius:30, holes:'top2', insetT:48, insetB:91, label:'Style 106' },
-    '107': { radius:30, holes:'top2', insetT:49, insetB:109, label:'Style 107' },
-    '108': { radius:24, holes:'four', insetT:42, insetB:40, label:'Style 108' }
+    '101': { radius:17, holes:'top2', slotMode:'slots', finish:'flat', label:'Style 101' },
+    '102': { radius:17, holes:'top2', slotMode:'slots', finish:'embossed', label:'Style 102' }
   };
 
   function roundedRectPath(x,y,w,h,r){
@@ -1186,7 +1346,7 @@ body.wheels-preview {
   const BAND_COLOR_SWATCHES = [
     {v:'black', hex:'#111112', label:'Black'},
     {v:'silver', hex:'#b7b9b9', label:'Silver'},
-    {v:'white', hex:'#eeeeeb', label:'White'},
+    {v:'white', hex:'#ffffff', label:'White'},
     {v:'#C1272D', hex:'#C1272D', label:'Red'},
     {v:'#ED1C24', hex:'#ED1C24', label:'Bright Red'},
     {v:'#F7941D', hex:'#F7941D', label:'Orange'},
@@ -1469,21 +1629,93 @@ body.wheels-preview {
     ctx.restore();
   }
 
-  // Single entry point used everywhere instead of calling drawFrame/drawCover
-  // directly, so every call site automatically renders the right plate type.
-  function drawPlate(ctx, styleId, color, scale, addBottomHoles, plateType){
-    if((plateType||state.plateType)==='cover'){
-      const lexanStyle = LEXAN_STYLE_CFG[styleId];
-      // Do not redraw an approximation: these four are deliberately the
-      // same plate/frame designs, including the real screw-hole positions.
-      if(lexanStyle && lexanStyle.frameStyle){
-        drawFrame(ctx, lexanStyle.frameStyle, color, scale, addBottomHoles, true);
-        return;
-      }
-      drawCover(ctx, styleId, color, scale, addBottomHoles);
-    } else {
-      drawFrame(ctx, styleId, color, scale, addBottomHoles);
+  function drawPlasticPlate(ctx, styleId, color, scale, addBottomHoles = false){
+    const cfg = LEXAN_STYLE_CFG[styleId];
+    const W = VW*scale, H = VH*scale;
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+
+    const outer = roundedRectPath(0,0,W,H,cfg.radius*scale);
+    ctx.fillStyle = solidLexanColour(color);
+    ctx.fill(outer);
+
+    // Border is drawn inside the motorcycle plate face.
+    const borderPx = state.borderWidth * scale;
+    const borderInset = state.borderInset * scale;
+    const borderCentre = borderInset + borderPx/2;
+    const face = outer;
+    if(borderPx > 0 && W > borderCentre*2 && H > borderCentre*2){
+      const borderPath = roundedRectPath(
+        borderCentre, borderCentre, W-borderCentre*2, H-borderCentre*2,
+        state.borderRadius*scale
+      );
+      ctx.lineWidth = borderPx;
+      ctx.strokeStyle = solidLexanColour(state.borderColor);
+      ctx.stroke(borderPath);
     }
+    ctx.lineWidth = 2*scale;
+    ctx.strokeStyle = 'rgba(0,0,0,0.30)';
+    ctx.stroke(outer);
+
+    // Keep the white swatch genuinely white. Other colours retain a subtle
+    // printed-plastic sheen without changing their selected hue.
+    if(color !== 'white' || state.embossed){
+      const sheen = ctx.createLinearGradient(0,0,0,H);
+      sheen.addColorStop(0,'rgba(255,255,255,0.15)');
+      sheen.addColorStop(0.18,'rgba(255,255,255,0.03)');
+      sheen.addColorStop(1,'rgba(0,0,0,0.10)');
+      ctx.fillStyle = sheen;
+      ctx.fill(face);
+    }
+
+    // Style 102: raised diamond embossing, like the embossed plate sample.
+    if(state.embossed){
+      ctx.save();
+      ctx.clip(face);
+      const step = 42*scale;
+      ctx.lineWidth = 2.5*scale;
+      ctx.strokeStyle = 'rgba(255,255,255,0.34)';
+      for(let x=-H; x<W+H; x+=step){
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+H,H); ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(0,0,0,0.17)';
+      for(let x=0; x<W+H; x+=step){
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x-H,H); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Motorcycle mounting pattern stays constant.
+    // When height increases, the extra height is split equally between
+    // the top and bottom so the entire hole pattern remains centred.
+    // Example: 4" -> 5" adds 0.5" above AND 0.5" below.
+    const holeX = [75*scale, 625*scale];
+    const extraHeightPx = Math.max(0, VH - 400);
+    const verticalOffset = extraHeightPx / 2;
+    const topY = (45 + verticalOffset) * scale;
+    const bottomY = (355 + verticalOffset) * scale;
+    const useBottom = cfg.holes==='four' || addBottomHoles;
+    const drawSlot = (x,y)=>{
+      ctx.save();
+      if(cfg.slotMode==='slots'){
+        const slot = roundedRectPath(x-27*scale,y-9*scale,54*scale,18*scale,9*scale);
+        ctx.fillStyle='#f7f7f4'; ctx.fill(slot);
+        ctx.lineWidth=2*scale; ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.stroke(slot);
+      } else {
+        ctx.beginPath(); ctx.arc(x,y,9*scale,0,Math.PI*2);
+        ctx.fillStyle='#f7f7f4'; ctx.fill();
+        ctx.lineWidth=2*scale; ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.stroke();
+      }
+      ctx.restore();
+    };
+    holeX.forEach(x=>drawSlot(x,topY));
+    if(useBottom) holeX.forEach(x=>drawSlot(x,bottomY));
+    ctx.restore();
+  }
+
+  // Single entry point used by the stage, style thumbnails, preview, and PNG export.
+  function drawPlate(ctx, styleId, color, scale, addBottomHoles, plateType){
+    drawPlasticPlate(ctx, styleId, color, scale, addBottomHoles);
   }
 
   function currentStyleConfig(){
@@ -1498,8 +1730,14 @@ body.wheels-preview {
   let uidCounter = 0;
   const state = {
     plateType: 'cover',
+    plateHeight: 4,
     styleId: '101',
     color: 'black',
+    borderColor: 'white',
+    borderWidth: 4,
+    borderInset: 10,
+    borderRadius: 16,
+    embossed: false,
     bottomHoles: false,
     objects: [],
     selectedId: null
@@ -1513,25 +1751,49 @@ body.wheels-preview {
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  function updatePlateGeometry(){
+    VH = Math.round(state.plateHeight * 100);
+    stage.style.aspectRatio = `${VW} / ${VH}`;
+    state.objects.forEach(obj=>{
+      if(obj.type==='image' && obj.aspect){
+        obj.k = (VW / VH) / obj.aspect;
+        obj.hPct = obj.wPct * obj.k;
+      }
+    });
+  }
+
+  function cleanDisplayText(value){
+    return String(value ?? '')
+      .replace(/&#183;|&middot;|·/gi, ' - ')
+      .replace(/&#x2013;|&ndash;|–/gi, '-')
+      .replace(/&#x2014;|&mdash;|—/gi, '-')
+      .replace(/&amp;/gi, '&')
+      .replace(/\s+-\s+-\s+/g, ' - ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   // Builds the style/colour/holes suffix used in both the downloaded
   // filename and the on-screen summary, so they always stay in sync.
   function specSuffix(){
     const styleLabel = (currentStyle() && currentStyle().label) || state.styleId;
     const styleSlug = styleLabel.replace(/\s+/g,'').toLowerCase();
-    const productSlug = state.plateType === 'cover' ? 'lexan-cover' : 'licence-plate-frame';
+    const productSlug = 'motorcycle-plate-cover';
     const colorSlug = state.color.replace('#','').toLowerCase();
+    const sizeSlug = `7x${state.plateHeight.toFixed(1).replace('.0','')}`;
     const holesSlug = state.bottomHoles ? 'bottomholes' : 'nobottomholes';
-    return `${productSlug}-${styleSlug}-${colorSlug}-${holesSlug}`;
+    return `${productSlug}-${sizeSlug}-${styleSlug}-${colorSlug}-${holesSlug}`;
   }
 
   function specSummary(){
     const styleLabel = (currentStyle() && currentStyle().label) || state.styleId;
     const colorEntry = BAND_COLOR_SWATCHES.find(s=>s.v===state.color);
     const colorLabel = colorEntry ? colorEntry.label : state.color;
-    const productLabel = state.plateType === 'cover' ? 'Lexan Plate Cover' : 'Licence Plate Frame';
-    const colorRole = state.plateType === 'cover' ? 'Band' : 'Frame';
+    const productLabel = 'Motorcycle Plate Cover';
+    const colorRole = 'Background';
+    const sizeLabel = `7" x ${state.plateHeight.toFixed(1).replace('.0','')}"`;
     const holesLabel = state.bottomHoles ? 'With bottom holes' : 'No bottom holes';
-    return `${productLabel} - ${styleLabel} - ${colorRole}: ${colorLabel} - ${holesLabel}`;
+    return `${productLabel} - ${sizeLabel} - ${styleLabel} - ${colorRole}: ${colorLabel} - ${holesLabel}`;
   }
 
   function sanitizeFileName(name){
@@ -1541,18 +1803,18 @@ body.wheels-preview {
       .replace(/[\\/:*?"<>|]+/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-');
-    const base = cleaned || 'my-lexan-cover';
+    const base = cleaned || 'my-motorcycle-cover';
     return `${base}-${specSuffix()}`;
   }
 
   function refreshSpecSummary(){
     const el = document.getElementById('specSummary');
-    if(el) el.textContent = specSummary();
+    if(el) el.textContent = cleanDisplayText(specSummary());
   }
 
   function refreshFileNamePreview(){
     const el = document.getElementById('fileNamePreview');
-    if(el) el.textContent = sanitizeFileName(downloadNameInput.value) + '.png';
+    if(el) el.textContent = cleanDisplayText(sanitizeFileName(downloadNameInput.value) + '.png');
   }
 
   function redrawFrame(){
@@ -1575,7 +1837,7 @@ body.wheels-preview {
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k
+      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k, aspect
     };
     state.objects.push(obj);
     selectObject(obj.id);
@@ -1824,7 +2086,7 @@ body.wheels-preview {
       row.className = 'layer-item' + (obj.id===state.selectedId?' selected':'');
       const lbl = document.createElement('div');
       lbl.className='lbl';
-      lbl.textContent = obj.type==='image' ? '[Img] Logo image' : ('[T] '+(obj.text||'').slice(0,22));
+      lbl.textContent = cleanDisplayText(obj.type==='image' ? 'Logo image' : (obj.text||'').slice(0,22));
       row.appendChild(lbl);
       const del = document.createElement('button');
       del.textContent='x';
@@ -2217,6 +2479,42 @@ body.wheels-preview {
     });
   }
 
+  function renderBorderColourRow(){
+    const row = document.getElementById('borderColourRow');
+    row.innerHTML = '';
+    BAND_COLOR_SWATCHES.forEach(sw=>{
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'swatch-chip' + (state.borderColor===sw.v ? ' active':'');
+      chip.style.setProperty('background', sw.hex, 'important');
+      if(sw.v==='white') chip.classList.add('swatch-chip-white');
+      chip.title = sw.label;
+      chip.addEventListener('click', ()=>{
+        state.borderColor = sw.v;
+        renderBorderColourRow();
+        redrawFrame();
+      });
+      row.appendChild(chip);
+    });
+  }
+
+  function renderMaterialRow(){
+    document.querySelectorAll('#materialRow .swatch').forEach(sw=>{
+      sw.classList.toggle('active', sw.dataset.material===state.material);
+      sw.onclick = ()=>{
+        state.material = sw.dataset.material;
+        const metal = state.material==='metal';
+        document.getElementById('metalOptions').hidden = !metal;
+        if(!metal){
+          state.embossed = false;
+          document.getElementById('embossingToggle').checked = false;
+        }
+        renderMaterialRow();
+        redrawFrame();
+      };
+    });
+  }
+
   function renderPlateTypeRow(){
     document.querySelectorAll('#plateTypeRow .swatch').forEach(sw=>{
       sw.classList.toggle('active', sw.dataset.type===state.plateType);
@@ -2249,6 +2547,7 @@ body.wheels-preview {
 
   function renderStyleRow(){
     const row = document.getElementById('styleRow');
+    if(!row) return;
     row.innerHTML='';
     const styles = currentStyleConfig();
     Object.keys(styles).forEach(sid=>{
@@ -2268,13 +2567,6 @@ body.wheels-preview {
   }
 
   // ---------------- upload / add text / download / reset ----------------
-  const bottomHolesToggle = document.getElementById('bottomHolesToggle');
-
-  bottomHolesToggle.addEventListener('change', ()=>{
-    state.bottomHoles = bottomHolesToggle.checked;
-    redrawFrame();
-    renderStyleRow();
-  });
 
   document.getElementById('uploadBtn').addEventListener('click', ()=>{
     document.getElementById('fileInput').click();
@@ -2298,16 +2590,29 @@ body.wheels-preview {
 
   function clearDesigner(){
     state.plateType = 'cover';
+    state.plateHeight = 4;
+    VH = 400;
+    stage.style.aspectRatio = '700 / 400';
     state.styleId = '101';
     state.color = 'black';
+    state.borderColor = 'white';
+    state.borderWidth = 4;
+    state.borderInset = 10;
+    state.borderRadius = 16;
+    state.embossed = false;
     state.bottomHoles = false;
     state.objects = [];
     state.selectedId = null;
 
-    bottomHolesToggle.checked = false;
-    bottomHolesToggle.checked = state.bottomHoles;
-    downloadNameInput.value = 'my-lexan-cover';
+    downloadNameInput.value = 'my-motorcycle-cover';
+    document.getElementById('borderWidthSelect').value = String(state.borderWidth);
+    document.getElementById('borderInsetSelect').value = String(state.borderInset);
+    document.getElementById('borderRadiusSelect').value = String(state.borderRadius);
+    document.getElementById('embossingToggle').checked = false;
+    document.getElementById('bottomHolesToggle').checked = false;
+    document.getElementById('plateHeightInput').value = '4';
     renderColourRow();
+    renderBorderColourRow();
     renderStyleRow();
     redrawFrame();
     rebuildObjects();
@@ -2367,8 +2672,8 @@ body.wheels-preview {
     });
   }
 
-  document.getElementById('downloadBtn').addEventListener('click', ()=>{
-    renderFullDesignToCanvas(2, (cvs)=>{
+  function downloadDesign(){
+    renderFullDesignToCanvas(1, (cvs)=>{
       cvs.toBlob((blob)=>{
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -2383,7 +2688,7 @@ body.wheels-preview {
         clearDesigner();
       });
     });
-  });
+  }
 
   // ---------------- live preview window ----------------
   let previewWin = null;
@@ -2401,8 +2706,12 @@ body.wheels-preview {
     }
     previewWin.document.write(
       '<!DOCTYPE html><html><head><title>Live Preview</title><meta charset="UTF-8">' +
-      '<link rel="stylesheet" href="lexan-plate-cover-designer.css"></head>' +
-      '<body class="wheels-preview"><div class="wheels-preview-wrap"><img id="livePreviewImg" alt="Live preview"><div class="wheels-preview-label">Live Preview - updates automatically</div></div></body></html>'
+      '<style>' +
+      'html,body{margin:0;height:100%;background:#2b2b2c;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;}' +
+      '#wrap{display:flex;flex-direction:column;align-items:center;gap:14px;}' +
+      'img{max-width:88vw;max-height:78vh;box-shadow:0 24px 60px rgba(0,0,0,0.5);border-radius:6px;background:#fff;}' +
+      '#label{color:#cfcfcf;font-size:13px;letter-spacing:.04em;text-transform:uppercase;}' +
+      '</style></head><body><div id="wrap"><img id="livePreviewImg" alt="Live preview"><div id="label">Live Preview - updates automatically</div></div></body></html>'
     );
     previewWin.document.close();
     updatePreviewWindow();
@@ -2416,9 +2725,6 @@ body.wheels-preview {
       if(imgEl) imgEl.src = cvs.toDataURL('image/png');
     });
   }
-
-  document.getElementById('openPreviewBtn').addEventListener('click', openLivePreview);
-
 
   // ---------------- deselect on empty stage click ----------------
   stage.addEventListener('pointerdown', (e)=>{
@@ -2436,13 +2742,65 @@ body.wheels-preview {
   });
 
   // ---------------- init ----------------
+  function placeControlsInViewer(){
+    const controls = document.querySelector('.below-stage-controls');
+    const colourDock = document.getElementById('colourDock');
+    if(controls && colourDock && controls.parentElement !== colourDock){
+      colourDock.appendChild(controls);
+    }
+  }
+
   function init(){
+    placeControlsInViewer();
+    updatePlateGeometry();
+    document.getElementById('bottomHolesToggle').checked = false;
     renderColourRow();
+    renderBorderColourRow();
     renderStyleRow();
     redrawFrame();
     rebuildObjects();
 
     downloadNameInput.addEventListener('input', refreshFileNamePreview);
+
+    document.getElementById('plateHeightInput').addEventListener('change', (e)=>{
+      let value = Number(e.target.value);
+      if(!Number.isFinite(value)) value = 4;
+      value = Math.max(4, Math.round(value * 2) / 2);
+      state.plateHeight = value;
+      e.target.value = String(value);
+      updatePlateGeometry();
+      redrawFrame();
+      rebuildObjects();
+    });
+
+    document.getElementById('borderWidthSelect').addEventListener('change', (e)=>{
+      state.borderWidth = Number(e.target.value);
+      redrawFrame();
+    });
+
+    document.getElementById('borderInsetSelect').addEventListener('change', (e)=>{
+      state.borderInset = Number(e.target.value);
+      redrawFrame();
+    });
+
+    document.getElementById('borderRadiusSelect').addEventListener('change', (e)=>{
+      state.borderRadius = Number(e.target.value);
+      redrawFrame();
+    });
+
+    document.getElementById('embossingToggle').addEventListener('change', (e)=>{
+      state.embossed = e.target.checked;
+      redrawFrame();
+    });
+
+    document.getElementById('bottomHolesToggle').addEventListener('change', (e)=>{
+      state.bottomHoles = e.target.checked;
+      redrawFrame();
+      renderStyleRow();
+    });
+
+    document.getElementById('topPreviewBtn').addEventListener('click', openLivePreview);
+    document.getElementById('topDownloadBtn').addEventListener('click', downloadDesign);
 
     window.addEventListener('resize', redrawFrame);
 
@@ -2456,37 +2814,6 @@ body.wheels-preview {
   init();
 
 })();
-</script>
-<script>
-(function () {
-  if (window.top === window.self) return;
-
-  const designer = document.getElementById('plate-frame-designer');
-  if (!designer) return;
-
-  let branch = designer;
-
-  while (branch && branch !== document.body) {
-    const parent = branch.parentElement;
-
-    Array.from(parent.children).forEach(function (child) {
-      if (child !== branch && child.tagName !== 'SCRIPT') {
-        child.style.display = 'none';
-      }
-    });
-
-    parent.style.margin = '0';
-    parent.style.padding = '0';
-    parent.style.maxWidth = 'none';
-    parent.style.width = '100%';
-
-    branch = parent;
-  }
-
-  document.body.style.margin = '0';
-  document.body.style.padding = '0';
-  document.body.style.background = '#fff';
-}());
 </script>
 </body>
 </html>
