@@ -1,0 +1,506 @@
+<style>
+    .whds-shell {
+        width: 100%;
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 28px 20px 50px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1c1f24;
+        box-sizing: border-box;
+    }
+
+    .whds-shell *,
+    .whds-shell *::before,
+    .whds-shell *::after {
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .whds-hero-panel {
+        background: linear-gradient(135deg, #111318, #232933);
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 42px 34px;
+        margin-bottom: 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+    }
+
+    .whds-eyebrow {
+        display: inline-block;
+        margin-bottom: 10px;
+        color: #ff3434;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+    }
+
+    .whds-main-title {
+        margin: 0 0 12px;
+        color: #ffffff !important;
+        font-size: clamp(34px, 5vw, 58px);
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .whds-hero-text {
+        max-width: 760px;
+        margin: 0;
+        color: #d8dde6;
+        font-size: 18px;
+        line-height: 1.55;
+    }
+
+    /* =========================
+       SECTION HEADING
+    ========================== */
+
+    .whds-heading-row {
+        margin: 4px 0 18px;
+    }
+
+    .whds-section-title {
+        margin: 0;
+        color: #1c1f24;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .whds-section-text {
+        margin: 7px 0 0;
+        color: #666666;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       GRID
+    ========================== */
+
+    .whds-designer-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    /*
+       WHOLE CARD IS THE LINK
+    */
+
+    .whds-card-link {
+        display: block;
+        height: 100%;
+        color: inherit !important;
+        text-decoration: none !important;
+        border-radius: 16px;
+    }
+
+    .whds-card-link:hover,
+    .whds-card-link:focus,
+    .whds-card-link:visited {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    .whds-designer-card {
+        height: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #e2e5ea;
+        border-radius: 16px;
+        box-shadow: 0 8px 22px rgba(18, 25, 38, 0.06);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .whds-card-link:hover .whds-designer-card {
+        transform: translateY(-5px);
+        border-color: #d2202f;
+        box-shadow: 0 16px 32px rgba(18, 25, 38, 0.14);
+    }
+
+    /* =========================
+       IMAGE PREVIEW AREA
+    ========================== */
+
+    .whds-preview-area {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 245px;
+        padding: 18px;
+        background: #f7f8fa;
+        overflow: hidden;
+    }
+
+    .whds-preview-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .whds-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        min-height: 180px;
+        border: 2px dashed #cfd4da;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #777777;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        padding: 20px;
+    }
+
+    /* =========================
+       CARD CONTENT
+    ========================== */
+
+    .whds-card-content {
+        padding: 22px;
+    }
+
+    .whds-card-title {
+        margin: 0 0 8px;
+
+        color: #1c1f24 !important;
+
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .whds-card-description {
+        min-height: 63px;
+
+        margin: 0 0 18px;
+
+        color: #666666 !important;
+
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /*
+       Looks like a button,
+       but this is NOT another <a>.
+       The whole card is already the link.
+    */
+
+    .whds-launch-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        min-height: 46px;
+
+        padding: 12px 18px;
+
+        background: #d91f2f;
+
+        border-radius: 9px;
+
+        color: #ffffff !important;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        text-align: center;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .whds-card-link:hover .whds-launch-button {
+        background: #bb1725;
+    }
+
+    /* =========================
+       NOTE
+    ========================== */
+
+    .whds-info-box {
+        margin-top: 28px;
+
+        padding: 18px 20px;
+
+        background: #ffffff;
+
+        border-left: 4px solid #d91f2f;
+
+        border-radius: 10px;
+
+        color: #555555;
+
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       TABLET
+    ========================== */
+
+    @media (max-width: 900px) {
+
+        .whds-designer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 640px) {
+
+        .whds-shell {
+            padding: 18px 14px 32px;
+        }
+
+        .whds-hero-panel {
+            padding: 30px 22px;
+            border-radius: 14px;
+        }
+
+        .whds-main-title {
+            font-size: 38px;
+            line-height: 1;
+        }
+
+        .whds-hero-text {
+            font-size: 16px;
+        }
+
+        .whds-designer-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .whds-preview-area {
+            height: 225px;
+            padding: 25px;
+        }
+
+        .whds-card-description {
+            min-height: auto;
+        }
+
+    }
+</style>
+
+
+<div class="whds-shell">
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <section class="whds-hero-panel">
+
+        <span class="whds-eyebrow">
+            Wheels Automotive Design Studio
+        </span>
+
+        <h1 class="whds-main-title">
+            Plate Design Studio
+        </h1>
+
+        <p class="whds-hero-text">
+            Choose the type of plate product you want to customize.
+            Each designer opens its own dedicated tool with the proper
+            layouts, colors and production settings.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================
+         HEADING
+    ========================================== -->
+
+    <div class="whds-heading-row">
+
+        <h2 class="whds-section-title">
+            Choose a Designer
+        </h2>
+
+        <p class="whds-section-text">
+            Select the plate product you would like to customize.
+        </p>
+
+    </div>
+
+
+    <!-- =========================================
+         DESIGNER CARDS
+    ========================================== -->
+
+    <section class="whds-designer-grid">
+
+
+        <!-- =====================================
+             LICENCE PLATE FRAME
+             STYLE 101
+        ====================================== -->
+
+        <a
+            class="whds-card-link"
+            href="https://wheelsauto.com/ca-en/license-name-plates/plate-frames/licence-plate-design-tool.html"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <article class="whds-designer-card">
+
+             <div class="whds-preview-area">
+                <img
+                    class="whds-preview-image"
+                    src="https://wheelsauto.com/media/wysiwyg/plate-style-101.png"
+                    alt="Licence Plate Frame"
+                >
+            </div>
+
+
+                <div class="whds-card-content">
+
+                    <h3 class="whds-card-title">
+                        Licence Plate Frame Designer
+                    </h3>
+
+                    <p class="whds-card-description">
+                        Customize dealership and promotional plate frames
+                        with approved frame styles, colors, logos and text.
+                    </p>
+
+                    <div class="whds-launch-button">
+                        Open Frame Designer
+                    </div>
+
+                </div>
+
+            </article>
+
+        </a>
+
+
+        <!-- =====================================
+             LEXAN PLATE COVER
+             STYLE 106
+        ====================================== -->
+
+        <a
+            class="whds-card-link"
+            href="https://wheelsauto.com/ca-en/license-name-plates/plate-frames/lexan-plate-design-tool.html"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <article class="whds-designer-card">
+
+               <div class="whds-preview-area">
+                <img
+                    class="whds-preview-image"
+                    src="https://wheelsauto.com/media/wysiwyg/digital-printed-lexan.png"
+                    alt="Lexan Plate Cover"
+                >
+            </div>
+
+
+                <div class="whds-card-content">
+
+                    <h3 class="whds-card-title">
+                        Lexan Plate Cover Designer
+                    </h3>
+
+                    <p class="whds-card-description">
+                        Create a full-colour Lexan plate cover with custom
+                        dealership branding, text and graphic layouts.
+                    </p>
+
+                    <div class="whds-launch-button">
+                        Open Lexan Designer
+                    </div>
+
+                </div>
+
+            </article>
+
+        </a>
+
+
+        <!-- =====================================
+             CUSTOM PLATE COVER
+        ====================================== -->
+
+        <a
+            class="whds-card-link"
+            href="https://wheelsauto.com/ca-en/license-name-plates/plate-signs/plate-cover-designer.html"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+
+            <article class="whds-designer-card">
+
+                <div class="whds-preview-area">
+                    <img
+                        class="whds-preview-image"
+                        src="https://wheelsauto.com/media/catalog/product/cache/fd62121a40dd95777db63f4f02c4fa4f/p/c/pcps-4.png"
+                        alt="Custom Plate Cover"
+                    >
+                </div>
+
+
+                <div class="whds-card-content">
+
+                    <h3 class="whds-card-title">
+                        Plate Cover Designer
+                    </h3>
+
+                    <p class="whds-card-description">
+                        Design custom plate covers with dealership logos,
+                        custom text, backgrounds and production-ready artwork.
+                    </p>
+
+                    <div class="whds-launch-button">
+                        Open Plate Cover Designer
+                    </div>
+
+                </div>
+
+            </article>
+
+        </a>
+
+    </section>
+
+
+    <!-- =========================================
+         NOTE
+    ========================================== -->
+
+    <div class="whds-info-box">
+
+        <strong>Design Studio:</strong>
+
+        Choose a designer above to create and preview your custom plate
+        product. Each designer opens in a new browser tab.
+
+    </div>
+
+</div>
