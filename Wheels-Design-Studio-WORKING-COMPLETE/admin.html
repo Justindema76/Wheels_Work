@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wheels Design Studio Admin</title>
+<style>
+:root{--red:#c9171f;--ink:#17181c;--muted:#69717d;--line:#dfe3e8;--bg:#f4f5f7;--panel:#fff}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}header{background:#111216;color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:center}header strong{font-size:19px}header span{color:#bbb;font-size:13px}.wrap{max-width:1180px;margin:24px auto;padding:0 18px 50px}.notice{padding:13px 15px;background:#fff8df;border:1px solid #ead89b;border-radius:8px;margin-bottom:18px;font-size:13px;line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}.card.full{grid-column:1/-1}h2{font-size:17px;margin:0 0 16px}label{display:block;font-size:12px;font-weight:700;margin:12px 0 6px;color:#444}input,select{width:100%;padding:10px;border:1px solid #cbd1d8;border-radius:7px;background:#fff}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:7px}.check input{width:auto}.product{border-top:1px solid var(--line);padding:13px 0}.product:first-of-type{border-top:0}.product-title{font-weight:700;margin-bottom:8px}.colours{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.colour{display:grid;grid-template-columns:38px 1fr 105px 34px;gap:7px;align-items:center}.colour input[type=color]{padding:2px;height:36px}.colour button{height:36px;border:1px solid #d7dbe0;background:#fff;border-radius:6px;cursor:pointer}.actions{position:sticky;bottom:0;background:rgba(244,245,247,.96);padding:14px 0;display:flex;gap:10px;justify-content:flex-end}.btn{border:1px solid #ccd1d7;background:#fff;padding:11px 16px;border-radius:8px;font-weight:700;cursor:pointer}.btn.primary{background:var(--red);border-color:var(--red);color:#fff}.btn.dark{background:#202329;color:#fff;border-color:#202329}.status{margin-right:auto;align-self:center;font-size:13px;color:var(--muted)}@media(max-width:760px){.grid{grid-template-columns:1fr}.card.full{grid-column:auto}.colours{grid-template-columns:1fr}.checks{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><strong>WHEELS DESIGN STUDIO — ADMIN</strong><span>Configuration Manager</span></header>
+<div class="wrap">
+<div class="notice"><strong>How this works now:</strong> change settings here and click <b>Download Config</b>. Replace <code>config/design-studio-config.js</code> in GitHub with that file. Your developer can later connect the Save button directly to Magento or a secure GitHub endpoint; no designer code needs to be rewritten.</div>
+<div class="grid">
+<section class="card"><h2>Production</h2><label>Designer / Artwork Email</label><input id="recipientEmail" type="email"><label>CC Email</label><input id="ccEmail" type="email"><label>Email Subject Prefix</label><input id="subjectPrefix"><label>Maximum Upload (MB)</label><input id="maxUploadMb" type="number" min="1"></section>
+<section class="card"><h2>Screen Print Rules</h2><label>Maximum Colours Per Design / Logo</label><input id="maxColours" type="number" min="1" max="12"><label>Allowed Font Sizes (comma separated)</label><input id="fontSizes"><p style="font-size:12px;color:#69717d;line-height:1.5">Set the maximum when production confirms the limit. The designers can read this value instead of hard-coding 1-colour / 2-colour rules.</p></section>
+<section class="card full"><h2>Products & Print Methods</h2><div id="products"></div></section>
+<section class="card full"><h2>Screen Print Stock Colours</h2><div id="colours" class="colours"></div><button class="btn" id="addColour" type="button" style="margin-top:12px">+ Add Colour</button></section>
+</div>
+<div class="actions"><span class="status" id="status">Loaded.</span><button class="btn" id="reset" type="button">Reset</button><button class="btn dark" id="importBtn" type="button">Import Config</button><button class="btn primary" id="downloadBtn" type="button">Download Config</button><input id="importFile" type="file" accept=".js,.json" hidden></div>
+</div>
+<script src="config/design-studio-config.js"></script>
+<script>
+const STORAGE='wheels-design-studio-admin-v1';
+const defaults=JSON.parse(JSON.stringify(window.WHEELS_DESIGN_CONFIG||{}));
+let cfg=JSON.parse(localStorage.getItem(STORAGE)||'null')||JSON.parse(JSON.stringify(defaults));
+const $=id=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+function productName(k){return {plateSign:'Plate Sign',motorcycle:'Motorcycle Plate Cover',lexan:'Lexan Plate Cover',plateFrame:'Licence Plate Frame'}[k]||k}
+function render(){
+ $('recipientEmail').value=cfg.production.recipientEmail||'';$('ccEmail').value=cfg.production.ccEmail||'';$('subjectPrefix').value=cfg.production.subjectPrefix||'';$('maxUploadMb').value=cfg.production.maxUploadMb||25;$('maxColours').value=cfg.screenPrint.maxColours||1;$('fontSizes').value=(cfg.typography.fontSizes||[]).join(', ');
+ $('products').innerHTML=Object.entries(cfg.products).map(([k,p])=>`<div class="product"><div class="product-title">${esc(productName(k))}</div><label>Display Name</label><input data-product="${k}" data-field="label" value="${esc(p.label)}"><div class="checks" style="margin-top:9px"><label class="check"><input type="checkbox" data-product="${k}" data-field="enabled" ${p.enabled?'checked':''}> Enabled</label><label class="check"><input type="checkbox" data-product="${k}" data-field="screenPrint" ${p.screenPrint?'checked':''}> Screen Print</label><label class="check"><input type="checkbox" data-product="${k}" data-field="digital" ${p.digital?'checked':''}> Full Colour Digital</label></div></div>`).join('');
+ $('colours').innerHTML=(cfg.screenPrint.colours||[]).map((c,i)=>`<div class="colour"><input type="color" data-colour="${i}" data-field="hex" value="${esc(c.hex)}"><input data-colour="${i}" data-field="name" value="${esc(c.name)}"><input data-colour="${i}" data-field="hexText" value="${esc(c.hex)}"><button type="button" data-remove="${i}" title="Remove">×</button></div>`).join('');
+}
+function collectTop(){cfg.production.recipientEmail=$('recipientEmail').value.trim();cfg.production.ccEmail=$('ccEmail').value.trim();cfg.production.subjectPrefix=$('subjectPrefix').value.trim();cfg.production.maxUploadMb=Number($('maxUploadMb').value)||25;cfg.screenPrint.maxColours=Number($('maxColours').value)||1;cfg.typography.fontSizes=$('fontSizes').value.split(',').map(x=>Number(x.trim())).filter(Number.isFinite)}
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset.product){const p=cfg.products[t.dataset.product];p[t.dataset.field]=t.type==='checkbox'?t.checked:t.value}if(t.dataset.colour){const i=Number(t.dataset.colour),c=cfg.screenPrint.colours[i];if(t.dataset.field==='name')c.name=t.value;else{c.hex=t.value.toUpperCase();document.querySelectorAll(`[data-colour="${i}"]`).forEach(el=>{if(el.dataset.field==='hex')el.value=c.hex;if(el.dataset.field==='hexText')el.value=c.hex})}}collectTop();localStorage.setItem(STORAGE,JSON.stringify(cfg));$('status').textContent='Changes saved in this browser.'});
+document.addEventListener('click',e=>{if(e.target.dataset.remove!==undefined){cfg.screenPrint.colours.splice(Number(e.target.dataset.remove),1);render();localStorage.setItem(STORAGE,JSON.stringify(cfg))}});
+$('addColour').onclick=()=>{cfg.screenPrint.colours.push({name:'New Colour',hex:'#000000'});render()};
+$('reset').onclick=()=>{if(confirm('Reset admin settings to the config file?')){cfg=JSON.parse(JSON.stringify(defaults));localStorage.removeItem(STORAGE);render();$('status').textContent='Reset.'}};
+$('downloadBtn').onclick=()=>{collectTop();const text='window.WHEELS_DESIGN_CONFIG = '+JSON.stringify(cfg,null,2)+';\n';const blob=new Blob([text],{type:'text/javascript'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='design-studio-config.js';a.click();URL.revokeObjectURL(a.href);$('status').textContent='Config downloaded — replace the GitHub config file with it.'};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;let s=await f.text();s=s.replace(/^\s*window\.WHEELS_DESIGN_CONFIG\s*=\s*/,'').replace(/;\s*$/,'');try{cfg=JSON.parse(s);localStorage.setItem(STORAGE,JSON.stringify(cfg));render();$('status').textContent='Config imported.'}catch(err){alert('That config file could not be read.')}};
+render();
+</script>
+</body>
+</html>
