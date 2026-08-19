@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plate Sign Designer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="wheels-design-email-endpoint" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Anton&family=Bebas+Neue&family=Racing+Sans+One&family=Teko:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Orbitron:wght@500;700;800&family=Big+Shoulders+Display:wght@600;800&family=Staatliches&family=Saira+Condensed:wght@500;600;700&family=Fjalla+One&family=Titan+One&family=Russo+One&family=Squada+One&family=Pathway+Gothic+One&family=Khand:wght@500;600;700&family=Exo+2:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Michroma&family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/wheels-designers.css">
+</head>
+<body class="designer-plate-cover" data-designer="plate-cover">
+
+<div id="plate-frame-designer" class="app">
+  <header class="studio-toolbar">
+    <div class="studio-brand"><span class="studio-mark">W</span> Wheels Design Studio</div>
+    <div class="studio-actions">
+      <button class="btn" id="topPreviewBtn">Full Preview</button>
+      <button class="btn btn-primary" id="topDownloadBtn">Download PNG</button>
+      <button class="btn" id="downloadPackageBtn" type="button">Download Files (ZIP)</button>
+      <button class="btn btn-primary" id="emailPackageBtn" type="button">Email Design Files</button>
+    </div>
+  </header>
+  <div class="stage-col">
+    <!-- =========================================================
+         DESIGNER PAGE TITLE - EASY TO FIND / EDIT
+    ========================================================== -->
+    <div class="brand-row">
+      <div>
+        <h1>Plate Sign <span>Designer</span></h1>
+        <p>Create a custom printed plate sign before you order.</p>
+      </div>
+    </div>
+    <!-- =============== END DESIGNER PAGE TITLE =============== -->
+
+    <div id="colourDock"></div>
+
+    <div class="stage-wrap">
+      <div id="stage">
+        <canvas id="frameCanvas"></canvas>
+        <div id="objLayer"></div>
+      </div>
+    </div>
+    <p class="hint">Drag items to move them. Images resize from the red corner handle. Text size is controlled from Text Settings.</p>
+
+    <div class="below-stage-controls">
+      <div class="panel-block">
+        <div class="panel-label" id="colourLabel">Background Colour</div>
+        <div class="swatch-grid" id="colourRow"></div>
+      </div>
+
+      <div class="panel-block">
+        <div class="panel-label">Border Colour</div>
+        <div class="swatch-grid" id="borderColourRow"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+
+    <div class="panel-block print-method-panel">
+      <div class="panel-label">Print Method</div>
+      <div class="field">
+        <label for="printMethodSelect">Production Method</label>
+        <select id="printMethodSelect">
+          <option value="digital" selected>Full Colour Digital</option>
+          <option value="screen">Screen Print</option>
+        </select>
+      </div>
+      <div class="field-hint" id="printMethodHint">Full colour artwork is available in Digital mode. Screen Print mode limits artwork colours to approved stock inks.</div>
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-label">Add To Your Plate Sign</div>
+      <div class="btn-row">
+        <button class="btn" id="uploadBtn">Upload Logo</button>
+        <button class="btn" id="addTextBtn">+ Add Text</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*,.svg">
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-label">Border Options</div>
+      <div class="field">
+        <label for="borderWidthSelect">Border Thickness</label>
+        <select id="borderWidthSelect">
+          <option value="0">No Border</option>
+          <option value="4" selected>Thin</option>
+          <option value="8">Medium</option>
+          <option value="14">Thick</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="borderInsetSelect">Border Position</label>
+        <select id="borderInsetSelect">
+          <option value="0">At Edge</option>
+          <option value="10" selected>Inset 1/8 in</option>
+          <option value="17">Inset 1/4 in</option>
+          <option value="25">Inset 3/8 in</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="borderRadiusSelect">Border Corner Radius</label>
+        <select id="borderRadiusSelect">
+          <option value="0">Square</option>
+          <option value="8">Small</option>
+          <option value="16" selected>Medium</option>
+          <option value="28">Large</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel-block material-options" id="metalOptions">
+      <div class="panel-label">Embossing</div>
+      <label class="bottom-hole-option">
+        <input type="checkbox" id="embossingToggle">
+        <span>Embossed finish</span>
+      </label>
+    </div>
+
+    <div id="objPanelHost"></div>
+
+    <div class="panel-block">
+      <div class="panel-label">Layers</div>
+      <div class="layers-list" id="layersList"></div>
+    </div>
+
+    <hr class="div">
+
+    <div class="panel-block">
+      <div class="panel-label">Order Summary</div>
+      <div id="specSummary" class="spec-summary"></div>
+    </div>
+    <div class="panel-block">
+      <div class="panel-label">File Name</div>
+      <input type="text" id="downloadName" value="my-custom-plate" placeholder="Enter file name">
+      <div class="field-hint" id="fileNamePreview"></div>
+    </div>
+
+    <div class="panel-block">
+      <button class="btn btn-ghost" id="resetBtn">Start Over</button>
+    </div>
+
+  </div>
+</div>
+  <script src="js/wheels-designers.js" defer></script>
+</body>
+</html>
