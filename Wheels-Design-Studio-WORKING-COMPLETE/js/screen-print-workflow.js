@@ -26,18 +26,11 @@
   const addText=document.getElementById('addTextBtn');
   const objHost=document.getElementById('objPanelHost');
 
-  function ready(){
-    return select.value!=='screen'||(count>0&&inks.length===count&&inks.every(Boolean));
-  }
-
-  function selectedHexes(){
-    return new Set(inks.filter(Boolean).map(x=>x.hex.toUpperCase()));
-  }
-
+  function ready(){return select.value!=='screen'||(count>0&&inks.length===count&&inks.every(Boolean));}
+  function selectedHexes(){return new Set(inks.filter(Boolean).map(x=>x.hex.toUpperCase()));}
   function lock(){
     const locked=!ready();
-    upload.disabled=locked;
-    addText.disabled=locked;
+    upload.disabled=locked; addText.disabled=locked;
     addPanel.classList.toggle('screen-print-locked',locked);
     if(select.value==='screen'){
       status.classList.toggle('ready',!locked);
@@ -47,51 +40,27 @@
     } else status.classList.remove('ready');
     applySelectedInkPalette();
   }
-
-  function paintCards(){
-    cards.forEach(b=>b.classList.toggle('active',b.dataset.printMethod===select.value));
-  }
-
+  function paintCards(){cards.forEach(b=>b.classList.toggle('active',b.dataset.printMethod===select.value));}
   function renderInks(){
     inkHost.innerHTML='';
     if(!count){inkStep.hidden=true;lock();return;}
     inkStep.hidden=false;
     for(let slot=0;slot<count;slot++){
-      const row=document.createElement('div');
-      row.className='imprint-ink-row';
-      row.innerHTML='<strong>Colour '+(slot+1)+'</strong>';
-      const grid=document.createElement('div');
-      grid.className='imprint-ink-grid';
-
+      const row=document.createElement('div'); row.className='imprint-ink-row'; row.innerHTML='<strong>Colour '+(slot+1)+'</strong>';
+      const grid=document.createElement('div'); grid.className='imprint-ink-grid';
       stock.forEach(([name,hex])=>{
-        const b=document.createElement('button');
-        b.type='button';
-        b.className='imprint-ink'+(inks[slot]?.hex===hex?' active':'');
-        b.style.setProperty('background',hex,'important');
-        b.title=name;
-        b.setAttribute('aria-label',name);
-        const used=inks.some((x,i)=>i!==slot&&x?.hex===hex);
-        b.disabled=used;
-        b.onclick=()=>{
-          inks[slot]={name,hex};
-          renderInks();
-          window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));
-        };
+        const b=document.createElement('button'); b.type='button'; b.className='imprint-ink'+(inks[slot]?.hex===hex?' active':'');
+        b.style.setProperty('background',hex,'important'); b.title=name; b.setAttribute('aria-label',name);
+        b.disabled=inks.some((x,i)=>i!==slot&&x?.hex===hex);
+        b.onclick=()=>{inks[slot]={name,hex};renderInks();window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));};
         grid.appendChild(b);
       });
-
       row.appendChild(grid);
-      if(inks[slot]){
-        const label=document.createElement('div');
-        label.className='field-hint';
-        label.textContent=inks[slot].name;
-        row.appendChild(label);
-      }
+      if(inks[slot]){const label=document.createElement('div');label.className='field-hint';label.textContent=inks[slot].name;row.appendChild(label);}
       inkHost.appendChild(row);
     }
     lock();
   }
-
   function applySelectedInkPalette(){
     if(!objHost) return;
     const allowed=selectedHexes();
@@ -100,55 +69,34 @@
       if(/^#[0-9A-F]{6}$/.test(original)) button.dataset.stockHex=original;
       const hex=(button.dataset.stockHex||'').toUpperCase();
       const stockName=nameByHex.get(hex);
-      if(stockName){
-        button.title=stockName;
-        button.setAttribute('aria-label',stockName);
-      }
-      if(select.value==='screen'){
-        button.style.display=allowed.has(hex)?'':'none';
-      }else{
-        button.style.display='';
-      }
+      if(stockName){button.title=stockName;button.setAttribute('aria-label',stockName);}
+      button.style.display=select.value==='screen'?(allowed.has(hex)?'':'none'):'';
     });
   }
-
   function setMethod(method){
-    select.value=method;
-    select.dispatchEvent(new Event('change',{bubbles:true}));
-    paintCards();
-    setup.hidden=method!=='screen';
+    select.value=method; select.dispatchEvent(new Event('change',{bubbles:true})); paintCards(); setup.hidden=method!=='screen';
     if(method==='digital'){
-      count=0; inks=[];
-      countBox.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-      inkStep.hidden=true;
-      addPanel.classList.remove('screen-print-locked');
-      upload.disabled=false; addText.disabled=false;
-      applySelectedInkPalette();
+      count=0;inks=[];countBox.querySelectorAll('button').forEach(b=>b.classList.remove('active'));inkStep.hidden=true;
+      addPanel.classList.remove('screen-print-locked');upload.disabled=false;addText.disabled=false;applySelectedInkPalette();
     }else lock();
   }
-
   cards.forEach(b=>b.onclick=()=>setMethod(b.dataset.printMethod));
   countBox.querySelectorAll('[data-imprint-count]').forEach(b=>b.onclick=()=>{
-    count=Number(b.dataset.imprintCount);
-    inks=Array(count).fill(null);
+    count=Number(b.dataset.imprintCount);inks=Array(count).fill(null);
     countBox.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
-    renderInks();
-    window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));
+    renderInks();window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));
   });
-
-  window.WheelsScreenPrint={
-    get count(){return count;},
-    get inks(){return inks.slice();},
-    get stockColours(){return stock.map(([name,hex])=>({name,hex}));},
-    isReady:ready
-  };
-
+  window.WheelsScreenPrint={get count(){return count;},get inks(){return inks.slice();},get stockColours(){return stock.map(([name,hex])=>({name,hex}));},isReady:ready};
   window.addEventListener('wheels:screenprintchange',applySelectedInkPalette);
-  if(objHost){
-    new MutationObserver(applySelectedInkPalette).observe(objHost,{childList:true,subtree:true});
-  }
+  if(objHost)new MutationObserver(applySelectedInkPalette).observe(objHost,{childList:true,subtree:true});
+  paintCards();setup.hidden=select.value!=='screen';lock();
+})();
 
-  paintCards();
-  setup.hidden=select.value!=='screen';
-  lock();
+(function(){
+  if(document.querySelector('script[data-wheels-measurements]')) return;
+  const s=document.createElement('script');
+  s.src='js/measurement-guides.js';
+  s.defer=true;
+  s.dataset.wheelsMeasurements='1';
+  document.head.appendChild(s);
 })();
