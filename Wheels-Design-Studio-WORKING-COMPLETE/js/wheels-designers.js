@@ -924,9 +924,29 @@
   // Replace this one list with the approved Wheels stock ink codes when supplied.
   // Screen Print mode uses ONLY this list; Digital mode uses the full palette above.
   const SCREEN_PRINT_COLORS = [
+    '#000000', // HT Process Black / Black
+    '#00AEEF', // HT Process Cyan
+    '#EC008C', // HT Process Magenta
+    '#FFF200', // HT Process Yellow
+    '#ADADAD', // Grey 429 C
+    '#C0C0C0', // Silver / Clear (screen approximation)
+    '#D4AF37', // Gold / Clear (screen approximation)
     '#FFFFFF', // White
-    '#000000', // Black
-    '#808080'  // Grey
+    '#008CCC', // Process Blue
+    '#171796', // Reflex Blue
+    '#6600A1', // Violet C
+    '#BA1FB5', // Purple C
+    '#E60094', // Rhodamine Red
+    '#CF035C', // Rubine Red
+    '#ED6E00', // Orange 021 C
+    '#FF5E00', // Bright Orange
+    '#F54029', // Warm Red
+    '#D71920', // Fire Red (screen approximation)
+    '#009645', // Emerald Green (355 C)
+    '#00B394', // Green C
+    '#F7D117', // Medium Yellow (116 C)
+    '#F5ED59', // Primrose Yellow (101 C)
+    '#F7E017'  // Yellow C
   ];
 
   const SCREEN_PRINT_BAND_SWATCHES = [
@@ -2510,9 +2530,29 @@
   // Replace this one list with the approved Wheels stock ink codes when supplied.
   // Screen Print mode uses ONLY this list; Digital mode uses the full palette above.
   const SCREEN_PRINT_COLORS = [
+    '#000000', // HT Process Black / Black
+    '#00AEEF', // HT Process Cyan
+    '#EC008C', // HT Process Magenta
+    '#FFF200', // HT Process Yellow
+    '#ADADAD', // Grey 429 C
+    '#C0C0C0', // Silver / Clear (screen approximation)
+    '#D4AF37', // Gold / Clear (screen approximation)
     '#FFFFFF', // White
-    '#000000', // Black
-    '#808080'  // Grey
+    '#008CCC', // Process Blue
+    '#171796', // Reflex Blue
+    '#6600A1', // Violet C
+    '#BA1FB5', // Purple C
+    '#E60094', // Rhodamine Red
+    '#CF035C', // Rubine Red
+    '#ED6E00', // Orange 021 C
+    '#FF5E00', // Bright Orange
+    '#F54029', // Warm Red
+    '#D71920', // Fire Red (screen approximation)
+    '#009645', // Emerald Green (355 C)
+    '#00B394', // Green C
+    '#F7D117', // Medium Yellow (116 C)
+    '#F5ED59', // Primrose Yellow (101 C)
+    '#F7E017'  // Yellow C
   ];
 
   const SCREEN_PRINT_BAND_SWATCHES = [
