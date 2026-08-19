@@ -1,0 +1,66 @@
+name: Update screen print colours
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-screen-print-colours.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-colours:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace temporary screen print palette
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js')
+          s = p.read_text()
+          old = """  const SCREEN_PRINT_COLORS = [
+              '#FFFFFF', // White
+              '#000000', // Black
+              '#808080'  // Grey
+            ];"""
+          new = """  const SCREEN_PRINT_COLORS = [
+              '#000000', // HT Process Black / Black
+              '#00AEEF', // HT Process Cyan
+              '#EC008C', // HT Process Magenta
+              '#FFF200', // HT Process Yellow
+              '#ADADAD', // Grey 429 C
+              '#C0C0C0', // Silver / Clear (screen approximation)
+              '#D4AF37', // Gold / Clear (screen approximation)
+              '#FFFFFF', // White
+              '#008CCC', // Process Blue
+              '#171796', // Reflex Blue
+              '#6600A1', // Violet C
+              '#BA1FB5', // Purple C
+              '#E60094', // Rhodamine Red
+              '#CF035C', // Rubine Red
+              '#ED6E00', // Orange 021 C
+              '#FF5E00', // Bright Orange
+              '#F54029', // Warm Red
+              '#D71920', // Fire Red (screen approximation)
+              '#009645', // Emerald Green (355 C)
+              '#00B394', // Green C
+              '#F7D117', // Medium Yellow (116 C)
+              '#F5ED59', // Primrose Yellow (101 C)
+              '#F7E017'  // Yellow C
+            ];"""
+          count = s.count(old)
+          if count != 2:
+              raise SystemExit(f'Expected 2 temporary palette blocks, found {count}')
+          p.write_text(s.replace(old, new))
+          PY
+      - name: Validate JavaScript
+        run: node --check Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js
+      - name: Commit updated palette
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js
+          git commit -m 'Apply approved screen print stock colours'
+          git push
