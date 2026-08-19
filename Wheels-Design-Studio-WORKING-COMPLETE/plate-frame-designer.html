@@ -7,115 +7,24 @@
 <meta name="wheels-design-email-endpoint" content="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Anton&family=Bebas+Neue&family=Racing+Sans+One&family=Teko:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Orbitron:wght@500;700;800&family=Big+Shoulders+Display:wght@600;800&family=Staatliches&family=Saira+Condensed:wght@500;600;700&family=Fjalla+One&family=Titan+One&family=Russo+One&family=Squada+One&family=Pathway+Gothic+One&family=Khand:wght@500;600;700&family=Exo+2:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Michroma&family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/wheels-designers.css">
+<link rel="stylesheet" href="css/wheels-designers.css">
 </head>
 <body class="designer-frame" data-designer="frame">
-
 <div id="plate-frame-designer" class="app">
-  <header class="studio-toolbar">
-    <div class="studio-brand"><span class="studio-mark">W</span> Wheels Design Studio</div>
-    <div class="studio-actions">
-      <button class="btn" id="openPreviewBtn">Full Preview</button>
-      <button class="btn btn-primary" id="downloadBtn">Download PNG</button>
-      <button class="btn" id="downloadPackageBtn" type="button">Download Files (ZIP)</button>
-      <button class="btn btn-primary" id="emailPackageBtn" type="button">Email Design Files</button>
-    </div>
-  </header>
-
-  <div class="stage-col">
-
-    <!-- =========================================================
-         DESIGNER PAGE TITLE - EASY TO FIND / EDIT
-         Change the heading and subtitle here.
-    ========================================================== -->
-    <div class="brand-row">
-      <div>
-        <h1>Licence Plate Frame <span>Designer</span></h1>
-        <p>Create a custom licence plate frame before you order.</p>
-      </div>
-    </div>
-    <!-- =============== END DESIGNER PAGE TITLE =============== -->
-
-    <div id="colourDock">
-      <div class="panel-block">
-        <div class="panel-label" id="colourLabel">Frame Colour</div>
-        <div class="swatch-grid" id="colourRow"></div>
-      </div>
-    </div>
-
-    <div class="stage-wrap">
-      <div id="stage">
-        <canvas id="frameCanvas"></canvas>
-        <div id="objLayer"></div>
-      </div>
-    </div>
-    <p class="hint">Drag items to move them. Images resize from the red corner handle. Text size is controlled from Text Settings.</p>
-
-  </div>
-
-  <div class="sidebar">
-
-    <div class="panel-block print-method-panel">
-      <div class="panel-label">Print Method</div>
-      <div class="field">
-        <label for="printMethodSelect">Production Method</label>
-        <select id="printMethodSelect">
-          <option value="digital" selected>Full Colour Digital</option>
-          <option value="screen">Screen Print</option>
-        </select>
-      </div>
-      <div class="field-hint" id="printMethodHint">Full colour artwork is available in Digital mode. Screen Print mode limits artwork colours to approved stock inks.</div>
-    </div>
-
-    <div class="panel-block">
-      <div class="panel-label">Add To Your Frame</div>
-      <div class="btn-row">
-        <button class="btn" id="uploadBtn">Upload Logo</button>
-        <button class="btn" id="addTextBtn">+ Add Text</button>
-      </div>
-      <input type="file" id="fileInput" accept="image/*,.svg">
-    </div>
-
-    <div class="panel-block holes-control">
-      <div class="panel-label">Bottom Holes</div>
-      <label class="bottom-hole-option">
-        <input type="checkbox" id="bottomHolesToggle">
-        <span>Add bottom mounting holes</span>
-      </label>
-    </div>
-
-    <div id="objPanelHost"></div>
-
-    <div class="panel-block">
-      <div class="panel-label">Layers</div>
-      <div class="layers-list" id="layersList"></div>
-    </div>
-
-    <hr class="div">
-
-    <div class="panel-block">
-      <div class="panel-label">Order Summary</div>
-      <div id="specSummary" class="spec-summary"></div>
-    </div>
-    <div class="panel-block">
-      <div class="panel-label">File Name</div>
-      <input type="text" id="downloadName" value="my-plate-frame" placeholder="Enter file name">
-      <div class="field-hint" id="fileNamePreview"></div>
-    </div>
-
-    <div class="panel-block">
-      <button class="btn btn-ghost" id="resetBtn">Start Over</button>
-    </div>
-
-  </div>
-
-  <aside class="lexan-types-panel">
-    <div class="panel-block frame-style-control lexan-style-sidebar">
-      <div class="panel-label" id="styleLabel">Frame Style</div>
-      <div class="style-row" id="styleRow"></div>
-    </div>
-  </aside>
+<header class="studio-toolbar"><div class="studio-brand"><span class="studio-mark">W</span> Wheels Design Studio</div><div class="studio-actions"><button class="btn" id="openPreviewBtn">Full Preview</button><button class="btn btn-primary" id="downloadBtn">Download PNG</button><button class="btn" id="downloadPackageBtn" type="button">Download Files (ZIP)</button><button class="btn btn-primary" id="emailPackageBtn" type="button">Email Design Files</button></div></header>
+<div class="stage-col"><div class="brand-row"><div><h1>Licence Plate Frame <span>Designer</span></h1><p>Create a custom licence plate frame before you order.</p></div></div><div id="colourDock"><div class="panel-block"><div class="panel-label" id="colourLabel">Frame Colour</div><div class="swatch-grid" id="colourRow"></div></div></div><div class="stage-wrap"><div id="stage"><canvas id="frameCanvas"></canvas><div id="objLayer"></div></div></div><p class="hint">Drag items to move them. Images resize from the red corner handle. Text size is controlled from Text Settings.</p></div>
+<div class="sidebar"><div class="panel-block print-method-panel"><div class="panel-label">Print Method</div><div class="field"><label for="printMethodSelect">Production Method</label><select id="printMethodSelect"><option value="digital" selected>Full Colour Digital</option><option value="screen">Screen Print</option></select></div><div class="field-hint" id="printMethodHint">Full colour artwork is available in Digital mode. Screen Print mode limits artwork colours to approved stock inks.</div></div><div class="panel-block"><div class="panel-label">Add To Your Frame</div><div class="btn-row"><button class="btn" id="uploadBtn">Upload Logo</button><button class="btn" id="addTextBtn">+ Add Text</button></div><input type="file" id="fileInput" accept="image/*,.svg"></div><div class="panel-block holes-control"><div class="panel-label">Bottom Holes</div><label class="bottom-hole-option"><input type="checkbox" id="bottomHolesToggle"><span>Add bottom mounting holes</span></label></div><div id="objPanelHost"></div><div class="panel-block"><div class="panel-label">Layers</div><div class="layers-list" id="layersList"></div></div><hr class="div"><div class="panel-block"><div class="panel-label">Order Summary</div><div id="specSummary" class="spec-summary"></div></div><div class="panel-block"><div class="panel-label">File Name</div><input type="text" id="downloadName" value="my-plate-frame" placeholder="Enter file name"><div class="field-hint" id="fileNamePreview"></div></div><div class="panel-block"><button class="btn btn-ghost" id="resetBtn">Start Over</button></div></div>
+<aside class="lexan-types-panel"><div class="panel-block frame-style-control lexan-style-sidebar"><div class="panel-label" id="styleLabel">Frame Style</div><div class="style-row" id="styleRow"></div></div></aside>
 </div>
-  <script src="js/wheels-designers.js" defer></script>
+<script src="js/wheels-designers.js" defer></script>
+<script>
+(function(){
+  const names={'#000000':'HT Process Black / Black','#00AEEF':'HT Process Cyan','#EC008C':'HT Process Magenta','#FFF200':'HT Process Yellow','#ADADAD':'Grey 429 C','#C0C0C0':'Silver / Clear','#D4AF37':'Gold / Clear','#FFFFFF':'White','#008CCC':'Process Blue','#171796':'Reflex Blue','#6600A1':'Violet C','#BA1FB5':'Purple C','#E60094':'Rhodamine Red','#CF035C':'Rubine Red','#ED6E00':'Orange 021 C','#FF5E00':'Bright Orange','#F54029':'Warm Red','#D71920':'Fire Red','#009645':'Emerald Green (355 C)','#00B394':'Green C','#F7D117':'Medium Yellow (116 C)','#F5ED59':'Primrose Yellow (101 C)','#F7E017':'Yellow C'};
+  function normalize(v){if(!v)return'';v=v.trim().toUpperCase();if(/^#[0-9A-F]{6}$/.test(v))return v;const m=v.match(/RGB\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);if(m)return '#'+[m[1],m[2],m[3]].map(n=>(+n).toString(16).padStart(2,'0')).join('').toUpperCase();return'';}
+  function labelSwatches(root=document){root.querySelectorAll('.swatch-chip').forEach(btn=>{const candidates=[btn.title,btn.dataset.color,btn.dataset.value,btn.style.backgroundColor,getComputedStyle(btn).backgroundColor];for(const v of candidates){const hex=normalize(v);if(names[hex]){btn.title=names[hex];btn.setAttribute('aria-label',names[hex]);btn.dataset.colorName=names[hex];break;}}});}
+  new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>{if(n.nodeType===1)labelSwatches(n.matches?.('.swatch-chip')?n.parentNode:n);}))).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',()=>labelSwatches());
+})();
+</script>
 </body>
 </html>
