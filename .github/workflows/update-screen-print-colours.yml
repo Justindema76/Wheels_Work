@@ -1,4 +1,4 @@
-name: Update screen print colours
+name: Update production package PDF
 
 on:
   push:
@@ -10,57 +10,103 @@ permissions:
   contents: write
 
 jobs:
-  update-colours:
+  update-production-pdf:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace temporary screen print palette
+      - name: Replace text production sheet with PDF
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js')
-          s = p.read_text()
-          old = """  const SCREEN_PRINT_COLORS = [
-              '#FFFFFF', // White
-              '#000000', // Black
-              '#808080'  // Grey
-            ];"""
-          new = """  const SCREEN_PRINT_COLORS = [
-              '#000000', // HT Process Black / Black
-              '#00AEEF', // HT Process Cyan
-              '#EC008C', // HT Process Magenta
-              '#FFF200', // HT Process Yellow
-              '#ADADAD', // Grey 429 C
-              '#C0C0C0', // Silver / Clear (screen approximation)
-              '#D4AF37', // Gold / Clear (screen approximation)
-              '#FFFFFF', // White
-              '#008CCC', // Process Blue
-              '#171796', // Reflex Blue
-              '#6600A1', // Violet C
-              '#BA1FB5', // Purple C
-              '#E60094', // Rhodamine Red
-              '#CF035C', // Rubine Red
-              '#ED6E00', // Orange 021 C
-              '#FF5E00', // Bright Orange
-              '#F54029', // Warm Red
-              '#D71920', // Fire Red (screen approximation)
-              '#009645', // Emerald Green (355 C)
-              '#00B394', // Green C
-              '#F7D117', // Medium Yellow (116 C)
-              '#F5ED59', // Primrose Yellow (101 C)
-              '#F7E017'  // Yellow C
-            ];"""
-          count = s.count(old)
-          if count != 2:
-              raise SystemExit(f'Expected 2 temporary palette blocks, found {count}')
-          p.write_text(s.replace(old, new))
+          p=Path('Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js')
+          s=p.read_text()
+          marker='  async function buildProductionZip(cvs, baseName){'
+          helper=r'''  function productionDetailsPdf(){
+    const text=productionDetailsText();
+    const esc=v=>String(v).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+    const wrap=(line,max=88)=>{
+      const words=String(line).split(/\s+/), out=[]; let cur='';
+      for(const word of words){
+        if(!word){ if(!cur) out.push(''); continue; }
+        const next=cur ? cur+' '+word : word;
+        if(next.length>max && cur){ out.push(cur); cur=word; } else cur=next;
+      }
+      if(cur || !out.length) out.push(cur);
+      return out;
+    };
+    const lines=[];
+    text.split(/\r?\n/).forEach(line=>{
+      if(!line){ lines.push(''); return; }
+      lines.push(...wrap(line));
+    });
+    const pageW=612, pageH=792, left=48, top=54, bottom=48, lineH=14;
+    const perPage=Math.floor((pageH-top-bottom)/lineH);
+    const pages=[];
+    for(let i=0;i<lines.length;i+=perPage) pages.push(lines.slice(i,i+perPage));
+    if(!pages.length) pages.push(['WHEELS DESIGN STUDIO','PRODUCTION DETAILS']);
+    const objects=[null];
+    const add=obj=>{ objects.push(obj); return objects.length-1; };
+    const catalog=add('<< /Type /Catalog /Pages 2 0 R >>');
+    objects.push('');
+    const font=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    const bold=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+    const pageIds=[];
+    pages.forEach((pageLines,pageIndex)=>{
+      let y=pageH-top;
+      let stream='';
+      const write=(str,size=10,isBold=false)=>{
+        stream+=`BT /${isBold?'F2':'F1'} ${size} Tf ${left} ${y} Td (${esc(str)}) Tj ET\n`;
+        y-=lineH;
+      };
+      if(pageIndex===0){
+        write('WHEELS DESIGN STUDIO',18,true);
+        write('PRODUCTION WORK ORDER',13,true);
+        y-=8;
+      } else {
+        write(`WHEELS DESIGN STUDIO - PRODUCTION WORK ORDER - PAGE ${pageIndex+1}`,10,true);
+        y-=6;
+      }
+      pageLines.forEach(line=>{
+        const upper=line.toUpperCase();
+        const heading=['PRODUCT','TEXT / ARTWORK','UPLOADED ARTWORK','IMPORTANT'].includes(upper);
+        write(line,heading?11:9.5,heading);
+      });
+      const streamId=add(`<< /Length ${new TextEncoder().encode(stream).length} >>\nstream\n${stream}endstream`);
+      const pageId=add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 ${font} 0 R /F2 ${bold} 0 R >> >> /Contents ${streamId} 0 R >>`);
+      pageIds.push(pageId);
+    });
+    objects[2]=`<< /Type /Pages /Kids [${pageIds.map(id=>id+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
+    let pdf='%PDF-1.4\n%WHEELS\n';
+    const offsets=[0];
+    for(let i=1;i<objects.length;i++){
+      offsets[i]=new TextEncoder().encode(pdf).length;
+      pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`;
+    }
+    const xref=new TextEncoder().encode(pdf).length;
+    pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+    for(let i=1;i<objects.length;i++) pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';
+    pdf+=`trailer\n<< /Size ${objects.length} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+    return new Blob([new TextEncoder().encode(pdf)],{type:'application/pdf'});
+  }
+
+'''
+          if 'function productionDetailsPdf()' not in s:
+              if marker not in s: raise SystemExit('buildProductionZip marker not found')
+              s=s.replace(marker,helper+marker)
+          old="{name:'Production-Details.txt', data:productionDetailsText()}"
+          new="{name:'Production-Details.pdf', data:productionDetailsPdf()}"
+          count=s.count(old)
+          if count < 1: raise SystemExit('Production-Details.txt ZIP entry not found')
+          s=s.replace(old,new)
+          p.write_text(s)
+          print('Replaced',count,'production text ZIP entries with PDF entries')
           PY
       - name: Validate JavaScript
         run: node --check Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js
-      - name: Commit updated palette
+      - name: Commit PDF production package
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Wheels-Design-Studio-WORKING-COMPLETE/js/wheels-designers.js
-          git commit -m 'Apply approved screen print stock colours'
+          git commit -m 'Replace production text file with PDF work order'
           git push
