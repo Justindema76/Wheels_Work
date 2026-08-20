@@ -4,39 +4,19 @@
   const designer=document.body?.dataset?.designer;
   if(designer!=='frame'&&designer!=='lexan') return;
 
-  const DEFAULT_STOCK=[
-    {name:'HT Process Black',hex:'#000000'},{name:'HT Process Cyan',hex:'#00AEEF'},
-    {name:'HT Process Magenta',hex:'#EC008C'},{name:'HT Process Yellow',hex:'#FFF200'},
-    {name:'Grey 429 C',hex:'#ADADAD'},{name:'Silver / Clear',hex:'#C0C0C0'},
-    {name:'Gold / Clear',hex:'#D4AF37'},{name:'White',hex:'#FFFFFF'},
-    {name:'Process Blue',hex:'#008CCC'},{name:'Reflex Blue',hex:'#171796'},
-    {name:'Violet C',hex:'#6600A1'},{name:'Purple C',hex:'#BA1FB5'},
-    {name:'Rhodamine Red',hex:'#E60094'},{name:'Rubine Red',hex:'#CF035C'},
-    {name:'Orange 021 C',hex:'#ED6E00'},{name:'Bright Orange',hex:'#FF5E00'},
-    {name:'Warm Red',hex:'#F54029'},{name:'Fire Red',hex:'#D71920'},
-    {name:'Emerald Green (355 C)',hex:'#009645'},{name:'Green C',hex:'#00B394'},
-    {name:'Medium Yellow (116 C)',hex:'#F7D117'},
-    {name:'Primrose Yellow (101 C)',hex:'#F5ED59'},{name:'Yellow C',hex:'#F7E017'}
-  ];
-
-  const ADMIN_STORAGE='wheels-design-studio-admin-v2';
-
-  function readAdminConfig(){
-    try{
-      const saved=JSON.parse(localStorage.getItem(ADMIN_STORAGE)||'null');
-      if(saved&&saved.screenPrint) return saved;
-    }catch(err){ console.warn('Could not read admin test settings.',err); }
-    return window.WHEELS_DESIGN_CONFIG||null;
-  }
-
-  const runtimeConfig=readAdminConfig();
-  const configuredColours=runtimeConfig?.screenPrint?.colours;
-  const stockSource=Array.isArray(configuredColours)&&configuredColours.length?configuredColours:DEFAULT_STOCK;
-  const STOCK=stockSource
+  // Screen Print uses the exact same master palette as text and logo artwork.
+  // The only Screen Print difference is that the customer must choose 1, 2 or 3
+  // production colours before adding artwork.
+  const STOCK=(window.WHEELS_GLOBAL_COLOURS||[])
     .filter(c=>c&&c.name&&/^#[0-9a-f]{6}$/i.test(c.hex||''))
     .map(c=>[String(c.name),String(c.hex).toUpperCase()]);
 
-  const configuredMax=Math.max(1,Math.min(12,Number(runtimeConfig?.screenPrint?.maxColours)||3));
+  if(!STOCK.length){
+    console.error('Wheels Design Studio: global colour palette was not loaded.');
+    return;
+  }
+
+  const configuredMax=3;
   const byHex=new Map(STOCK.map(([name,hex])=>[hex.toUpperCase(),name]));
 
   const method=document.getElementById('printMethodSelect');
@@ -125,7 +105,7 @@
     if(!maxColours){
       palette.hidden=true;
       names.textContent='';
-      warning.textContent=`Choose 1 to ${configuredMax} colours before adding artwork.`;
+      warning.textContent='Choose 1, 2 or 3 colours before adding artwork.';
       syncButtons(); restrictObjectPalettes(); return;
     }
     palette.hidden=false;
