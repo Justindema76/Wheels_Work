@@ -4,6 +4,17 @@ const d=document.body?.dataset?.designer;if(d!=='lexan'&&d!=='frame')return;
 const stock=[['HT Process Black','#000000'],['HT Process Cyan','#00AEEF'],['HT Process Magenta','#EC008C'],['HT Process Yellow','#FFF200'],['Grey 429 C','#ADADAD'],['Silver / Clear','#C0C0C0'],['Gold / Clear','#D4AF37'],['White','#FFFFFF'],['Process Blue','#008CCC'],['Reflex Blue','#171796'],['Violet C','#6600A1'],['Purple C','#BA1FB5'],['Rhodamine Red','#E60094'],['Rubine Red','#CF035C'],['Orange 021 C','#ED6E00'],['Bright Orange','#FF5E00'],['Warm Red','#F54029'],['Fire Red','#D71920'],['Emerald Green (355 C)','#009645'],['Green C','#00B394'],['Medium Yellow (116 C)','#F7D117'],['Primrose Yellow (101 C)','#F5ED59'],['Yellow C','#F7E017']];
 const nameByHex=new Map(stock.map(([n,h])=>[h.toUpperCase(),n]));let count=0,inks=[];
 const select=document.getElementById('printMethodSelect'),cards=[...document.querySelectorAll('[data-print-method]')],setup=document.getElementById('screenPrintSetup'),countBox=document.getElementById('imprintCountChoice'),inkStep=document.getElementById('imprintInkStep'),inkHost=document.getElementById('imprintInkSelectors'),status=document.getElementById('screenPrintStatus'),addPanel=document.getElementById('addArtworkPanel'),upload=document.getElementById('uploadBtn'),addText=document.getElementById('addTextBtn'),objHost=document.getElementById('objPanelHost');
+if(select){select.hidden=true;select.style.setProperty('display','none','important');select.setAttribute('aria-hidden','true');}
+function moveSecondaryControlsRight(){
+  const right=document.querySelector('.lexan-types-panel'); if(!right)return;
+  right.classList.add('workflow-right-panel');
+  const holes=document.querySelector('.holes-control');
+  const layers=document.getElementById('layersList')?.closest('.panel-block');
+  const summary=document.getElementById('specSummary')?.closest('.panel-block');
+  const file=document.getElementById('downloadName')?.closest('.panel-block');
+  const reset=document.getElementById('resetBtn')?.closest('.panel-block');
+  [addPanel,holes,objHost,layers,summary,file,reset].forEach(el=>{if(el)right.appendChild(el)});
+}
 function ready(){return select.value!=='screen'||(count>0&&inks.length===count)}
 function allowed(){return new Set(inks.map(x=>x.hex.toUpperCase()))}
 function sync(){const locked=!ready();upload.disabled=locked;addText.disabled=locked;addPanel.classList.toggle('screen-print-locked',locked);if(select.value==='screen'){status.classList.toggle('ready',!locked);status.textContent=locked?(count?'Choose '+count+' '+(count===1?'colour':'colours')+' from the palette below.':'Choose 1, 2 or 3 imprint colours first.'):'Screen Print ready: '+inks.map(x=>x.name).join(' • ')}applyPalette()}
@@ -12,6 +23,6 @@ function renderPalette(){inkHost.innerHTML='';if(!count){inkStep.hidden=true;syn
 function applyPalette(){if(!objHost)return;const ok=allowed();objHost.querySelectorAll('.swatch-chip').forEach(b=>{const raw=(b.dataset.stockHex||b.getAttribute('title')||'').toUpperCase();if(/^#[0-9A-F]{6}$/.test(raw))b.dataset.stockHex=raw;const hex=(b.dataset.stockHex||'').toUpperCase(),name=nameByHex.get(hex);if(name){b.title=name;b.setAttribute('aria-label',name)}b.style.display=select.value==='screen'?(ok.has(hex)?'':'none'):''})}
 function method(m){select.value=m;select.dispatchEvent(new Event('change',{bubbles:true}));paintTabs();setup.hidden=m!=='screen';if(m==='digital'){count=0;inks=[];countBox.querySelectorAll('button').forEach(b=>b.classList.remove('active'));inkStep.hidden=true;upload.disabled=false;addText.disabled=false;addPanel.classList.remove('screen-print-locked');applyPalette()}else sync()}
 cards.forEach(b=>b.onclick=()=>method(b.dataset.printMethod));countBox.querySelectorAll('[data-imprint-count]').forEach(b=>b.onclick=()=>{count=Number(b.dataset.imprintCount);inks=[];countBox.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderPalette()});
-window.WheelsScreenPrint={get count(){return count},get inks(){return inks.slice()},get stockColours(){return stock.map(([name,hex])=>({name,hex}))},isReady:ready};window.addEventListener('wheels:screenprintchange',applyPalette);if(objHost)new MutationObserver(applyPalette).observe(objHost,{childList:true,subtree:true});paintTabs();setup.hidden=select.value!=='screen';sync();
+window.WheelsScreenPrint={get count(){return count},get inks(){return inks.slice()},get stockColours(){return stock.map(([name,hex])=>({name,hex}))},isReady:ready};window.addEventListener('wheels:screenprintchange',applyPalette);if(objHost)new MutationObserver(applyPalette).observe(objHost,{childList:true,subtree:true});moveSecondaryControlsRight();paintTabs();setup.hidden=select.value!=='screen';sync();
 })();
 (function(){if(document.querySelector('script[data-wheels-measurements]'))return;const s=document.createElement('script');s.src='js/measurement-guides.js';s.defer=true;s.dataset.wheelsMeasurements='1';document.head.appendChild(s)})();
