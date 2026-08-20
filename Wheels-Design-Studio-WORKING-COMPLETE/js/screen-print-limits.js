@@ -64,16 +64,16 @@
   const style=document.createElement('style');
   style.textContent=`
     #printMethodHint{display:none!important}
-    .screen-limit-wrap{display:none;flex-direction:column;gap:6px;margin-top:6px}
+    .screen-limit-wrap{display:none;flex-direction:column;gap:3px;margin-top:4px}
     .screen-limit-wrap.show{display:flex}
     .screen-limit-wrap label{font-size:10px!important;font-weight:700!important;color:#8b93a1!important;text-transform:uppercase!important}
-    .screen-limit-wrap select{width:100%;height:32px;padding:4px 8px}
-    .screen-limit-palette{display:grid;grid-template-columns:repeat(8,24px);gap:4px;align-items:center}
-    .screen-limit-ink{width:24px;height:24px;aspect-ratio:auto;border-radius:5px;border:1px solid #ddd8d0;cursor:pointer;min-width:0;padding:0}
+    .screen-limit-wrap select{width:100%;height:32px;padding:4px 8px;margin:0 0 2px 0}
+    .screen-limit-palette{display:grid;grid-template-columns:repeat(8,24px);column-gap:2px;row-gap:2px;align-items:center;width:max-content;margin:0}
+    .screen-limit-ink{width:24px;height:24px;aspect-ratio:auto;border-radius:5px;border:1px solid #ddd8d0;cursor:pointer;min-width:0;padding:0;margin:0}
     .screen-limit-ink.active{outline:2px solid #c9171f;outline-offset:1px}
     .screen-limit-ink:disabled{opacity:.35;cursor:not-allowed}
-    .screen-limit-names{font-size:9px;line-height:1.3;color:#59616d;font-weight:600}
-    .screen-limit-warning{font-size:9px;line-height:1.3;color:#c9171f;font-weight:700}
+    .screen-limit-names{font-size:9px;line-height:1.2;color:#59616d;font-weight:600;margin-top:2px}
+    .screen-limit-warning{font-size:9px;line-height:1.2;color:#c9171f;font-weight:700;margin-top:1px}
     .screen-print-disabled-swatch{display:none!important}
   `;
   document.head.appendChild(style);
