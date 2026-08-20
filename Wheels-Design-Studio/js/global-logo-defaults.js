@@ -1,6 +1,28 @@
 (function(){
   'use strict';
 
+  /*
+   * Shared designer modules.
+   * All current designer pages already load this file, so it acts as the
+   * compatibility bootstrap while the application is being cleaned up.
+   */
+  function loadSharedFontLibrary(){
+    if(document.querySelector('script[data-wheels-font-library]')) return;
+
+    const currentScript = document.currentScript;
+    const base = currentScript && currentScript.src
+      ? new URL('.', currentScript.src)
+      : new URL('js/', window.location.href);
+
+    const script = document.createElement('script');
+    script.src = new URL('font-library.js', base).href;
+    script.defer = true;
+    script.dataset.wheelsFontLibrary = 'true';
+    document.head.appendChild(script);
+  }
+
+  loadSharedFontLibrary();
+
   function removeWhiteBackgroundByDefault(){
     const host=document.getElementById('objPanelHost');
     if(!host) return;
