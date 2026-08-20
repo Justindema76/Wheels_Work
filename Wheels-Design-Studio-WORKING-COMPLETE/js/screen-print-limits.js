@@ -18,7 +18,6 @@
   const upload=document.getElementById('uploadBtn');
   const addText=document.getElementById('addTextBtn');
   const objHost=document.getElementById('objPanelHost');
-  const objLayer=document.getElementById('objLayer');
   if(!method||!methodPanel||!upload||!addText||!objHost) return;
 
   const MODE_KEY='wheels-print-method:'+location.pathname;
@@ -34,7 +33,7 @@
   let selected=[];
 
   function hasDesignWork(){
-    return !!(objLayer && objLayer.children.length>0);
+    return objHost.querySelector('.obj,.obj-item,[data-obj-id],.text-object,.image-object')!==null;
   }
 
   method.addEventListener('change',(event)=>{
@@ -64,16 +63,17 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    .screen-limit-wrap{display:none;flex-direction:column;gap:8px;margin-top:8px}
+    #printMethodHint{display:none!important}
+    .screen-limit-wrap{display:none;flex-direction:column;gap:6px;margin-top:6px}
     .screen-limit-wrap.show{display:flex}
-    .screen-limit-wrap label{font-size:11px!important;font-weight:700!important;color:#8b93a1!important;text-transform:uppercase!important}
-    .screen-limit-wrap select{width:100%}
-    .screen-limit-palette{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-    .screen-limit-ink{aspect-ratio:1;border-radius:6px;border:1px solid #ddd8d0;cursor:pointer;min-width:0;padding:0}
-    .screen-limit-ink.active{outline:2px solid #c9171f;outline-offset:2px}
+    .screen-limit-wrap label{font-size:10px!important;font-weight:700!important;color:#8b93a1!important;text-transform:uppercase!important}
+    .screen-limit-wrap select{width:100%;height:32px;padding:4px 8px}
+    .screen-limit-palette{display:grid;grid-template-columns:repeat(8,24px);gap:4px;align-items:center}
+    .screen-limit-ink{width:24px;height:24px;aspect-ratio:auto;border-radius:5px;border:1px solid #ddd8d0;cursor:pointer;min-width:0;padding:0}
+    .screen-limit-ink.active{outline:2px solid #c9171f;outline-offset:1px}
     .screen-limit-ink:disabled{opacity:.35;cursor:not-allowed}
-    .screen-limit-names{font-size:10px;line-height:1.35;color:#59616d;font-weight:600}
-    .screen-limit-warning{font-size:10px;line-height:1.35;color:#c9171f;font-weight:700}
+    .screen-limit-names{font-size:9px;line-height:1.3;color:#59616d;font-weight:600}
+    .screen-limit-warning{font-size:9px;line-height:1.3;color:#c9171f;font-weight:700}
     .screen-print-disabled-swatch{display:none!important}
   `;
   document.head.appendChild(style);
