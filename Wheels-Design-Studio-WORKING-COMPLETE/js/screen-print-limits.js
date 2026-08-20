@@ -20,8 +20,37 @@
   const objHost=document.getElementById('objPanelHost');
   if(!method||!methodPanel||!upload||!addText||!objHost) return;
 
+  const MODE_KEY='wheels-print-method:'+location.pathname;
+  const pendingMode=sessionStorage.getItem(MODE_KEY);
+  if(pendingMode==='digital'||pendingMode==='screen'){
+    sessionStorage.removeItem(MODE_KEY);
+    method.value=pendingMode;
+    method.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
+  let currentMethod=method.value;
   let maxColours=0;
   let selected=[];
+
+  method.addEventListener('change',(event)=>{
+    const next=method.value;
+    if(next===currentMethod) return;
+
+    event.stopImmediatePropagation();
+    method.value=currentMethod;
+
+    const from=currentMethod==='screen'?'Screen Print':'Full Colour Digital';
+    const to=next==='screen'?'Screen Print':'Full Colour Digital';
+    const ok=window.confirm(
+      'Change print method from '+from+' to '+to+'?\n\n'+
+      'Your current design, artwork, text and print settings will be erased. This cannot be undone.'
+    );
+
+    if(!ok) return;
+
+    sessionStorage.setItem(MODE_KEY,next);
+    location.reload();
+  },true);
 
   const style=document.createElement('style');
   style.textContent=`
@@ -81,10 +110,7 @@
   }
 
   function selectedHexes(){return new Set(selected.map(x=>x.hex.toUpperCase()));}
-
-  function ready(){
-    return method.value!=='screen'||(maxColours>0&&selected.length===maxColours);
-  }
+  function ready(){return method.value!=='screen'||(maxColours>0&&selected.length===maxColours);}
 
   function syncButtons(){
     const locked=method.value==='screen'&&!ready();
@@ -98,7 +124,6 @@
       chips.forEach(btn=>btn.classList.remove('screen-print-disabled-swatch'));
       return;
     }
-
     const allowed=selectedHexes();
     chips.forEach(btn=>{
       const hex=swatchHex(btn);
@@ -144,19 +169,15 @@
       palette.appendChild(b);
     });
 
-    names.textContent=selected.length
-      ? 'Selected: '+selected.map(x=>x.name).join(' • ')
-      : `Select ${maxColours} ${maxColours===1?'colour':'colours'}`;
-
+    names.textContent=selected.length?'Selected: '+selected.map(x=>x.name).join(' • '):`Select ${maxColours} ${maxColours===1?'colour':'colours'}`;
     const remaining=maxColours-selected.length;
-    warning.textContent=remaining>0
-      ? `Choose ${remaining} more ${remaining===1?'colour':'colours'} before adding artwork.`
-      : '';
+    warning.textContent=remaining>0?`Choose ${remaining} more ${remaining===1?'colour':'colours'} before adding artwork.`:'';
     syncButtons();
     restrictObjectPalettes();
   }
 
   function refreshMode(){
+    currentMethod=method.value;
     const screen=method.value==='screen';
     wrap.classList.toggle('show',screen);
     if(!screen){
@@ -183,7 +204,6 @@
   });
 
   method.addEventListener('change',()=>setTimeout(refreshMode,0));
-
   new MutationObserver(()=>restrictObjectPalettes()).observe(objHost,{childList:true,subtree:true});
 
   window.WheelsScreenPrintSelection={
