@@ -64,3 +64,4 @@ for(const page of pages){
 }
 
 console.log('Global palette refactor complete.');
+// trigger: master palette migration
