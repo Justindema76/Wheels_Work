@@ -11,19 +11,15 @@
     ['Warm Red','#F54029'],['Fire Red','#D71920'],['Emerald Green (355 C)','#009645'],['Green C','#00B394'],
     ['Medium Yellow (116 C)','#F7D117'],['Primrose Yellow (101 C)','#F5ED59'],['Yellow C','#F7E017']
   ];
-  const byName=new Map(STOCK.map(([n,h])=>[n.toUpperCase(),h]));
-  const byHex=new Map(STOCK.map(([n,h])=>[h.toUpperCase(),n]));
 
   const method=document.getElementById('printMethodSelect');
   const methodPanel=document.querySelector('.print-method-panel');
   const upload=document.getElementById('uploadBtn');
   const addText=document.getElementById('addTextBtn');
-  const objHost=document.getElementById('objPanelHost');
-  if(!method||!methodPanel||!upload||!addText||!objHost) return;
+  if(!method||!methodPanel||!upload||!addText) return;
 
   let maxColours=0;
   let selected=[];
-  let applyingDefault=false;
 
   const style=document.createElement('style');
   style.textContent=`
@@ -32,7 +28,7 @@
     .screen-limit-wrap label{font-size:11px!important;font-weight:700!important;color:#8b93a1!important;text-transform:uppercase!important}
     .screen-limit-wrap select{width:100%}
     .screen-limit-palette{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-    .screen-limit-ink{aspect-ratio:1;border-radius:6px;border:1px solid #ddd8d0;background:#fff;cursor:pointer;min-width:0;padding:0}
+    .screen-limit-ink{aspect-ratio:1;border-radius:6px;border:1px solid #ddd8d0;cursor:pointer;min-width:0;padding:0}
     .screen-limit-ink.active{outline:2px solid #c9171f;outline-offset:2px}
     .screen-limit-ink:disabled{opacity:.35;cursor:not-allowed}
     .screen-limit-names{font-size:10px;line-height:1.35;color:#59616d;font-weight:600}
@@ -63,18 +59,15 @@
   const names=wrap.querySelector('#screenLimitNames');
   const warning=wrap.querySelector('#screenLimitWarning');
 
-  function normalizeColour(v){
-    if(!v) return '';
-    v=String(v).trim();
-    if(/^#[0-9a-f]{6}$/i.test(v)) return v.toUpperCase();
-    const rgb=v.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-    if(rgb) return '#'+[rgb[1],rgb[2],rgb[3]].map(n=>(+n).toString(16).padStart(2,'0')).join('').toUpperCase();
-    const named=byName.get(v.toUpperCase());
-    return named||'';
+  function ready(){
+    return method.value!=='screen'||(maxColours>0&&selected.length===maxColours);
   }
 
-  function selectedHexes(){ return new Set(selected.map(x=>x.hex.toUpperCase())); }
-  function ready(){ return method.value!=='screen'||(maxColours>0&&selected.length===maxColours); }
+  function syncButtons(){
+    const locked=method.value==='screen'&&!ready();
+    upload.disabled=locked;
+    addText.disabled=locked;
+  }
 
   function renderPalette(){
     palette.innerHTML='';
@@ -85,6 +78,7 @@
       syncButtons();
       return;
     }
+
     palette.hidden=false;
     STOCK.forEach(([name,hex])=>{
       const b=document.createElement('button');
@@ -101,73 +95,36 @@
         if(i>=0) selected.splice(i,1);
         else if(selected.length<maxColours) selected.push({name,hex});
         renderPalette();
-        enforceObjectPalette(true);
+        window.dispatchEvent(new CustomEvent('wheels:screenprintselection',{detail:{count:maxColours,colours:selected.slice()}}));
       });
       palette.appendChild(b);
     });
-    names.textContent=selected.length ? 'Selected: '+selected.map(x=>x.name).join(' • ') : `Select ${maxColours} ${maxColours===1?'colour':'colours'}`;
-    warning.textContent=selected.length===maxColours?'':`Choose ${maxColours-selected.length} more ${maxColours-selected.length===1?'colour':'colours'} before adding artwork.`;
+
+    names.textContent=selected.length
+      ? 'Selected: '+selected.map(x=>x.name).join(' • ')
+      : `Select ${maxColours} ${maxColours===1?'colour':'colours'}`;
+
+    const remaining=maxColours-selected.length;
+    warning.textContent=remaining>0
+      ? `Choose ${remaining} more ${remaining===1?'colour':'colours'} before adding artwork.`
+      : '';
     syncButtons();
-  }
-
-  function syncButtons(){
-    const locked=method.value==='screen'&&!ready();
-    upload.disabled=locked;
-    addText.disabled=locked;
-  }
-
-  function buttonHex(btn){
-    const values=[btn.dataset.stockHex,btn.dataset.color,btn.dataset.value,btn.title,btn.style.backgroundColor,getComputedStyle(btn).backgroundColor];
-    for(const value of values){
-      const h=normalizeColour(value);
-      if(h) return h;
-    }
-    return '';
-  }
-
-  function enforceObjectPalette(forceDefault){
-    const screen=method.value==='screen';
-    const allowed=selectedHexes();
-    const chips=[...objHost.querySelectorAll('.swatch-chip')];
-    if(!screen){chips.forEach(b=>b.style.display='');return;}
-    chips.forEach(b=>{
-      const hex=buttonHex(b);
-      if(hex&&byHex.has(hex)){
-        b.dataset.stockHex=hex;
-        b.title=byHex.get(hex);
-        b.setAttribute('aria-label',byHex.get(hex));
-      }
-      b.style.display=ready()&&allowed.has(hex)?'':'none';
-    });
-
-    if(forceDefault&&ready()&&!applyingDefault){
-      const visible=chips.filter(b=>b.style.display!=='none');
-      const activeVisible=visible.some(b=>b.classList.contains('active'));
-      if(visible.length&&!activeVisible){
-        applyingDefault=true;
-        setTimeout(()=>{try{visible[0].click();}finally{applyingDefault=false;}},0);
-      }
-    }
-  }
-
-  function autoRemoveWhiteBackground(){
-    if(method.value!=='screen'||!ready()) return;
-    const buttons=[...objHost.querySelectorAll('button')];
-    const remove=buttons.find(b=>b.textContent.trim()==='Remove White Background');
-    if(remove&&!remove.disabled){
-      remove.click();
-      setTimeout(()=>enforceObjectPalette(true),80);
-    }
   }
 
   function refreshMode(){
     const screen=method.value==='screen';
     wrap.classList.toggle('show',screen);
     if(!screen){
-      maxColours=0; selected=[]; countSelect.value=''; palette.hidden=true; names.textContent=''; warning.textContent='';
-      upload.disabled=false; addText.disabled=false; enforceObjectPalette(false);
+      maxColours=0;
+      selected=[];
+      countSelect.value='';
+      palette.hidden=true;
+      names.textContent='';
+      warning.textContent='';
+      upload.disabled=false;
+      addText.disabled=false;
     }else{
-      syncButtons(); renderPalette(); enforceObjectPalette(false);
+      renderPalette();
     }
   }
 
@@ -175,25 +132,16 @@
     maxColours=Number(countSelect.value)||0;
     selected=[];
     renderPalette();
-    enforceObjectPalette(false);
+    window.dispatchEvent(new CustomEvent('wheels:screenprintselection',{detail:{count:maxColours,colours:[]}}));
   });
 
   method.addEventListener('change',()=>setTimeout(refreshMode,0));
 
-  new MutationObserver(()=>{
-    if(method.value==='screen'){
-      enforceObjectPalette(true);
-      autoRemoveWhiteBackground();
-    }
-  }).observe(objHost,{childList:true,subtree:true});
-
-  document.getElementById('fileInput')?.addEventListener('change',()=>{
-    if(method.value==='screen'&&ready()) setTimeout(autoRemoveWhiteBackground,120);
-  });
-
-  addText.addEventListener('click',()=>{
-    if(method.value==='screen'&&ready()) setTimeout(()=>enforceObjectPalette(true),40);
-  });
+  window.WheelsScreenPrintSelection={
+    get count(){return maxColours;},
+    get colours(){return selected.slice();},
+    isReady:ready
+  };
 
   refreshMode();
 })();
