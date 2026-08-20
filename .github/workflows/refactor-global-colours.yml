@@ -1,0 +1,35 @@
+name: Refactor Global Colours
+
+on:
+  push:
+    paths:
+      - 'scripts/refactor-global-colours.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    if: ${{ !contains(github.event.head_commit.message, '[global-colours-applied]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply refactor
+        run: node scripts/refactor-global-colours.mjs
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo 'No changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Wheels-Design-Studio
+          git commit -m 'Use one global colour palette everywhere [global-colours-applied]'
+          git push
