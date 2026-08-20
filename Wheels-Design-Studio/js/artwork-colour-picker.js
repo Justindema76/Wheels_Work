@@ -1,7 +1,34 @@
 (function(){
   'use strict';
 
-  const PRIORITY = ['#FFFFFF','#808080','#ADADAD','#000000','#C1272D','#ED1C24','#F54029','#D71920'];
+  // Common order colours stay visible first.
+  // Remaining colours are available under the collapsible section.
+  const PRIORITY = [
+    '#FFFFFF', // White
+    '#808080', // Grey
+    '#000000', // Black
+    '#C1272D', // Red
+    '#1B75BC', // Blue
+    '#FFF200', // Yellow
+    '#39B54A', // Green
+    '#F7941D', // Orange
+
+    // Screen-print equivalents / alternates are ranked immediately after
+    // their common digital counterparts when present.
+    '#ADADAD', // Grey 429 C
+    '#D71920', // Fire Red
+    '#ED1C24', // Bright Red
+    '#008CCC', // Process Blue
+    '#171796', // Reflex Blue
+    '#F7E017', // Yellow C
+    '#F7D117', // Medium Yellow
+    '#009645', // Emerald Green
+    '#00B394', // Green C
+    '#ED6E00', // Orange 021 C
+    '#FF5E00'  // Bright Orange
+  ];
+
+  const PRIMARY_COUNT = 8;
 
   function normalizeHex(value){
     if(!value) return '';
@@ -71,7 +98,7 @@
     toggle.setAttribute('aria-expanded','false');
 
     ordered.forEach((chip,index)=>{
-      (index<4 ? primary : more).appendChild(chip);
+      (index<PRIMARY_COUNT ? primary : more).appendChild(chip);
     });
 
     toggle.addEventListener('click',()=>{
@@ -96,7 +123,7 @@
       if(chip.classList.contains('screen-print-disabled-swatch')) return false;
       return getComputedStyle(chip).display!=='none';
     });
-    shell.classList.toggle('is-compact',visible.length<=4);
+    shell.classList.toggle('is-compact',visible.length<=PRIMARY_COUNT);
   }
 
   function scan(){
