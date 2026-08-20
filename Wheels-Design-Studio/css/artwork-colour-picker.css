@@ -1,0 +1,64 @@
+/* Wheels Design Studio — shared artwork colour picker
+   Used by both Logo Print Colour and Text Colour controls. */
+
+.artwork-colour-picker{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.artwork-colour-picker__primary,
+.artwork-colour-picker__more{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+}
+
+.artwork-colour-picker__primary .swatch-chip,
+.artwork-colour-picker__more .swatch-chip{
+  width:100%;
+  aspect-ratio:1;
+}
+
+.artwork-colour-picker__more[hidden]{
+  display:none!important;
+}
+
+.artwork-colour-picker__toggle{
+  width:100%;
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid var(--line,#dfe3e8);
+  border-radius:7px;
+  background:#fff;
+  color:var(--ink,#17181c);
+  font:600 11px/1.2 Inter,Arial,sans-serif;
+  cursor:pointer;
+  text-align:center;
+}
+
+.artwork-colour-picker__toggle:hover{
+  border-color:#b9bec6;
+}
+
+.artwork-colour-picker__toggle::after{
+  content:' +';
+}
+
+.artwork-colour-picker__toggle[aria-expanded="true"]::after{
+  content:' −';
+}
+
+/* If Screen Print leaves only 1–4 production colours available,
+   there is no reason to show a collapsible control. */
+.artwork-colour-picker.is-compact .artwork-colour-picker__toggle,
+.artwork-colour-picker.is-compact .artwork-colour-picker__more{
+  display:none!important;
+}
+
+@media (max-width:600px){
+  .artwork-colour-picker__primary,
+  .artwork-colour-picker__more{
+    gap:7px;
+  }
+}
