@@ -1,12 +1,6 @@
-/* Wheels Design Studio — designer engine bootstrap.
-   Shared application rules only. No CSS/layout stylesheet changes here.
-
-   Rules:
-   - one global artwork colour palette
-   - Logo Print Colour and Text Print Colour use the SAME swatch-grid component
-   - Text Font is full width
-   - Text Print Colour sits directly underneath Font at full width
-   - Screen Print still limits artwork choices through screen-print-limits.js
+/* Wheels Design Studio — shared designer bootstrap.
+   Keep this narrow: the text settings Font and Colour fields must stack.
+   No CSS changes and no new colour component.
 */
 (async function(){
   'use strict';
@@ -18,65 +12,32 @@
   }
 
   try{
-    const response=await fetch('js/wheels-designers-core.js?v=global-colours-5',{cache:'no-store'});
+    const response=await fetch('js/wheels-designers-core.js?v=row2-final-1',{cache:'no-store'});
     if(!response.ok) throw new Error('Could not load designer core: '+response.status);
 
     let source=await response.text();
 
-    // One master palette for logo and text artwork everywhere.
+    // Keep the one global artwork palette already used by the app.
     const paletteReplacement=`const GLOBAL_ARTWORK_COLOURS = window.WHEELS_GLOBAL_COLOUR_HEXES.slice();\n\n  const SWATCH_COLORS = GLOBAL_ARTWORK_COLOURS;\n  const SCREEN_PRINT_COLORS = GLOBAL_ARTWORK_COLOURS;`;
     const palettePattern=/const SWATCH_COLORS = \[[\s\S]*?\n  \];\n\n  \/\/ SCREEN PRINT STOCK COLOURS[\s\S]*?const SCREEN_PRINT_COLORS = \[[\s\S]*?\n  \];/g;
     const methodPattern=/function activeArtworkColours\(\)\{\s*return state\.printMethod === 'screen' \? SCREEN_PRINT_COLORS : SWATCH_COLORS;\s*\}/g;
-
     source=source.replace(palettePattern,paletteReplacement);
     source=source.replace(methodPattern,"function activeArtworkColours(){ return GLOBAL_ARTWORK_COLOURS; }");
 
-    // Never allow Text Colour to force its own tiny four-column grid.
+    // ROW2 FIX ONLY:
+    // Font and Colour were both appended to row2, forcing them side-by-side.
+    // Append each field directly to the Text Settings panel instead.
+    source=source.replace(/row2\.appendChild\(fFont\);/g,'panel.appendChild(fFont);');
+    source=source.replace(/row2\.appendChild\(fColor\);/g,'panel.appendChild(fColor);');
+
+    // Remove the now-empty row2 before Font Size.
+    source=source.replace(/\s*panel\.appendChild\(row2\);\s*(?=const fSize = document\.createElement\('div'\);)/g,'\n      ');
+
+    // Text Colour must use the existing swatch-grid sizing, exactly like Logo Print Colour.
     source=source.replace(/\s*colorGrid\.style\.gridTemplateColumns\s*=\s*'repeat\(4,1fr\)';/g,'');
 
-    // Reuse the exact same full-width swatch-grid component used by Logo Settings.
-    // This replaces only the Font + Colour block in Text Settings.
-    const textFontColourBlock=/\s*const row2 = document\.createElement\('div'\);\s*row2\.className='row2';[\s\S]*?panel\.appendChild\(row2\);\s*const fSize = document\.createElement\('div'\);/;
-
-    const textFontColourReplacement=`
-      const fFont = document.createElement('div');
-      fFont.className='field';
-      fFont.innerHTML='<label>Font</label>';
-      const sel = document.createElement('select');
-      FONT_OPTIONS.forEach(f=>{
-        const o=document.createElement('option');
-        o.value=f;
-        o.textContent=f;
-        if(f===obj.fontFamily) o.selected=true;
-        sel.appendChild(o);
-      });
-      sel.addEventListener('change', ()=>{
-        obj.fontFamily=sel.value;
-        updateTextEl(obj);
-      });
-      fFont.appendChild(sel);
-      panel.appendChild(fFont);
-
-      const fColor = document.createElement('div');
-      fColor.className='field';
-      fColor.innerHTML='<label>Print Colour</label>';
-      const colorGrid = buildSwatchGrid(obj.color, (hex)=>{
-        obj.color=hex;
-        updateTextEl(obj);
-      });
-      fColor.appendChild(colorGrid);
-      panel.appendChild(fColor);
-
-      const fSize = document.createElement('div');`;
-
-    if(!textFontColourBlock.test(source)){
-      throw new Error('Text Settings Font/Colour block did not match the designer core.');
-    }
-    source=source.replace(textFontColourBlock,textFontColourReplacement);
-
-    if(!source.includes('const GLOBAL_ARTWORK_COLOURS = window.WHEELS_GLOBAL_COLOUR_HEXES.slice();')){
-      throw new Error('Global palette injection did not match the designer core.');
-    }
+    // Same wording as the logo control.
+    source=source.replace("fColor.innerHTML='<label>Colour</label>';","fColor.innerHTML='<label>Print Colour</label>';" );
 
     Function(source+'\n//# sourceURL=wheels-designers-core-runtime.js')();
   }catch(error){
