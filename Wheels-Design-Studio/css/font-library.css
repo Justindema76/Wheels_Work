@@ -1,0 +1,104 @@
+/* =========================================================
+   WHEELS DESIGN STUDIO - SHARED FONT LIBRARY
+   ---------------------------------------------------------
+   This file contains font aliases used by every designer.
+
+   IMPORTANT:
+   Some customer/order fonts are commercial/system fonts.
+   We do not bundle licensed font files here. These @font-face
+   rules use locally-installed copies when available and fall
+   back safely when they are not installed on the device.
+   ========================================================= */
+
+/* Web fonts we can load directly. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
+
+@font-face {
+  font-family: 'Arial';
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  src: local('Helvetica'), local('Helvetica Neue');
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src: local('Gotham'), local('Gotham Book'), local('Gotham Medium');
+}
+
+@font-face {
+  font-family: 'Baskerville';
+  src: local('Baskerville'), local('Baskerville Old Face');
+}
+
+@font-face {
+  font-family: 'Bodoni';
+  src: local('Bodoni 72'), local('Bodoni MT'), local('Bodoni');
+}
+
+@font-face {
+  font-family: 'Fruitiger';
+  src: local('Frutiger'), local('Frutiger LT Std'), local('Frutiger Next');
+}
+
+@font-face {
+  font-family: 'Frutiger';
+  src: local('Frutiger'), local('Frutiger LT Std'), local('Frutiger Next');
+}
+
+@font-face {
+  font-family: 'News Gothic';
+  src: local('News Gothic'), local('News Gothic MT'), local('NewsGothicBT');
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: local('Bebas Neue'), local('Bebas');
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: local('Futura'), local('Futura PT'), local('Futura Std');
+}
+
+@font-face {
+  font-family: 'Space Bold';
+  src: local('Space Bold'), local('Space-Bold');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Serpentine Bold';
+  src: local('Serpentine Bold'), local('Serpentine-Bold'), local('SerpentineD Bold');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Alkaria Regular';
+  src: local('Alkaria Regular'), local('Alkaria');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Brush';
+  src: local('Brush Script MT'), local('Brush Script Std'), local('Brush Script');
+}
+
+@font-face {
+  font-family: 'Impact Bold';
+  src: local('Impact');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Ethnocentric Bold';
+  src: local('Ethnocentric Bold'), local('Ethnocentric Rg'), local('Ethnocentric');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Eurostile';
+  src: local('Eurostile'), local('Eurostile LT Std'), local('Eurostile Next');
+}
