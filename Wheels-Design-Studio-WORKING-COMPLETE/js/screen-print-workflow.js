@@ -1,102 +1,17 @@
 (function(){
-  'use strict';
-  const d=document.body?.dataset?.designer;
-  if(d!=='lexan'&&d!=='frame') return;
-
-  const stock=[
-    ['HT Process Black','#000000'],['HT Process Cyan','#00AEEF'],['HT Process Magenta','#EC008C'],['HT Process Yellow','#FFF200'],
-    ['Grey 429 C','#ADADAD'],['Silver / Clear','#C0C0C0'],['Gold / Clear','#D4AF37'],['White','#FFFFFF'],
-    ['Process Blue','#008CCC'],['Reflex Blue','#171796'],['Violet C','#6600A1'],['Purple C','#BA1FB5'],
-    ['Rhodamine Red','#E60094'],['Rubine Red','#CF035C'],['Orange 021 C','#ED6E00'],['Bright Orange','#FF5E00'],
-    ['Warm Red','#F54029'],['Fire Red','#D71920'],['Emerald Green (355 C)','#009645'],['Green C','#00B394'],
-    ['Medium Yellow (116 C)','#F7D117'],['Primrose Yellow (101 C)','#F5ED59'],['Yellow C','#F7E017']
-  ];
-  const nameByHex=new Map(stock.map(([name,hex])=>[hex.toUpperCase(),name]));
-
-  let count=0, inks=[];
-  const select=document.getElementById('printMethodSelect');
-  const cards=[...document.querySelectorAll('[data-print-method]')];
-  const setup=document.getElementById('screenPrintSetup');
-  const countBox=document.getElementById('imprintCountChoice');
-  const inkStep=document.getElementById('imprintInkStep');
-  const inkHost=document.getElementById('imprintInkSelectors');
-  const status=document.getElementById('screenPrintStatus');
-  const addPanel=document.getElementById('addArtworkPanel');
-  const upload=document.getElementById('uploadBtn');
-  const addText=document.getElementById('addTextBtn');
-  const objHost=document.getElementById('objPanelHost');
-
-  function ready(){return select.value!=='screen'||(count>0&&inks.length===count&&inks.every(Boolean));}
-  function selectedHexes(){return new Set(inks.filter(Boolean).map(x=>x.hex.toUpperCase()));}
-  function lock(){
-    const locked=!ready();
-    upload.disabled=locked; addText.disabled=locked;
-    addPanel.classList.toggle('screen-print-locked',locked);
-    if(select.value==='screen'){
-      status.classList.toggle('ready',!locked);
-      status.textContent=locked
-        ? 'Choose all '+(count||'required')+' production '+(count===1?'ink':'inks')+' before adding artwork.'
-        : 'Screen Print ready: '+inks.map((x,i)=>'Colour '+(i+1)+': '+x.name).join(' • ');
-    } else status.classList.remove('ready');
-    applySelectedInkPalette();
-  }
-  function paintCards(){cards.forEach(b=>b.classList.toggle('active',b.dataset.printMethod===select.value));}
-  function renderInks(){
-    inkHost.innerHTML='';
-    if(!count){inkStep.hidden=true;lock();return;}
-    inkStep.hidden=false;
-    for(let slot=0;slot<count;slot++){
-      const row=document.createElement('div'); row.className='imprint-ink-row'; row.innerHTML='<strong>Colour '+(slot+1)+'</strong>';
-      const grid=document.createElement('div'); grid.className='imprint-ink-grid';
-      stock.forEach(([name,hex])=>{
-        const b=document.createElement('button'); b.type='button'; b.className='imprint-ink'+(inks[slot]?.hex===hex?' active':'');
-        b.style.setProperty('background',hex,'important'); b.title=name; b.setAttribute('aria-label',name);
-        b.disabled=inks.some((x,i)=>i!==slot&&x?.hex===hex);
-        b.onclick=()=>{inks[slot]={name,hex};renderInks();window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));};
-        grid.appendChild(b);
-      });
-      row.appendChild(grid);
-      if(inks[slot]){const label=document.createElement('div');label.className='field-hint';label.textContent=inks[slot].name;row.appendChild(label);}
-      inkHost.appendChild(row);
-    }
-    lock();
-  }
-  function applySelectedInkPalette(){
-    if(!objHost) return;
-    const allowed=selectedHexes();
-    objHost.querySelectorAll('.swatch-chip').forEach(button=>{
-      const original=(button.dataset.stockHex||button.getAttribute('title')||'').toUpperCase();
-      if(/^#[0-9A-F]{6}$/.test(original)) button.dataset.stockHex=original;
-      const hex=(button.dataset.stockHex||'').toUpperCase();
-      const stockName=nameByHex.get(hex);
-      if(stockName){button.title=stockName;button.setAttribute('aria-label',stockName);}
-      button.style.display=select.value==='screen'?(allowed.has(hex)?'':'none'):'';
-    });
-  }
-  function setMethod(method){
-    select.value=method; select.dispatchEvent(new Event('change',{bubbles:true})); paintCards(); setup.hidden=method!=='screen';
-    if(method==='digital'){
-      count=0;inks=[];countBox.querySelectorAll('button').forEach(b=>b.classList.remove('active'));inkStep.hidden=true;
-      addPanel.classList.remove('screen-print-locked');upload.disabled=false;addText.disabled=false;applySelectedInkPalette();
-    }else lock();
-  }
-  cards.forEach(b=>b.onclick=()=>setMethod(b.dataset.printMethod));
-  countBox.querySelectorAll('[data-imprint-count]').forEach(b=>b.onclick=()=>{
-    count=Number(b.dataset.imprintCount);inks=Array(count).fill(null);
-    countBox.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
-    renderInks();window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}));
-  });
-  window.WheelsScreenPrint={get count(){return count;},get inks(){return inks.slice();},get stockColours(){return stock.map(([name,hex])=>({name,hex}));},isReady:ready};
-  window.addEventListener('wheels:screenprintchange',applySelectedInkPalette);
-  if(objHost)new MutationObserver(applySelectedInkPalette).observe(objHost,{childList:true,subtree:true});
-  paintCards();setup.hidden=select.value!=='screen';lock();
+'use strict';
+const d=document.body?.dataset?.designer;if(d!=='lexan'&&d!=='frame')return;
+const stock=[['HT Process Black','#000000'],['HT Process Cyan','#00AEEF'],['HT Process Magenta','#EC008C'],['HT Process Yellow','#FFF200'],['Grey 429 C','#ADADAD'],['Silver / Clear','#C0C0C0'],['Gold / Clear','#D4AF37'],['White','#FFFFFF'],['Process Blue','#008CCC'],['Reflex Blue','#171796'],['Violet C','#6600A1'],['Purple C','#BA1FB5'],['Rhodamine Red','#E60094'],['Rubine Red','#CF035C'],['Orange 021 C','#ED6E00'],['Bright Orange','#FF5E00'],['Warm Red','#F54029'],['Fire Red','#D71920'],['Emerald Green (355 C)','#009645'],['Green C','#00B394'],['Medium Yellow (116 C)','#F7D117'],['Primrose Yellow (101 C)','#F5ED59'],['Yellow C','#F7E017']];
+const nameByHex=new Map(stock.map(([n,h])=>[h.toUpperCase(),n]));let count=0,inks=[];
+const select=document.getElementById('printMethodSelect'),cards=[...document.querySelectorAll('[data-print-method]')],setup=document.getElementById('screenPrintSetup'),countBox=document.getElementById('imprintCountChoice'),inkStep=document.getElementById('imprintInkStep'),inkHost=document.getElementById('imprintInkSelectors'),status=document.getElementById('screenPrintStatus'),addPanel=document.getElementById('addArtworkPanel'),upload=document.getElementById('uploadBtn'),addText=document.getElementById('addTextBtn'),objHost=document.getElementById('objPanelHost');
+function ready(){return select.value!=='screen'||(count>0&&inks.length===count)}
+function allowed(){return new Set(inks.map(x=>x.hex.toUpperCase()))}
+function sync(){const locked=!ready();upload.disabled=locked;addText.disabled=locked;addPanel.classList.toggle('screen-print-locked',locked);if(select.value==='screen'){status.classList.toggle('ready',!locked);status.textContent=locked?(count?'Choose '+count+' '+(count===1?'colour':'colours')+' from the palette below.':'Choose 1, 2 or 3 imprint colours first.'):'Screen Print ready: '+inks.map(x=>x.name).join(' • ')}applyPalette()}
+function paintTabs(){cards.forEach(b=>{const active=b.dataset.printMethod===select.value;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')})}
+function renderPalette(){inkHost.innerHTML='';if(!count){inkStep.hidden=true;sync();return}inkStep.hidden=false;const grid=document.createElement('div');grid.className='imprint-ink-grid single-imprint-palette';stock.forEach(([name,hex])=>{const b=document.createElement('button');b.type='button';const chosen=inks.some(x=>x.hex===hex);b.className='imprint-ink'+(chosen?' active':'');b.style.setProperty('background',hex,'important');b.title=name;b.setAttribute('aria-label',name);b.onclick=()=>{const idx=inks.findIndex(x=>x.hex===hex);if(idx>=0)inks.splice(idx,1);else if(inks.length<count)inks.push({name,hex});else return;renderPalette();window.dispatchEvent(new CustomEvent('wheels:screenprintchange',{detail:{count,inks}}))};grid.appendChild(b)});inkHost.appendChild(grid);const chosen=document.createElement('div');chosen.className='chosen-ink-names';chosen.textContent=inks.length?inks.map((x,i)=>(i+1)+'. '+x.name).join('   •   '):'Select '+count+' '+(count===1?'colour':'colours');inkHost.appendChild(chosen);sync()}
+function applyPalette(){if(!objHost)return;const ok=allowed();objHost.querySelectorAll('.swatch-chip').forEach(b=>{const raw=(b.dataset.stockHex||b.getAttribute('title')||'').toUpperCase();if(/^#[0-9A-F]{6}$/.test(raw))b.dataset.stockHex=raw;const hex=(b.dataset.stockHex||'').toUpperCase(),name=nameByHex.get(hex);if(name){b.title=name;b.setAttribute('aria-label',name)}b.style.display=select.value==='screen'?(ok.has(hex)?'':'none'):''})}
+function method(m){select.value=m;select.dispatchEvent(new Event('change',{bubbles:true}));paintTabs();setup.hidden=m!=='screen';if(m==='digital'){count=0;inks=[];countBox.querySelectorAll('button').forEach(b=>b.classList.remove('active'));inkStep.hidden=true;upload.disabled=false;addText.disabled=false;addPanel.classList.remove('screen-print-locked');applyPalette()}else sync()}
+cards.forEach(b=>b.onclick=()=>method(b.dataset.printMethod));countBox.querySelectorAll('[data-imprint-count]').forEach(b=>b.onclick=()=>{count=Number(b.dataset.imprintCount);inks=[];countBox.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderPalette()});
+window.WheelsScreenPrint={get count(){return count},get inks(){return inks.slice()},get stockColours(){return stock.map(([name,hex])=>({name,hex}))},isReady:ready};window.addEventListener('wheels:screenprintchange',applyPalette);if(objHost)new MutationObserver(applyPalette).observe(objHost,{childList:true,subtree:true});paintTabs();setup.hidden=select.value!=='screen';sync();
 })();
-
-(function(){
-  if(document.querySelector('script[data-wheels-measurements]')) return;
-  const s=document.createElement('script');
-  s.src='js/measurement-guides.js';
-  s.defer=true;
-  s.dataset.wheelsMeasurements='1';
-  document.head.appendChild(s);
-})();
+(function(){if(document.querySelector('script[data-wheels-measurements]'))return;const s=document.createElement('script');s.src='js/measurement-guides.js';s.defer=true;s.dataset.wheelsMeasurements='1';document.head.appendChild(s)})();
