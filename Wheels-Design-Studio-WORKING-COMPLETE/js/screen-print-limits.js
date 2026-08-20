@@ -11,12 +11,14 @@
     ['Warm Red','#F54029'],['Fire Red','#D71920'],['Emerald Green (355 C)','#009645'],['Green C','#00B394'],
     ['Medium Yellow (116 C)','#F7D117'],['Primrose Yellow (101 C)','#F5ED59'],['Yellow C','#F7E017']
   ];
+  const byHex=new Map(STOCK.map(([name,hex])=>[hex.toUpperCase(),name]));
 
   const method=document.getElementById('printMethodSelect');
   const methodPanel=document.querySelector('.print-method-panel');
   const upload=document.getElementById('uploadBtn');
   const addText=document.getElementById('addTextBtn');
-  if(!method||!methodPanel||!upload||!addText) return;
+  const objHost=document.getElementById('objPanelHost');
+  if(!method||!methodPanel||!upload||!addText||!objHost) return;
 
   let maxColours=0;
   let selected=[];
@@ -33,6 +35,7 @@
     .screen-limit-ink:disabled{opacity:.35;cursor:not-allowed}
     .screen-limit-names{font-size:10px;line-height:1.35;color:#59616d;font-weight:600}
     .screen-limit-warning{font-size:10px;line-height:1.35;color:#c9171f;font-weight:700}
+    .screen-print-disabled-swatch{display:none!important}
   `;
   document.head.appendChild(style);
 
@@ -59,6 +62,26 @@
   const names=wrap.querySelector('#screenLimitNames');
   const warning=wrap.querySelector('#screenLimitWarning');
 
+  function normalizeColour(v){
+    if(!v) return '';
+    v=String(v).trim();
+    if(/^#[0-9a-f]{6}$/i.test(v)) return v.toUpperCase();
+    const m=v.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if(m) return '#'+[m[1],m[2],m[3]].map(n=>(+n).toString(16).padStart(2,'0')).join('').toUpperCase();
+    return '';
+  }
+
+  function swatchHex(btn){
+    const candidates=[btn.dataset.stockHex,btn.dataset.color,btn.dataset.value,btn.style.backgroundColor,getComputedStyle(btn).backgroundColor,btn.title];
+    for(const value of candidates){
+      const hex=normalizeColour(value);
+      if(hex) return hex;
+    }
+    return '';
+  }
+
+  function selectedHexes(){return new Set(selected.map(x=>x.hex.toUpperCase()));}
+
   function ready(){
     return method.value!=='screen'||(maxColours>0&&selected.length===maxColours);
   }
@@ -69,6 +92,25 @@
     addText.disabled=locked;
   }
 
+  function restrictObjectPalettes(){
+    const chips=[...objHost.querySelectorAll('.swatch-chip')];
+    if(method.value!=='screen'||!ready()){
+      chips.forEach(btn=>btn.classList.remove('screen-print-disabled-swatch'));
+      return;
+    }
+
+    const allowed=selectedHexes();
+    chips.forEach(btn=>{
+      const hex=swatchHex(btn);
+      if(hex&&byHex.has(hex)){
+        btn.dataset.stockHex=hex;
+        btn.title=byHex.get(hex);
+        btn.setAttribute('aria-label',byHex.get(hex));
+      }
+      btn.classList.toggle('screen-print-disabled-swatch',!!hex&&!allowed.has(hex));
+    });
+  }
+
   function renderPalette(){
     palette.innerHTML='';
     if(!maxColours){
@@ -76,6 +118,7 @@
       names.textContent='';
       warning.textContent='Choose 1, 2 or 3 colours before adding artwork.';
       syncButtons();
+      restrictObjectPalettes();
       return;
     }
 
@@ -95,6 +138,7 @@
         if(i>=0) selected.splice(i,1);
         else if(selected.length<maxColours) selected.push({name,hex});
         renderPalette();
+        restrictObjectPalettes();
         window.dispatchEvent(new CustomEvent('wheels:screenprintselection',{detail:{count:maxColours,colours:selected.slice()}}));
       });
       palette.appendChild(b);
@@ -109,6 +153,7 @@
       ? `Choose ${remaining} more ${remaining===1?'colour':'colours'} before adding artwork.`
       : '';
     syncButtons();
+    restrictObjectPalettes();
   }
 
   function refreshMode(){
@@ -126,16 +171,20 @@
     }else{
       renderPalette();
     }
+    restrictObjectPalettes();
   }
 
   countSelect.addEventListener('change',()=>{
     maxColours=Number(countSelect.value)||0;
     selected=[];
     renderPalette();
+    restrictObjectPalettes();
     window.dispatchEvent(new CustomEvent('wheels:screenprintselection',{detail:{count:maxColours,colours:[]}}));
   });
 
   method.addEventListener('change',()=>setTimeout(refreshMode,0));
+
+  new MutationObserver(()=>restrictObjectPalettes()).observe(objHost,{childList:true,subtree:true});
 
   window.WheelsScreenPrintSelection={
     get count(){return maxColours;},
