@@ -1,7 +1,11 @@
 /* Wheels Design Studio — master artwork colour palette.
-   This is the single colour list used by every designer for text, logo artwork,
-   and screen-print production colour selection. Do not create product-specific
-   artwork colour lists elsewhere. */
+   SINGLE SOURCE OF TRUTH.
+
+   This exact list is used by every designer for:
+   - logo recolouring
+   - text colours
+   - screen-print production colour selection
+*/
 (function(){
   'use strict';
 
