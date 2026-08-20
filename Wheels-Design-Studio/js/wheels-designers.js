@@ -1,7 +1,8 @@
 /* Wheels Design Studio — designer engine bootstrap.
    The working designer engine is preserved in wheels-designers-core.js.
    This bootstrap injects the single master artwork palette before executing it,
-   so text and logo controls use the same colours in every designer. */
+   so text and logo controls use the same colours and the same swatch-grid styling
+   in every designer. */
 (async function(){
   'use strict';
 
@@ -12,7 +13,7 @@
   }
 
   try{
-    const response=await fetch('js/wheels-designers-core.js?v=global-colours-1',{cache:'no-store'});
+    const response=await fetch('js/wheels-designers-core.js?v=global-colours-2',{cache:'no-store'});
     if(!response.ok) throw new Error('Could not load designer core: '+response.status);
     let source=await response.text();
 
@@ -23,6 +24,11 @@
 
     source=source.replace(palettePattern,paletteReplacement);
     source=source.replace(methodPattern,"function activeArtworkColours(){ return GLOBAL_ARTWORK_COLOURS; }");
+
+    // Text used to force a separate 4-column grid. Remove that product-specific
+    // override so Text Colour and Logo Print Colour use the exact same shared
+    // .swatch-grid / .swatch-chip presentation.
+    source=source.replace(/\s*colorGrid\.style\.gridTemplateColumns\s*=\s*'repeat\(4,1fr\)';/g,'');
 
     if(!source.includes('const GLOBAL_ARTWORK_COLOURS = window.WHEELS_GLOBAL_COLOUR_HEXES.slice();')){
       throw new Error('Global palette injection did not match the designer core.');
