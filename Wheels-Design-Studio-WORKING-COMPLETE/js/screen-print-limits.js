@@ -18,6 +18,7 @@
   const upload=document.getElementById('uploadBtn');
   const addText=document.getElementById('addTextBtn');
   const objHost=document.getElementById('objPanelHost');
+  const objLayer=document.getElementById('objLayer');
   if(!method||!methodPanel||!upload||!addText||!objHost) return;
 
   const MODE_KEY='wheels-print-method:'+location.pathname;
@@ -32,9 +33,18 @@
   let maxColours=0;
   let selected=[];
 
+  function hasDesignWork(){
+    return !!(objLayer && objLayer.children.length>0);
+  }
+
   method.addEventListener('change',(event)=>{
     const next=method.value;
     if(next===currentMethod) return;
+
+    if(!hasDesignWork()){
+      currentMethod=next;
+      return;
+    }
 
     event.stopImmediatePropagation();
     method.value=currentMethod;
