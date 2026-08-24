@@ -1,103 +1,295 @@
 # Wheels Design Studio
 
-A browser-based, production-aware product customization system for automotive licence plate products.
+A browser-based, production-aware customization platform for automotive licence plate products.
 
-**Live Design Studio:** https://justindema76.github.io/Wheels_Work/Wheels-Design-Studio-WORKING-COMPLETE/plate-design-studio-page.html
+**Live Design Studio:** https://justindema76.github.io/Wheels_Work/Wheels-Design-Studio/
 
-**Admin Prototype:** https://justindema76.github.io/Wheels_Work/Wheels-Design-Studio-WORKING-COMPLETE/admin.html
+**Admin Prototype:** https://justindema76.github.io/Wheels_Work/Wheels-Design-Studio/admin.html
 
-> This repository documents an active redesign and development project. The original design tools are preserved separately while the new system is developed and tested.
+> This repository documents an active redesign and development project. Legacy/working versions remain preserved separately while the cleaner shared application is developed and tested.
 
 ## Project Overview
 
-Wheels Design Studio began as an effort to correct usability problems in existing customer-facing product designers. The project expanded into a reusable design system that connects the customer design experience with real production requirements.
+Wheels Design Studio began as an effort to fix usability and production problems in existing customer-facing product designers. It has grown into a shared design system intended to connect the customer design experience directly to real manufacturing requirements.
 
-Rather than allowing customers to create artwork that cannot be manufactured, the goal is to make production rules part of the design experience itself.
+The goal is not simply to let a customer place artwork on a product. The goal is to prevent invalid production choices before the order reaches a designer or production team.
 
-The system currently supports multiple automotive products through shared HTML, CSS and JavaScript architecture, including:
+The current application supports:
 
 - Licence Plate Frames
 - Lexan Plate Covers
 - Plate Signs
 - Motorcycle Plate Covers
 
+## Current Application Structure
+
+The active application is maintained in:
+
+```text
+Wheels-Design-Studio/
+```
+
+Key files include:
+
+```text
+Wheels-Design-Studio/
+├── index.html
+├── admin.html
+├── frame-digital.html
+├── frame-screen-print.html
+├── lexan-digital.html
+├── lexan-screen-print.html
+├── plate-sign.html
+├── motorcycle-cover.html
+│
+├── css/
+│   ├── wheels-designers.css
+│   └── studio-home.css
+│
+└── js/
+    ├── wheels-designers-core.js
+    ├── wheels-designers.js
+    ├── global-colours.js
+    ├── global-logo-defaults.js
+    ├── font-library.js
+    ├── screen-print-page-init.js
+    └── screen-print-limits.js
+```
+
+The project is being reorganized around a simple rule:
+
+> **Shared behavior should be implemented once and reused everywhere.**
+
+Product-specific code should only exist where the physical product or production process genuinely behaves differently.
+
 ## Problems Being Solved
 
-The original workflow exposed several practical problems for both customers and production staff:
+The original workflow exposed practical problems for customers, designers and production staff:
 
-- Incorrect left/right text alignment behavior
+- Incorrect or confusing text alignment behavior
 - Text moving unexpectedly when alignment changed
-- Text resizing unpredictably
-- Customer colour choices that did not match production stock colours
-- No clear separation between Screen Print and Full Colour Digital production
-- Customer logos being reduced to flattened proofs instead of retaining original artwork
-- Designers potentially needing to request customer artwork a second time
+- Uncontrolled text resizing
+- Colour options that did not match available production inks
+- No strong separation between Screen Print and Full Colour Digital workflows
+- No enforcement of purchased screen-print colour counts
+- Duplicate product-specific logic that made maintenance difficult
+- Original customer artwork being lost behind flattened design proofs
+- Production teams potentially needing to request artwork again
 - Limited production information accompanying submitted designs
-- Repeated product-specific code that made maintenance harder
-- No centralized way to manage production rules
+- No centralized configuration source for common settings
 
-## What I Built / Am Building
+## Shared Designer Architecture
 
-### Shared multi-product architecture
+A major focus of the current rebuild is removing duplicate implementations.
 
-The designers were refactored toward a shared architecture instead of maintaining duplicate CSS and JavaScript for every product.
+The designers now work toward a shared architecture where common interface elements and behavior are reused across products.
 
-### Direct object positioning
+Examples include:
 
-Customers can position text and artwork directly on the product rather than relying on problematic alignment controls.
+- Shared designer CSS
+- Shared colour data
+- Shared logo and text colour pickers
+- Shared text controls
+- Shared artwork handling
+- Shared production package logic
+- Shared screen-print rules
 
-### Snapping and visual guides
+This means a common change should be made once rather than separately in every designer.
 
-Objects can snap to horizontal and vertical centers with visual crosshair guides, making accurate placement easier without requiring professional design software knowledge.
+## Global Colour System
 
-### Controlled typography
+The application now uses:
 
-Text sizing is handled through defined font-size controls rather than uncontrolled drag-resizing. This produces more predictable customer designs and more useful production specifications.
+```text
+Wheels-Design-Studio/js/global-colours.js
+```
 
-### Screen Print vs. Full Colour Digital
+as the master production/artwork colour source.
 
-The system distinguishes between production methods so the interface can enforce the rules appropriate to each process.
+The intended rule is:
 
-### Production stock colour system
+```text
+Global Colours
+      ↓
+Background / Colour Dock
+Logo Print Colour
+Text Print Colour
+Screen Print Colour Selection
+```
 
-Screen-print colour choices are based on supplied production stock colours rather than arbitrary web colours. The working palette includes named Process, Pantone and specialty inks such as Process Blue, Reflex Blue, Violet C, Rhodamine Red, Rubine Red, Orange 021 C, Warm Red, Emerald Green 355 C and others.
+Changing a colour value in the global palette should propagate to every control that consumes that colour.
 
-### Original artwork retention
+The current palette includes named production colours such as:
 
-Uploaded customer artwork is retained separately from the browser-rendered design proof so production can receive the best source artwork supplied by the customer.
+- HT Process Black
+- HT Process Cyan
+- HT Process Magenta
+- HT Process Yellow
+- Grey 429 C
+- Silver / Clear
+- Gold / Clear
+- White
+- Process Blue
+- Reflex Blue
+- Violet C
+- Purple C
+- Rhodamine Red
+- Rubine Red
+- Orange 021 C
+- Bright Orange
+- Warm Red
+- Fire Red
+- Emerald Green (355 C)
+- Green C
+- Medium Yellow (116 C)
+- Primrose Yellow (101 C)
+- Yellow C
 
-### Production package generation
+The same palette is intended to drive text, logo and production colour controls rather than maintaining separate colour lists.
 
-The design workflow is being developed to generate a production package containing:
+## Typography
 
-- Customer design proof (PNG)
+The designer includes an expanded font library based on fonts commonly used in customer orders.
+
+Examples include:
+
+- Arial
+- Helvetica
+- Gotham
+- Baskerville
+- Bodoni
+- Playfair Display
+- Frutiger
+- News Gothic
+- Bebas
+- Futura
+- Space Bold
+- Serpentine Bold
+- Alkaria Regular
+- Brush
+- Impact Bold
+- Ethnocentric Bold
+- Eurostile
+
+Commercial or locally installed fonts use browser/system font-family fallbacks rather than bundling unauthorized font files.
+
+## Text and Artwork Controls
+
+The UI is being standardized so text and logo artwork use the same shared controls wherever possible.
+
+For example, Text Settings are structured around:
+
+```text
+Text
+Font
+Print Colour
+Font Size
+Style / Case
+```
+
+The Print Colour control reuses the same shared swatch component used for logo artwork instead of maintaining a separate text-only colour picker.
+
+## Screen Print vs. Full Colour Digital
+
+Digital and Screen Print are treated as separate production workflows.
+
+### Full Colour Digital
+
+Digital print allows the full artwork colour palette without a purchased ink-count restriction.
+
+### Screen Print
+
+Screen Print requires the customer to choose the number of production colours first:
+
+- 1 Colour
+- 2 Colours
+- 3 Colours
+
+The customer then selects that number of approved production inks.
+
+Once those inks are chosen, logo and text artwork should be restricted to the selected colours.
+
+This prevents customers from creating designs that exceed the production method they purchased.
+
+## Original Artwork Retention
+
+Uploaded customer artwork is retained separately from the browser-rendered proof.
+
+The rendered PNG is used as the visual layout/proof, while the original uploaded artwork can be included in the production package so the best available source file reaches production.
+
+## Production Package Generation
+
+The workflow is being developed to generate a package containing information such as:
+
+- Customer design proof
 - Original uploaded artwork
-- Production information PDF
-- Product and print-method information
+- Product information
+- Print method
 - Selected production colours
 - Typography specifications
-- Relevant product options
+- Product options
+- Production details
 
-### Configuration / admin architecture
+Client-side ZIP generation is currently used so the browser can package design files without requiring a backend for basic testing.
 
-A Design Studio Admin prototype has been introduced to move production settings out of hard-coded application logic. The long-term architecture allows product rules, stock colours, print methods, font sizes, email routing and other settings to be managed centrally.
+## Admin / Configuration Direction
+
+An Admin prototype exists at:
+
+```text
+Wheels-Design-Studio/admin.html
+```
+
+The long-term purpose of the Admin is to manage shared configuration instead of forcing production settings to be changed directly in code.
+
+Examples of settings that should eventually be controlled centrally include:
+
+- Production colours
+- Available print methods
+- Maximum screen-print colours
+- Product availability
+- Font lists and sizes
+- Upload restrictions
+- Product-specific production rules
+- Email/submission routing
+
+### Current limitation
+
+GitHub Pages is a static host, so the Admin prototype cannot permanently change the public frontend for every customer by itself.
+
+For a true shared Admin, both the Admin and storefront need to read/write the same persistent data source.
+
+The intended architecture is:
+
+```text
+Admin
+  ↓
+Persistent API / Shopify or Magento data / database
+  ↓
+Global Design Studio configuration
+  ↓
+Shared designer engine
+  ↓
+All customer-facing designers
+```
+
+The current static build can use browser storage for testing, but a production Admin requires an API or platform-backed data store.
 
 ## Production-Aware Design Logic
-
-A major focus of this project is preventing invalid artwork before it reaches a designer.
 
 Current and planned rules include:
 
 - Product-specific print methods
-- Approved screen-print stock inks
-- 1-, 2- and 3-colour screen-print workflows
-- Locking text and artwork to the inks purchased by the customer
-- Product-specific frame/background colours
+- Approved production inks
+- 1-, 2- and 3-colour Screen Print workflows
+- Restricting text and logos to purchased inks
+- Product-specific frame/background options
 - Printable safe/imprint areas
-- Preventing artwork from exceeding manufacturable boundaries
-- Recording exact production selections in the final work order
+- Design boundary warnings
+- Object spacing and measurement tools
+- Exact production selections recorded with the design
 
-For example, a customer purchasing a **1 Colour Screen Print** product should select one approved ink before designing. Text and logo treatments can then be constrained to that ink while the customer's original uploaded artwork remains preserved for production.
+For example, a customer buying a **1 Colour Screen Print** product should select one approved ink before designing. Text and logo artwork can then be restricted to that single production colour while the original uploaded artwork remains preserved for production.
 
 ## Technical Approach
 
@@ -109,54 +301,55 @@ The current frontend is intentionally lightweight and browser-based:
 - Canvas-based product rendering
 - Client-side artwork manipulation
 - Client-side ZIP generation
-- GitHub Pages for development/staging deployment
+- GitHub Pages for development/staging
 
-The project is being structured so the frontend can later consume configuration from a Magento/backend API instead of embedding production settings directly in JavaScript.
-
-## Backend Direction
-
-The intended production architecture is:
-
-**Magento/Admin → Design Studio configuration API → Shared browser designer → Production submission endpoint**
-
-This would allow administrators to change production settings without requiring code changes, including:
-
-- Available print methods
-- Stock ink colours
-- Maximum imprint colours
-- Product availability
-- Font sizes
-- Upload restrictions
-- Production email routing
-- Product-specific design rules
+The frontend is being structured so shared configuration can later be supplied by a real backend/API rather than remaining embedded in static JavaScript.
 
 ## Development Strategy
 
-The original tools are intentionally preserved in `Plate-Cover-Designer/`.
+Older working versions are preserved separately for recovery and comparison.
 
-The active redesigned system is maintained separately in:
+The current clean application lives in:
 
-`Wheels-Design-Studio-WORKING-COMPLETE/`
+```text
+Wheels-Design-Studio/
+```
 
-This allows the new application to be developed, deployed and tested without overwriting the original implementation.
+Development priorities are:
+
+1. Reuse existing shared functionality before creating anything new.
+2. Keep one source of truth for shared configuration.
+3. Make the smallest possible change when fixing a specific issue.
+4. Keep presentation in shared CSS and behavior in shared JavaScript where practical.
+5. Avoid product-specific duplication unless the production rule truly differs.
+6. Preserve original customer artwork and production information.
+7. Build the frontend so a real Admin/API can control it later without another major rewrite.
 
 ## Why This Project Matters
 
-This is more than a visual configurator. The project is designed to reduce the gap between **what a customer creates** and **what production can manufacture**.
+This project is more than a visual configurator.
 
-The core engineering challenge is translating manufacturing constraints into an interface that remains simple enough for a customer who is not a designer.
+It is designed to reduce the gap between:
 
-That means solving both sides of the workflow:
+**what the customer creates**
 
-**Customer experience** — easy positioning, understandable choices, immediate visual feedback.
+and
 
-**Production experience** — valid colours, valid print methods, retained source artwork, usable specifications and fewer clarification requests.
+**what production can actually manufacture.**
+
+The engineering challenge is translating real production constraints into an interface simple enough for a customer who is not a professional designer.
+
+That means improving both sides of the workflow:
+
+**Customer experience** — understandable product choices, easy positioning, immediate visual feedback and fewer opportunities to create invalid artwork.
+
+**Production experience** — valid colours, valid print methods, retained source artwork, better specifications and fewer clarification requests.
 
 ## Current Status
 
-Active development and production-rule validation.
+Active development, refactoring and production-rule validation.
 
-The current public build is being used for testing and stakeholder feedback while additional production logic is defined and implemented.
+The public build is being used for testing while shared architecture, production logic and backend integration are refined.
 
 ---
 
@@ -164,4 +357,4 @@ The current public build is being used for testing and stakeholder feedback whil
 
 **Justin DeMatteis**
 
-This repository is part of my development portfolio and documents the evolution of the project from legacy product-design tools into a configurable, production-aware design platform.
+This repository is part of my development portfolio and documents the evolution of legacy product-design tools into a configurable, production-aware design platform.
