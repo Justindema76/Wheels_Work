@@ -1,6 +1,7 @@
 window.WHEELS_DESIGN_CONFIG = {
   version: 1,
   production: {
+    emailEndpoint: "",
     recipientEmail: "",
     ccEmail: "",
     subjectPrefix: "Wheels Design Studio",
