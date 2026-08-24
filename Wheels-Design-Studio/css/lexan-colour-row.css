@@ -1,0 +1,21 @@
+/* Wheels Design Studio — Lexan colour dock layout.
+   Uses the existing global .swatch-grid/.swatch-chip component.
+   Keep the Background Colour palette on one horizontal row. */
+
+body.designer-lexan #plate-frame-designer #colourDock .swatch-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  margin: 0 !important;
+}
+
+body.designer-lexan #plate-frame-designer #colourDock .swatch-chip {
+  flex: 0 0 56px !important;
+  width: 56px !important;
+  height: 56px !important;
+  aspect-ratio: auto !important;
+}
