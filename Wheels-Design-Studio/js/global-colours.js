@@ -16,7 +16,7 @@
     {name:'HT Process Yellow', hex:'#FFF200'},
     {name:'Grey 429 C', hex:'#ADADAD'},
     {name:'Silver / Clear', hex:'#C0C0C0'},
-    {name:'Gold / Clear', hex:'#B8860B'},
+    {name:'Gold / Clear', hex:'#A97816'},
     {name:'White', hex:'#FFFFFF'},
     {name:'Process Blue', hex:'#008CCC'},
     {name:'Reflex Blue', hex:'#171796'},
