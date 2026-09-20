@@ -2552,3 +2552,92 @@ body.designer-lexan #plate-frame-designer .lexan-style-sidebar .style-btn span, 
   #plate-frame-designer .lexan-types-panel{order:3 !important;width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;padding:0 16px 28px !important;border:0 !important;background:#fff !important;}
   #plate-frame-designer .style-row{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
 }
+
+/* MOBILE ACCORDION FLOW v2 */
+@media (max-width:640px){
+  /* Keep the live design visible before the editing controls. */
+  #plate-frame-designer .stage-col .brand-row{order:1 !important;}
+  #plate-frame-designer .stage-col .stage-wrap{order:2 !important;}
+  #plate-frame-designer .stage-col .hint{order:3 !important;}
+  #plate-frame-designer .stage-col #colourDock{order:4 !important;}
+  #plate-frame-designer .stage-col .below-stage-controls{order:4 !important;}
+
+  /* Mobile control cards become compact accordions. */
+  #plate-frame-designer .sidebar{gap:10px !important;background:#f3f4f6 !important;}
+  #plate-frame-designer .sidebar > .panel-block,
+  #plate-frame-designer .sidebar > .obj-panel,
+  #plate-frame-designer .sidebar > #objPanelHost > .obj-panel,
+  #plate-frame-designer .lexan-types-panel .panel-block,
+  #plate-frame-designer #colourDock > .panel-block,
+  #plate-frame-designer #colourDock .below-stage-controls > .panel-block{
+    background:#fff !important;
+    border:1px solid var(--line) !important;
+    border-radius:10px !important;
+    padding:0 !important;
+    overflow:hidden !important;
+  }
+
+  #plate-frame-designer .mobile-accordion-head{
+    width:100% !important;
+    min-height:48px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+    padding:13px 14px !important;
+    margin:0 !important;
+    background:#fff !important;
+    color:var(--ink) !important;
+    border:0 !important;
+    border-radius:0 !important;
+    font-family:'Oswald',sans-serif !important;
+    font-size:13px !important;
+    font-weight:600 !important;
+    letter-spacing:.07em !important;
+    text-transform:uppercase !important;
+    text-align:left !important;
+  }
+  #plate-frame-designer .mobile-accordion-head::after{
+    content:'⌄';
+    flex:0 0 auto;
+    font-family:Arial,sans-serif;
+    font-size:20px;
+    line-height:1;
+    transition:transform .18s ease;
+  }
+  #plate-frame-designer .mobile-accordion.is-open > .mobile-accordion-head::after{
+    transform:rotate(180deg);
+  }
+  #plate-frame-designer .mobile-accordion-body{
+    display:none !important;
+    padding:2px 14px 14px !important;
+  }
+  #plate-frame-designer .mobile-accordion.is-open > .mobile-accordion-body{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+  }
+
+  /* The viewer itself stays clean; colour/product controls sit below it. */
+  #plate-frame-designer #colourDock{
+    padding:10px 12px 0 !important;
+    background:#f3f4f6 !important;
+  }
+  #plate-frame-designer #colourDock .mobile-accordion-body .swatch-grid,
+  #plate-frame-designer .mobile-accordion-body .swatch-grid{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    gap:9px !important;
+    padding:5px 3px 8px !important;
+  }
+  #plate-frame-designer .mobile-accordion-body .swatch-chip{
+    flex:0 0 42px !important;
+    width:42px !important;
+    height:42px !important;
+  }
+
+  #plate-frame-designer .sidebar > hr.div{display:none !important;}
+  #plate-frame-designer .sidebar > #objPanelHost:empty{display:none !important;}
+  #plate-frame-designer .lexan-types-panel{padding:10px 16px 24px !important;background:#f3f4f6 !important;}
+}
