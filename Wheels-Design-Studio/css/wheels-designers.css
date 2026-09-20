@@ -2522,122 +2522,107 @@ body.designer-lexan #plate-frame-designer .lexan-style-sidebar .style-btn span, 
 }
 
 /* =========================================================
-   MOBILE DESIGNER FLOW — existing shared components only
+   MOBILE DESIGNER — compact production layout
+   Existing shared components; desktop remains unchanged.
    ========================================================= */
 #plate-frame-designer .studio-brand{color:#fff;text-decoration:none;}
 #plate-frame-designer .studio-back-arrow{display:none;}
 
 @media (max-width:640px){
-  #plate-frame-designer.app{display:flex !important;flex-direction:column !important;width:100% !important;min-height:100vh !important;overflow:visible !important;}
-  #plate-frame-designer .studio-toolbar{order:0 !important;width:100% !important;min-height:54px !important;padding:9px 12px !important;position:sticky !important;top:0 !important;z-index:100 !important;}
-  #plate-frame-designer .studio-brand{min-width:0 !important;font-size:13px !important;white-space:nowrap !important;}
+  html,body{overflow-x:hidden !important;}
+  #plate-frame-designer.app{
+    display:flex !important;flex-direction:column !important;width:100% !important;
+    min-height:100vh !important;height:auto !important;overflow:visible !important;background:#f3f4f6 !important;
+  }
+
+  #plate-frame-designer .studio-toolbar{
+    order:0 !important;position:sticky !important;top:0 !important;z-index:100 !important;
+    width:100% !important;min-height:58px !important;padding:8px 12px !important;
+  }
+  #plate-frame-designer .studio-brand{font-size:13px !important;gap:8px !important;white-space:nowrap !important;}
   #plate-frame-designer .studio-back-arrow{display:inline !important;}
-  #plate-frame-designer .studio-actions{gap:5px !important;margin-left:auto !important;}
+  #plate-frame-designer .studio-actions{margin-left:auto !important;}
   #plate-frame-designer .studio-actions .btn{display:none !important;}
-  #plate-frame-designer .studio-actions #openPreviewBtn{display:inline-flex !important;min-height:34px !important;padding:7px 9px !important;font-size:11px !important;}
-  #plate-frame-designer .stage-col{order:1 !important;width:100% !important;height:auto !important;overflow:visible !important;padding:0 !important;gap:0 !important;background:#f3f4f6 !important;}
-  #plate-frame-designer .stage-col .brand-row{width:100% !important;padding:16px 16px 12px !important;margin:0 !important;background:#fff !important;border-bottom:1px solid var(--line) !important;}
-  #plate-frame-designer .stage-col .brand-row h1{font-size:20px !important;line-height:1.12 !important;}
-  #plate-frame-designer .stage-col .brand-row p{margin-top:5px !important;font-size:12px !important;line-height:1.35 !important;}
-  #plate-frame-designer #colourDock{width:100% !important;padding:12px 16px !important;background:#fff !important;}
-  #plate-frame-designer #colourDock .swatch-grid{display:flex !important;flex-wrap:nowrap !important;gap:8px !important;width:100% !important;overflow-x:auto !important;padding:3px 2px 7px !important;-webkit-overflow-scrolling:touch;}
-  #plate-frame-designer #colourDock .swatch-chip{flex:0 0 40px !important;width:40px !important;height:40px !important;aspect-ratio:auto !important;}
-  #plate-frame-designer .stage-wrap{position:relative !important;top:auto !important;width:calc(100% - 24px) !important;max-width:none !important;margin:12px !important;padding:14px !important;border-radius:12px !important;}
-  #plate-frame-designer .hint{margin:0 !important;padding:0 16px 14px !important;font-size:11.5px !important;}
-  #plate-frame-designer .sidebar{order:2 !important;width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;overflow:visible !important;padding:18px 16px 28px !important;gap:18px !important;border:0 !important;border-top:1px solid var(--line) !important;}
-  #plate-frame-designer .panel-block{gap:9px !important;}
-  #plate-frame-designer .btn-row{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;}
-  #plate-frame-designer .btn-row .btn{width:100% !important;min-height:46px !important;}
-  #plate-frame-designer input[type="text"],#plate-frame-designer input[type="number"],#plate-frame-designer select{min-height:46px !important;font-size:16px !important;}
-  #plate-frame-designer .lexan-types-panel{order:3 !important;width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;padding:0 16px 28px !important;border:0 !important;background:#fff !important;}
-  #plate-frame-designer .style-row{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
-}
+  #plate-frame-designer .studio-actions #openPreviewBtn{
+    display:inline-flex !important;min-height:38px !important;padding:8px 10px !important;font-size:11px !important;
+  }
 
-/* MOBILE ACCORDION FLOW v2 */
-@media (max-width:640px){
-  /* Keep the live design visible before the editing controls. */
-  #plate-frame-designer .stage-col .brand-row{order:1 !important;}
-  #plate-frame-designer .stage-col .stage-wrap{order:2 !important;}
-  #plate-frame-designer .stage-col .hint{order:3 !important;}
-  #plate-frame-designer .stage-col #colourDock{order:4 !important;}
-  #plate-frame-designer .stage-col .below-stage-controls{order:4 !important;}
+  /* Compact title + live canvas. No giant dead space. */
+  #plate-frame-designer .stage-col{
+    order:1 !important;display:flex !important;flex-direction:column !important;width:100% !important;
+    height:auto !important;min-height:0 !important;overflow:visible !important;padding:0 !important;gap:0 !important;
+  }
+  #plate-frame-designer .stage-col .brand-row{
+    order:1 !important;width:100% !important;margin:0 !important;padding:12px 16px 10px !important;
+    background:#fff !important;border-bottom:1px solid var(--line) !important;
+  }
+  #plate-frame-designer .stage-col .brand-row h1{margin:0 !important;font-size:18px !important;line-height:1.08 !important;}
+  #plate-frame-designer .stage-col .brand-row p{margin:4px 0 0 !important;font-size:11px !important;line-height:1.3 !important;}
 
-  /* Mobile control cards become compact accordions. */
-  #plate-frame-designer .sidebar{gap:10px !important;background:#f3f4f6 !important;}
+  #plate-frame-designer .stage-wrap{
+    order:2 !important;position:relative !important;top:auto !important;
+    width:100% !important;max-width:none !important;height:auto !important;min-height:0 !important;
+    margin:0 !important;padding:16px 12px 8px !important;border-radius:0 !important;
+    display:flex !important;align-items:center !important;justify-content:center !important;background:#f3f4f6 !important;
+  }
+  #plate-frame-designer #stage{
+    width:100% !important;max-width:390px !important;height:auto !important;min-height:0 !important;
+  }
+  #plate-frame-designer #frameCanvas{display:block !important;width:100% !important;height:auto !important;}
+  #plate-frame-designer .hint{
+    order:3 !important;margin:0 !important;padding:0 20px 10px !important;font-size:10px !important;line-height:1.3 !important;
+  }
+
+  #plate-frame-designer #colourDock{
+    order:4 !important;width:100% !important;margin:0 !important;padding:6px 12px 10px !important;background:#f3f4f6 !important;
+  }
+
+  /* All existing setting groups become compact accordions. */
+  #plate-frame-designer .sidebar{
+    order:2 !important;width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;
+    overflow:visible !important;padding:10px 12px 14px !important;gap:8px !important;
+    border:0 !important;border-top:1px solid var(--line) !important;background:#f3f4f6 !important;
+  }
+  #plate-frame-designer .lexan-types-panel{
+    order:3 !important;width:100% !important;min-width:0 !important;max-width:none !important;height:auto !important;
+    padding:0 12px 16px !important;border:0 !important;background:#f3f4f6 !important;
+  }
+
   #plate-frame-designer .sidebar > .panel-block,
-  #plate-frame-designer .sidebar > .obj-panel,
   #plate-frame-designer .sidebar > #objPanelHost > .obj-panel,
   #plate-frame-designer .lexan-types-panel .panel-block,
   #plate-frame-designer #colourDock > .panel-block,
   #plate-frame-designer #colourDock .below-stage-controls > .panel-block{
-    background:#fff !important;
-    border:1px solid var(--line) !important;
-    border-radius:10px !important;
-    padding:0 !important;
-    overflow:hidden !important;
+    margin:0 !important;padding:0 !important;gap:0 !important;background:#fff !important;
+    border:1px solid var(--line) !important;border-radius:9px !important;overflow:hidden !important;
   }
 
   #plate-frame-designer .mobile-accordion-head{
-    width:100% !important;
-    min-height:48px !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    gap:12px !important;
-    padding:13px 14px !important;
-    margin:0 !important;
-    background:#fff !important;
-    color:var(--ink) !important;
-    border:0 !important;
-    border-radius:0 !important;
-    font-family:'Oswald',sans-serif !important;
-    font-size:13px !important;
-    font-weight:600 !important;
-    letter-spacing:.07em !important;
-    text-transform:uppercase !important;
-    text-align:left !important;
+    width:100% !important;min-height:44px !important;display:flex !important;align-items:center !important;
+    justify-content:space-between !important;gap:10px !important;padding:10px 12px !important;margin:0 !important;
+    background:#fff !important;color:var(--ink) !important;border:0 !important;border-radius:0 !important;
+    font-family:'Oswald',sans-serif !important;font-size:12px !important;font-weight:600 !important;
+    letter-spacing:.05em !important;text-transform:uppercase !important;text-align:left !important;
   }
-  #plate-frame-designer .mobile-accordion-head::after{
-    content:'⌄';
-    flex:0 0 auto;
-    font-family:Arial,sans-serif;
-    font-size:20px;
-    line-height:1;
-    transition:transform .18s ease;
-  }
-  #plate-frame-designer .mobile-accordion.is-open > .mobile-accordion-head::after{
-    transform:rotate(180deg);
-  }
-  #plate-frame-designer .mobile-accordion-body{
-    display:none !important;
-    padding:2px 14px 14px !important;
-  }
+  #plate-frame-designer .mobile-accordion-head::after{content:'⌄';font:700 18px/1 Arial,sans-serif;}
+  #plate-frame-designer .mobile-accordion.is-open > .mobile-accordion-head::after{transform:rotate(180deg);}
+  #plate-frame-designer .mobile-accordion-body{display:none !important;padding:0 12px 12px !important;}
   #plate-frame-designer .mobile-accordion.is-open > .mobile-accordion-body{
-    display:flex !important;
-    flex-direction:column !important;
-    gap:10px !important;
+    display:flex !important;flex-direction:column !important;gap:8px !important;
   }
 
-  /* The viewer itself stays clean; colour/product controls sit below it. */
-  #plate-frame-designer #colourDock{
-    padding:10px 12px 0 !important;
-    background:#f3f4f6 !important;
+  #plate-frame-designer .btn-row{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;}
+  #plate-frame-designer .btn-row .btn{width:100% !important;min-height:42px !important;}
+  #plate-frame-designer input[type="text"],#plate-frame-designer input[type="number"],#plate-frame-designer select{
+    min-height:42px !important;font-size:16px !important;
   }
-  #plate-frame-designer #colourDock .mobile-accordion-body .swatch-grid,
   #plate-frame-designer .mobile-accordion-body .swatch-grid{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    overflow-x:auto !important;
-    gap:9px !important;
-    padding:5px 3px 8px !important;
+    display:flex !important;flex-wrap:nowrap !important;overflow-x:auto !important;gap:7px !important;padding:3px 2px 5px !important;
   }
   #plate-frame-designer .mobile-accordion-body .swatch-chip{
-    flex:0 0 42px !important;
-    width:42px !important;
-    height:42px !important;
+    flex:0 0 38px !important;width:38px !important;height:38px !important;aspect-ratio:auto !important;
   }
-
+  #plate-frame-designer .style-row{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
   #plate-frame-designer .sidebar > hr.div{display:none !important;}
   #plate-frame-designer .sidebar > #objPanelHost:empty{display:none !important;}
-  #plate-frame-designer .lexan-types-panel{padding:10px 16px 24px !important;background:#f3f4f6 !important;}
 }
