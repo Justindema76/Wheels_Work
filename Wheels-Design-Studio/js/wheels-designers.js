@@ -39,62 +39,87 @@
 
     Function(source+'\n//# sourceURL=wheels-designers-core-runtime.js')();
 
+    // Mobile preview must always have an obvious way back to the designer.
+    source=source.replace(
+      '<body class="wheels-preview"><div class="wheels-preview-wrap">',
+      '<body class="wheels-preview"><button type="button" class="wheels-preview-close" onclick="window.close()">← Back to Designer</button><div class="wheels-preview-wrap">'
+    );
+    source=source.replace(
+      '</style></head>',
+      '.wheels-preview-close{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;z-index:20;padding:11px 14px;border:1px solid #555;border-radius:8px;background:#fff;color:#17181c;font:700 14px Arial,sans-serif;cursor:pointer}</style></head>'
+    );
+
     // Shared mobile accordion behaviour. Desktop markup and behaviour stay untouched.
     function setupMobileAccordions(){
       if(!window.matchMedia('(max-width: 640px)').matches) return;
       const root=document.getElementById('plate-frame-designer');
       if(!root) return;
 
-      const enhance=(panel,index)=>{
+      function directTitle(panel){
+        for(const child of Array.from(panel.children)){
+          if(child.classList && (child.classList.contains('panel-label') || child.classList.contains('obj-panel-title'))) return child;
+        }
+        return null;
+      }
+
+      function enhance(panel,openFirst){
         if(!panel || panel.dataset.mobileAccordion==='1') return;
-        let title=panel.querySelector(':scope > .panel-label, :scope > .obj-panel-title');
+        const title=directTitle(panel);
         if(!title) return;
 
-        const label=(title.childNodes[0] && title.childNodes[0].textContent || title.textContent || 'Settings').trim();
         const head=document.createElement('button');
         head.type='button';
         head.className='mobile-accordion-head';
-        head.textContent=label || 'Settings';
+        const raw=(title.textContent || 'Settings').trim();
+        head.textContent=raw.replace(/Delete$/i,'').trim() || 'Settings';
 
         const body=document.createElement('div');
         body.className='mobile-accordion-body';
-
-        Array.from(panel.children).forEach(child=>{
-          if(child!==title) body.appendChild(child);
-        });
-        title.remove();
+        Array.from(panel.children).forEach(child=>body.appendChild(child));
 
         panel.insertBefore(head,panel.firstChild);
         panel.appendChild(body);
         panel.classList.add('mobile-accordion');
         panel.dataset.mobileAccordion='1';
+        if(openFirst) panel.classList.add('is-open');
 
-        // Keep the first useful settings group open; everything else is compact.
-        if(index===0) panel.classList.add('is-open');
-        head.addEventListener('click',()=>{
+        head.addEventListener('click',function(){
           const opening=!panel.classList.contains('is-open');
-          const scope=panel.closest('.sidebar, #colourDock, .lexan-types-panel') || root;
-          scope.querySelectorAll('.mobile-accordion.is-open').forEach(other=>{
-            if(other!==panel) other.classList.remove('is-open');
-          });
+          const scope=panel.parentElement;
+          if(scope){
+            Array.from(scope.children).forEach(other=>{
+              if(other!==panel && other.classList && other.classList.contains('mobile-accordion')) other.classList.remove('is-open');
+            });
+          }
           panel.classList.toggle('is-open',opening);
         });
-      };
+      }
 
-      const scan=()=>{
-        const panels=[
-          ...root.querySelectorAll('.sidebar > .panel-block'),
-          ...root.querySelectorAll('.sidebar > #objPanelHost > .obj-panel'),
-          ...root.querySelectorAll('#colourDock > .panel-block'),
-          ...root.querySelectorAll('#colourDock .below-stage-controls > .panel-block'),
-          ...root.querySelectorAll('.lexan-types-panel .panel-block')
-        ];
-        panels.forEach((panel,index)=>enhance(panel,index));
-      };
+      function scan(){
+        const groups=[];
+        const sidebar=root.querySelector('.sidebar');
+        if(sidebar) Array.from(sidebar.children).forEach(el=>{
+          if(el.classList && el.classList.contains('panel-block')) groups.push(el);
+        });
+        const colourDock=root.querySelector('#colourDock');
+        if(colourDock){
+          Array.from(colourDock.children).forEach(el=>{
+            if(el.classList && el.classList.contains('panel-block')) groups.push(el);
+          });
+          colourDock.querySelectorAll('.below-stage-controls > .panel-block').forEach(el=>groups.push(el));
+        }
+        root.querySelectorAll('.lexan-types-panel .panel-block').forEach(el=>groups.push(el));
+        const host=root.querySelector('#objPanelHost');
+        if(host) Array.from(host.children).forEach(el=>{
+          if(el.classList && el.classList.contains('obj-panel')) groups.push(el);
+        });
+
+        groups.forEach((panel,index)=>enhance(panel,index===0));
+      }
 
       scan();
       const host=root.querySelector('#objPanelHost');
-      if(host) new MutationObserver(scan).observe(host,{childList:true,subtree:false});
+      if(host) new MutationObserver(scan).observe(host,{childList:true});
     }
     setupMobileAccordions();
   }catch(error){
