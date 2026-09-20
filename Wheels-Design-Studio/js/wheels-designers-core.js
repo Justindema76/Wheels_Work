@@ -1799,18 +1799,19 @@
   const IS_LEXAN = document.body.dataset.designer === 'lexan';
 
   // ---------------- geometry / style config ----------------
-  const VW = 800, VH = 445;
-  // The frame retains the original four styles exactly.  Lexan has its own
-  // four layouts; the printed bands are intentionally independent of frame
-  // material and colour choices.
+  // Production geometry measured from the supplied CorelDRAW PDF.
+  // Virtual width stays at 800 so all existing logo/text positioning,
+  // drag/resize, downloads and previews continue to use the same coordinate system.
+  // 800 x 404 closely matches the ~12.25 x 6.18 in production frame ratio.
+  const VW = 800, VH = 404;
   const FRAME_STYLE_CFG = {
-    '101': { radius:32, holes:'top2', insetT:49, insetB:44, l:34, r:34,
-             tab:{x1:140, x2:660, topY:330}, label:'Style 101' },
-    '102': { radius:30, holes:'top2', insetT:48, insetB:91, l:34, r:34,
+    '101': { radius:27, holes:'top2', insetT:29, insetB:30, l:31, r:31,
+             tab:{x1:137, x2:663, topY:301}, label:'Style 101' },
+    '102': { radius:27, holes:'top2', insetT:30, insetB:81, l:31, r:31,
              tab:null, label:'Style 102' },
-    '103': { radius:30, holes:'top2', insetT:49, insetB:109, l:38, r:38,
+    '103': { radius:27, holes:'top2', insetT:29, insetB:102, l:31, r:31,
              tab:null, label:'Style 103' },
-    '104': { radius:24, holes:'four', insetT:42, insetB:40, l:34, r:34,
+    '104': { radius:27, holes:'four', insetT:30, insetB:32, l:31, r:31,
              tab:null, label:'Style 104' }
   };
 
@@ -1967,13 +1968,16 @@
       ctx.fill(tabOpen);
     }
 
-    const holeX_l = 176*scale;
-    const holeX_r = 624*scale;
+    // Real mounting-hole centres and boss size from the production PDF.
+    // Holes are still physically punched through the canvas with clearRect,
+    // preserving the existing transparent-hole behaviour.
+    const holeX_l = 170*scale;
+    const holeX_r = 628*scale;
 
-    const topHoleR = 12*scale;
-    const topPadW = 70*scale;
-    const topPadH = 52*scale;
-    const holeY_top = cfg.insetT*1.15*scale;
+    const topHoleR = 11.5*scale;
+    const topPadW = 61*scale;
+    const topPadH = 40*scale;
+    const holeY_top = 48*scale;
 
     [
       [holeX_l, holeY_top],
@@ -2004,7 +2008,7 @@
     });
 
     if(styleId === '104'){
-      const holeY_bot = (VH - cfg.insetB*1.15)*scale;
+      const holeY_bot = 356*scale;
 
       [
         [holeX_l, holeY_bot],
@@ -2035,12 +2039,12 @@
       });
     } else if(addBottomHoles){
       const bottomHoleYByStyle = {
-        '101': 387,
-        '102': 400,
-        '103': 388
+        '101': 354,
+        '102': 354,
+        '103': 354
       };
 
-      const bottomHoleR = 10*scale;
+      const bottomHoleR = 11.5*scale;
       const holeY_bot = bottomHoleYByStyle[styleId]*scale;
 
       [
