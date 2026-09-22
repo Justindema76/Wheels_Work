@@ -1927,7 +1927,23 @@
     return p;
   }
 
-  function drawFrame(ctx, styleId, color, scale, addBottomHoles = false, useSolidColour = false){
+  const productionFrameImages = new Map();
+
+  function productionFrameAsset(styleId, color){
+    const suffix = color === 'silver' ? '-GRAY' : color === 'white' ? '-WHITE' : '';
+    return `Images/LPF${styleId}${suffix}.svg`;
+  }
+
+  function loadProductionFrame(styleId, color){
+    const src = productionFrameAsset(styleId, color);
+    if(productionFrameImages.has(src)) return productionFrameImages.get(src);
+    const img = new Image();
+    img.src = src;
+    productionFrameImages.set(src, img);
+    return img;
+  }
+
+  function drawFrameLegacy(ctx, styleId, color, scale, addBottomHoles = false, useSolidColour = false){
     const cfg = FRAME_STYLE_CFG[styleId];
     const W = VW*scale, H = VH*scale;
     ctx.clearRect(0,0,W,H);
@@ -2066,6 +2082,48 @@
     }
 
     ctx.restore();
+  }
+
+
+  function drawFrame(ctx, styleId, color, scale, addBottomHoles = false, useSolidColour = false){
+    // Lexan keeps its existing renderer. Only Licence Plate Frame uses the
+    // production SVG assets selected by the existing style/colour controls.
+    if(useSolidColour){
+      drawFrameLegacy(ctx, styleId, color, scale, addBottomHoles, true);
+      return;
+    }
+
+    const W = VW*scale, H = VH*scale;
+    ctx.clearRect(0,0,W,H);
+    const img = loadProductionFrame(styleId, color);
+
+    const paint = ()=>{
+      ctx.clearRect(0,0,W,H);
+      ctx.drawImage(img,0,0,W,H);
+
+      // Keep the existing optional bottom-hole behaviour. The production
+      // colour/style SVG itself does not change when this option is toggled.
+      if(addBottomHoles && styleId !== '104'){
+        const holeX_l = 170*scale;
+        const holeX_r = 628*scale;
+        const holeY_bot = 354*scale;
+        const bottomHoleR = 11.5*scale;
+        [[holeX_l,holeY_bot],[holeX_r,holeY_bot]].forEach(([hx,hy])=>{
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.beginPath();
+          ctx.arc(hx,hy,bottomHoleR,0,Math.PI*2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+    };
+
+    if(img.complete && img.naturalWidth){
+      paint();
+    } else {
+      img.addEventListener('load', paint, {once:true});
+    }
   }
 
   // Lexan plate cover: a clear polycarbonate panel with a printed colour
