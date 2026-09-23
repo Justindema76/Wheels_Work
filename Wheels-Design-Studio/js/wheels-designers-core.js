@@ -2657,43 +2657,73 @@
       });
     };
 
-    // TOP: three fixed snap boxes shared by all frame styles.
-    // The mounting bosses divide the top rail into:
-    //   1) top-left
-    //   2) top-centre (the large middle box)
-    //   3) top-right
-    // Left/right are exact mirrors. Guides must never extend outside
-    // the active box.
+    const collectRunsByPredicate=(predicate)=>{
+      const runs=[];
+      let runStart=-1;
+      for(let x=0;x<VW;x++){
+        const on=!!predicate(x);
+        if(on && runStart<0) runStart=x;
+        if((!on || x===VW-1) && runStart>=0){
+          const runEnd=on && x===VW-1 ? x : x-1;
+          if(runEnd-runStart>=4) runs.push({left:runStart,right:runEnd});
+          runStart=-1;
+        }
+      }
+      return runs;
+    };
+
+    // TOP: derive the three rectangular snap boxes from the SAFE CONTOUR,
+    // exactly like a mechanical drawing.
+    //
+    // A column belongs to a top snap box only when:
+    //   1) the entire straight top band is printable material, AND
+    //   2) immediately below that band is the licence-plate opening.
+    //
+    // That automatically stops each box at the tangent where an outer/inner
+    // radius or mounting boss begins. No guessed radii or arbitrary widths.
     const topRun=verticalRuns[0];
-    const topFull=makeFullHorizontalZone('top-full',topRun);
+    const belowTopY=Math.min(
+      VH-1,
+      topRun.end + Math.max(2,Math.ceil(FRAME_SAFE_RADIUS_PX)+1)
+    );
 
-    if(topFull){
-      const mountXLeft=170;
-      const mountXRight=628;
-      const mountPadHalf=30.5;
-      const gap=FRAME_SAFE_RADIUS_PX;
+    const topRectRuns=collectRunsByPredicate((x)=>{
+      for(let y=topRun.start;y<=topRun.end;y++){
+        if(!mask[y*VW+x]) return false;
+      }
+      return !mask[belowTopY*VW+x];
+    }).filter(r=>r.right-r.left>=8);
 
-      const leftEnd=Math.floor(mountXLeft-mountPadHalf-gap);
-      const centerStart=Math.ceil(mountXLeft+mountPadHalf+gap);
-      const centerEnd=Math.floor(mountXRight-mountPadHalf-gap);
+    if(topRectRuns.length>=3){
+      // Use the three mechanical rectangles from left to right.
+      const sorted=topRectRuns.slice().sort((a,b)=>a.left-b.left);
+      const leftRun=sorted[0];
+      const centerRun=sorted[Math.floor(sorted.length/2)];
 
+      // Left box comes directly from the contour.
       const topLeft=finishSnapZone({
         name:'top-left',
-        left:topFull.left,
-        right:leftEnd,
+        left:leftRun.left,
+        right:leftRun.right,
         top:topRun.start,
         bottom:topRun.end
       });
 
+      // Centre box is made perfectly symmetric about the frame centre.
+      const frameCenter=(VW-1)/2;
+      const half=Math.floor(Math.min(
+        frameCenter-centerRun.left,
+        centerRun.right-frameCenter
+      ));
       const topCenter=finishSnapZone({
         name:'top-center',
-        left:centerStart,
-        right:centerEnd,
+        left:Math.ceil(frameCenter-half),
+        right:Math.floor(frameCenter+half),
         top:topRun.start,
         bottom:topRun.end
       });
 
-      // Mirror the left box exactly for the right side.
+      // Right box is the exact mirror of the left box.
       const topRight=finishSnapZone({
         name:'top-right',
         left:(VW-1)-topLeft.right,
@@ -2702,9 +2732,12 @@
         bottom:topLeft.bottom
       });
 
-      if(topLeft.right-topLeft.left>4) zones.push(topLeft);
-      if(topCenter.right-topCenter.left>4) zones.push(topCenter);
-      if(topRight.right-topRight.left>4) zones.push(topRight);
+      zones.push(topLeft,topCenter,topRight);
+    } else {
+      // Fallback only if an SVG fails to rasterize as expected.
+      // Keep one mechanically valid centre box rather than inventing geometry.
+      const fallback=makeFullHorizontalZone('top-center',topRun);
+      if(fallback) zones.push(fallback);
     }
 
     // BOTTOM main box stays style-specific.
@@ -2714,8 +2747,8 @@
       if(bottomZone) zones.push(bottomZone);
     }
 
-    // LEFT / RIGHT vertical rails. Keep these between the top and bottom
-    // boxes so they do not overlap any of the three top zones.
+    // LEFT / RIGHT vertical rails. They remain exact mirrors and stop before
+    // the top/bottom snap boxes so guide lines never bleed into another zone.
     const sideProbeY=Math.round(VH/2);
     const sideRuns=maskRunsHorizontal(mask,sideProbeY);
     if(sideRuns.length>=2){
@@ -2725,8 +2758,10 @@
       const containing=leftVerticalRuns.find(r=>sideProbeY>=r.start && sideProbeY<=r.end);
 
       if(containing){
-        const topLimit=topRun ? topRun.end+Math.ceil(FRAME_SAFE_RADIUS_PX) : containing.start;
-        const bottomLimit=bottomZone ? bottomZone.top-Math.ceil(FRAME_SAFE_RADIUS_PX) : containing.end;
+        const topLimit=topRun.end+Math.ceil(FRAME_SAFE_RADIUS_PX);
+        const bottomLimit=bottomZone
+          ? bottomZone.top-Math.ceil(FRAME_SAFE_RADIUS_PX)
+          : containing.end;
 
         if(bottomLimit-topLimit>4){
           const sideLeft=finishSnapZone({
