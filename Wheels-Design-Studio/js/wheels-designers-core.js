@@ -2431,49 +2431,168 @@
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
-  // ---------------- production artwork boundaries ----------------
-  // The live frame artwork is based on a ~12.25 in production width.
-  // Keep customer artwork 1/8 in inside the actual printable substrate.
-  const ARTWORK_SAFE_IN = 1/8;
-  const ARTWORK_SAFE_PX = (VW / 12.25) * ARTWORK_SAFE_IN;
-  const ARTWORK_SNAP_PCT = 1.5;
+  // ---------------- production artwork geometry ----------------
+  // Licence Plate Frame uses the ACTUAL production SVG as the material shape.
+  // A 1 mm inward erosion of that shape becomes the safe-print contour.
+  // Artwork may move freely; the contour is validated only when the user
+  // downloads/submits production files.
+  const FRAME_PHYSICAL_WIDTH_MM = 311.15; // 12.25 in production artwork width
+  const FRAME_SAFE_MM = 1;
+  const FRAME_SAFE_RADIUS_PX = (VW / FRAME_PHYSICAL_WIDTH_MM) * FRAME_SAFE_MM;
+  const FRAME_SNAP_THRESHOLD_PCT = 1.5;
+  const frameSafeMaskCache = new Map();
 
-  function artworkRectToPct(rect){
-    return {
-      name:rect.name,
-      left:(rect.left/VW)*100,
-      right:(rect.right/VW)*100,
-      top:(rect.top/VH)*100,
-      bottom:(rect.bottom/VH)*100,
-      get width(){ return this.right-this.left; },
-      get height(){ return this.bottom-this.top; },
-      get centerX(){ return (this.left+this.right)/2; },
-      get centerY(){ return (this.top+this.bottom)/2; }
-    };
+  function waitForImage(img){
+    if(img.complete && img.naturalWidth) return Promise.resolve(img);
+    return new Promise((resolve,reject)=>{
+      img.addEventListener('load',()=>resolve(img),{once:true});
+      img.addEventListener('error',reject,{once:true});
+    });
   }
 
-  function artworkGeometry(){
-    if(state.plateType==='frame') return FRAME_STYLE_CFG[state.styleId];
-    const lexan=LEXAN_STYLE_CFG[state.styleId];
-    if(!lexan) return null;
-    return lexan.frameStyle ? FRAME_STYLE_CFG[lexan.frameStyle] : lexan;
+  function erodeMaterialMask(material,w,h,radius){
+    const safe=new Uint8Array(w*h);
+    const r=Math.ceil(radius);
+    const rr=radius*radius;
+
+    for(let y=0;y<h;y++){
+      for(let x=0;x<w;x++){
+        const i=y*w+x;
+        if(!material[i]) continue;
+
+        let ok=true;
+        for(let dy=-r;dy<=r && ok;dy++){
+          for(let dx=-r;dx<=r;dx++){
+            if(dx*dx+dy*dy>rr) continue;
+            const xx=x+dx, yy=y+dy;
+            if(xx<0 || yy<0 || xx>=w || yy>=h || !material[yy*w+xx]){
+              ok=false;
+              break;
+            }
+          }
+        }
+        if(ok) safe[i]=1;
+      }
+    }
+    return safe;
   }
 
-  function artworkRegions(){
-    const cfg=artworkGeometry();
+  async function getFrameSafeMask(){
+    if(state.plateType!=='frame') return null;
+    const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
+    if(frameSafeMaskCache.has(key)) return frameSafeMaskCache.get(key);
+
+    const promise=(async()=>{
+      const cvs=document.createElement('canvas');
+      cvs.width=VW;
+      cvs.height=VH;
+      const cx=cvs.getContext('2d',{willReadFrequently:true});
+      const img=loadProductionFrame(state.styleId,'black');
+      await waitForImage(img);
+      cx.clearRect(0,0,VW,VH);
+      cx.drawImage(img,0,0,VW,VH);
+
+      // Optional bottom holes are created by the live renderer, so include
+      // them in the geometry mask before the 1 mm erosion.
+      if(state.bottomHoles && state.styleId!=='104'){
+        cx.save();
+        cx.globalCompositeOperation='destination-out';
+        [[170,354],[628,354]].forEach(([x,y])=>{
+          cx.beginPath();
+          cx.arc(x,y,11.5,0,Math.PI*2);
+          cx.fill();
+        });
+        cx.restore();
+      }
+
+      const data=cx.getImageData(0,0,VW,VH).data;
+      const material=new Uint8Array(VW*VH);
+      for(let i=0;i<material.length;i++) material[i]=data[i*4+3]>20 ? 1 : 0;
+
+      return erodeMaterialMask(material,VW,VH,FRAME_SAFE_RADIUS_PX);
+    })();
+
+    frameSafeMaskCache.set(key,promise);
+    return promise;
+  }
+
+  function ensureFrameContourCanvas(){
+    let cvs=document.getElementById('frameSafeContourCanvas');
+    if(cvs) return cvs;
+    cvs=document.createElement('canvas');
+    cvs.id='frameSafeContourCanvas';
+    cvs.width=VW;
+    cvs.height=VH;
+    cvs.style.position='absolute';
+    cvs.style.inset='0';
+    cvs.style.width='100%';
+    cvs.style.height='100%';
+    cvs.style.pointerEvents='none';
+    cvs.style.zIndex='4';
+    stage.insertBefore(cvs,objLayer);
+    return cvs;
+  }
+
+  async function renderFrameSafeContour(errorMode=false){
+    const cvs=ensureFrameContourCanvas();
+    const cx=cvs.getContext('2d');
+    cx.clearRect(0,0,VW,VH);
+    cvs.style.display=state.plateType==='frame' ? 'block' : 'none';
+    if(state.plateType!=='frame') return;
+
+    const safe=await getFrameSafeMask();
+    // State may have changed while the SVG was loading.
+    if(state.plateType!=='frame') return;
+
+    const image=cx.createImageData(VW,VH);
+    const p=image.data;
+    for(let y=1;y<VH-1;y++){
+      for(let x=1;x<VW-1;x++){
+        const i=y*VW+x;
+        if(!safe[i]) continue;
+        const edge=!safe[i-1] || !safe[i+1] || !safe[i-VW] || !safe[i+VW];
+        if(!edge) continue;
+
+        const o=i*4;
+        p[o]=255;
+        p[o+1]=35;
+        p[o+2]=48;
+        p[o+3]=errorMode ? 255 : 205;
+
+        if(errorMode){
+          // Make an invalid contour easier to see without changing geometry.
+          for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+            const xx=x+dx, yy=y+dy;
+            const oo=(yy*VW+xx)*4;
+            p[oo]=255; p[oo+1]=35; p[oo+2]=48; p[oo+3]=225;
+          }
+        }
+      }
+    }
+    cx.putImageData(image,0,0);
+  }
+
+  function frameSnapZones(){
+    if(state.plateType!=='frame') return [];
+    const cfg=FRAME_STYLE_CFG[state.styleId];
     if(!cfg) return [];
-    const safe=ARTWORK_SAFE_PX;
-    const regions=[];
 
+    const safe=FRAME_SAFE_RADIUS_PX;
+    const topPadHalf=30.5;
+    const zones=[];
+
+    // Large uninterrupted centre section of the top band, between the two
+    // mounting bosses. It gets its own X/Y centre.
     const top={
       name:'top',
-      left:safe,
-      right:VW-safe,
+      left:170+topPadHalf+safe,
+      right:628-topPadHalf-safe,
       top:safe,
       bottom:Math.max(safe,cfg.insetT-safe)
     };
-    if(top.bottom-top.top>=8) regions.push(artworkRectToPct(top));
+    if(top.bottom-top.top>4) zones.push(top);
 
+    // Each style's large lower section gets its own X/Y centre.
     let bottom;
     if(cfg.tab){
       bottom={
@@ -2481,6 +2600,14 @@
         left:cfg.tab.x1+safe,
         right:cfg.tab.x2-safe,
         top:cfg.tab.topY+safe,
+        bottom:VH-safe
+      };
+    } else if(state.styleId==='104'){
+      bottom={
+        name:'bottom',
+        left:170+topPadHalf+safe,
+        right:628-topPadHalf-safe,
+        top:(VH-cfg.insetB)+safe,
         bottom:VH-safe
       };
     } else {
@@ -2492,173 +2619,231 @@
         bottom:VH-safe
       };
     }
-    if(bottom.bottom-bottom.top>=8) regions.push(artworkRectToPct(bottom));
+    if(bottom.bottom-bottom.top>4) zones.push(bottom);
 
-    return regions;
-  }
-
-  function artworkRegionByName(name){
-    const regions=artworkRegions();
-    return regions.find(r=>r.name===name) || regions[regions.length-1] || null;
-  }
-
-  function nearestArtworkRegion(centerY){
-    const regions=artworkRegions();
-    if(!regions.length) return null;
-    return regions.reduce((best,r)=>
-      Math.abs(r.centerY-centerY)<Math.abs(best.centerY-centerY) ? r : best
-    ,regions[0]);
-  }
-
-  function objectArtworkRegion(obj){
-    if(!obj) return null;
-    const cy=obj.type==='image' ? obj.yPct+(obj.hPct||0)/2 : obj.yPct;
-    return artworkRegionByName(obj.artworkRegion) || nearestArtworkRegion(cy);
-  }
-
-  function ensureArtworkGuideLayer(){
-    let layer=document.getElementById('productionArtworkGuides');
-    if(layer) return layer;
-    layer=document.createElement('div');
-    layer.id='productionArtworkGuides';
-    layer.style.position='absolute';
-    layer.style.inset='0';
-    layer.style.pointerEvents='none';
-    layer.style.zIndex='4';
-    stage.insertBefore(layer,objLayer);
-    return layer;
-  }
-
-  function renderArtworkGuides(){
-    const layer=ensureArtworkGuideLayer();
-    layer.innerHTML='';
-    artworkRegions().forEach(region=>{
-      const box=document.createElement('div');
-      box.className='production-safe-box';
-      box.style.position='absolute';
-      box.style.left=region.left+'%';
-      box.style.top=region.top+'%';
-      box.style.width=region.width+'%';
-      box.style.height=region.height+'%';
-      box.style.border='2px dashed #df242b';
-      box.style.boxSizing='border-box';
-      box.style.pointerEvents='none';
-
-      const label=document.createElement('span');
-      label.textContent='1/8 in safe';
-      label.style.position='absolute';
-      label.style.left='4px';
-      label.style.top='4px';
-      label.style.padding='2px 4px';
-      label.style.borderRadius='3px';
-      label.style.background='rgba(223,36,43,.92)';
-      label.style.color='#fff';
-      label.style.font='700 9px/1 Inter,sans-serif';
-      label.style.textTransform='uppercase';
-      box.appendChild(label);
-      layer.appendChild(box);
+    zones.forEach(z=>{
+      z.leftPct=z.left/VW*100;
+      z.rightPct=z.right/VW*100;
+      z.topPct=z.top/VH*100;
+      z.bottomPct=z.bottom/VH*100;
+      z.centerXPct=(z.left+z.right)/2/VW*100;
+      z.centerYPct=(z.top+z.bottom)/2/VH*100;
+      z.widthPct=z.rightPct-z.leftPct;
+      z.heightPct=z.bottomPct-z.topPct;
     });
+    return zones;
   }
 
-  function showArtworkCenterGuide(region){
-    if(!region) return;
-    snapGuideH.classList.remove('show');
-    snapGuideV.style.left=region.centerX+'%';
-    snapGuideV.style.top=region.top+'%';
+  function snapZoneForPoint(xPct,yPct,thresholdPct){
+    const zones=frameSnapZones();
+    let best=null, bestScore=Infinity;
+    for(const zone of zones){
+      const yMargin=Math.max(thresholdPct*2,2.5);
+      if(yPct<zone.topPct-yMargin || yPct>zone.bottomPct+yMargin) continue;
+      const dx=Math.abs(xPct-zone.centerXPct);
+      const dy=Math.abs(yPct-zone.centerYPct);
+      const score=dx+dy;
+      if(score<bestScore){best=zone;bestScore=score;}
+    }
+    return best;
+  }
+
+  function showLocalSnapGuides(zone,snapX,snapY){
+    if(!zone){ hideSnapGuides(); return; }
+
+    snapGuideV.style.left=zone.centerXPct+'%';
+    snapGuideV.style.top=zone.topPct+'%';
     snapGuideV.style.bottom='auto';
-    snapGuideV.style.height=region.height+'%';
-    snapGuideV.classList.add('show');
+    snapGuideV.style.height=zone.heightPct+'%';
+    snapGuideV.classList.toggle('show',!!snapX);
+
+    snapGuideH.style.top=zone.centerYPct+'%';
+    snapGuideH.style.left=zone.leftPct+'%';
+    snapGuideH.style.right='auto';
+    snapGuideH.style.width=zone.widthPct+'%';
+    snapGuideH.classList.toggle('show',!!snapY);
   }
 
-  function fitImageToArtworkRegion(naturalW,naturalH,region){
-    const aspect=naturalW/naturalH;
-    const k=(VW/VH)/aspect;
-    const usableW=region.width*.82;
-    const usableH=region.height*.82;
-    const wPct=Math.max(1,Math.min(usableW,usableH/k));
-    const hPct=wPct*k;
-    return {
-      aspect,k,wPct,hPct,
-      xPct:region.centerX-wPct/2,
-      yPct:region.centerY-hPct/2
-    };
-  }
-
-  function constrainImageToArtwork(obj,region){
-    if(!region) return;
-    const maxW=Math.min(region.width,region.height/obj.k);
-    if(obj.wPct>maxW){
-      obj.wPct=maxW;
-      obj.hPct=maxW*obj.k;
-    }
-    obj.xPct=clamp(obj.xPct,region.left,region.right-obj.wPct);
-    obj.yPct=clamp(obj.yPct,region.top,region.bottom-obj.hPct);
-    obj.artworkRegion=region.name;
-
-    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){
-      el.style.left=obj.xPct+'%';
-      el.style.top=obj.yPct+'%';
-      el.style.width=obj.wPct+'%';
-      el.style.height=obj.hPct+'%';
-    }
-  }
-
-  function constrainTextToArtwork(obj,region){
-    if(!region) return;
-    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(!el) return;
-    const stageRect=stage.getBoundingClientRect();
-    const minX=stageRect.left+region.left/100*stageRect.width;
-    const maxX=stageRect.left+region.right/100*stageRect.width;
-    const minY=stageRect.top+region.top/100*stageRect.height;
-    const maxY=stageRect.top+region.bottom/100*stageRect.height;
-    const txt=el.querySelector('.obj-text');
-
-    let r=el.getBoundingClientRect();
-    const allowedW=maxX-minX;
-    const allowedH=maxY-minY;
-    const scale=Math.min(1,
-      r.width>0 ? allowedW/r.width : 1,
-      r.height>0 ? allowedH/r.height : 1
-    );
-    if(scale<1 && txt){
-      obj.fontSize=Math.max(8,Math.floor(obj.fontSize*scale*.96));
-      txt.style.fontSize=(obj.fontSize*.125)+'cqw';
-      r=el.getBoundingClientRect();
-    }
-
-    let dx=0,dy=0;
-    if(r.left<minX) dx+=(minX-r.left)/stageRect.width*100;
-    if(r.right>maxX) dx-=(r.right-maxX)/stageRect.width*100;
-    if(r.top<minY) dy+=(minY-r.top)/stageRect.height*100;
-    if(r.bottom>maxY) dy-=(r.bottom-maxY)/stageRect.height*100;
-    obj.xPct+=dx;
-    obj.yPct+=dy;
-    obj.artworkRegion=region.name;
-    el.style.left=obj.xPct+'%';
-    el.style.top=obj.yPct+'%';
-  }
-
-  function constrainObjectToArtwork(obj){
-    const region=objectArtworkRegion(obj);
-    if(!region) return;
-    if(obj.type==='image') constrainImageToArtwork(obj,region);
-    else constrainTextToArtwork(obj,region);
-  }
-
-  function constrainAllArtwork(){
-    state.objects.forEach(constrainObjectToArtwork);
+  function nearestLocalZoneForObject(obj){
+    const cx=obj.type==='image' ? obj.xPct+obj.wPct/2 : obj.xPct;
+    const cy=obj.type==='image' ? obj.yPct+obj.hPct/2 : obj.yPct;
+    const zones=frameSnapZones();
+    if(!zones.length) return null;
+    return zones.reduce((best,z)=>
+      Math.abs(z.centerYPct-cy)<Math.abs(best.centerYPct-cy) ? z : best
+    ,zones[0]);
   }
 
   function centerObjectHorizontally(obj){
-    const region=objectArtworkRegion(obj);
-    if(!obj||!region) return;
-    if(obj.type==='image') obj.xPct=region.centerX-obj.wPct/2;
-    else obj.xPct=region.centerX;
+    if(!obj) return;
+    const zone=nearestLocalZoneForObject(obj);
+    if(!zone){
+      if(obj.type==='image') obj.xPct=50-obj.wPct/2;
+      else obj.xPct=50;
+    }else{
+      if(obj.type==='image') obj.xPct=zone.centerXPct-obj.wPct/2;
+      else obj.xPct=zone.centerXPct;
+    }
+    clearBoundaryValidationFeedback();
     rebuildObjects();
-    showArtworkCenterGuide(region);
-    window.setTimeout(hideSnapGuides,500);
+    if(zone){
+      showLocalSnapGuides(zone,true,false);
+      window.setTimeout(hideSnapGuides,500);
+    }
+  }
+
+  function fitImageForInitialPlacement(naturalW,naturalH){
+    const aspect=naturalW/naturalH;
+    const k=(VW/VH)/aspect;
+
+    if(state.plateType==='frame'){
+      const zones=frameSnapZones();
+      const zone=zones.find(z=>z.name==='bottom') || zones[0];
+      if(zone){
+        const usableW=zone.widthPct*.72;
+        const usableH=zone.heightPct*.72;
+        const wPct=Math.max(1,Math.min(usableW,usableH/k));
+        const hPct=wPct*k;
+        return {
+          aspect,k,wPct,hPct,
+          xPct:zone.centerXPct-wPct/2,
+          yPct:zone.centerYPct-hPct/2
+        };
+      }
+    }
+
+    const wPct=24;
+    return {aspect,k,wPct,hPct:wPct*k,xPct:38,yPct:50-(wPct*k)/2};
+  }
+
+  function ensureBoundaryErrorBanner(){
+    let banner=document.getElementById('boundaryValidationError');
+    if(banner) return banner;
+
+    banner=document.createElement('div');
+    banner.id='boundaryValidationError';
+    banner.style.position='absolute';
+    banner.style.left='50%';
+    banner.style.top='12px';
+    banner.style.transform='translateX(-50%)';
+    banner.style.zIndex='20';
+    banner.style.maxWidth='calc(100% - 24px)';
+    banner.style.padding='10px 14px';
+    banner.style.borderRadius='7px';
+    banner.style.background='#d71920';
+    banner.style.color='#fff';
+    banner.style.font='700 13px/1.3 Inter,Arial,sans-serif';
+    banner.style.boxShadow='0 5px 18px rgba(0,0,0,.28)';
+    banner.style.pointerEvents='none';
+    banner.style.display='none';
+    banner.textContent='Artwork outside printable area. Move the highlighted item inside the 1 mm boundary before saving or exporting.';
+    stage.appendChild(banner);
+    return banner;
+  }
+
+  function clearBoundaryValidationFeedback(){
+    state.objects.forEach(o=>{o.boundaryInvalid=false;});
+    const banner=document.getElementById('boundaryValidationError');
+    if(banner) banner.style.display='none';
+    renderFrameSafeContour(false);
+  }
+
+  function drawObjectForValidation(ctx,obj,offsetX,offsetY){
+    if(obj.type==='text'){
+      ctx.save();
+      const fontStyle=obj.italic ? 'italic' : 'normal';
+      ctx.font=`${fontStyle} ${obj.bold?'700':'400'} ${obj.fontSize*0.85}px '${obj.fontFamily}', sans-serif`;
+      ctx.fillStyle='#fff';
+      ctx.textAlign=obj.align;
+      ctx.textBaseline='middle';
+
+      const x=offsetX+obj.xPct/100*VW;
+      const y=offsetY+obj.yPct/100*VH;
+      const displayText=obj.caps ? (obj.text||'').toUpperCase() : obj.text;
+      const lines=displayText.split('\n');
+      const lh=obj.fontSize*0.85*1.15;
+      const startY=y-(lh*(lines.length-1))/2;
+      lines.forEach((line,i)=>ctx.fillText(line,x,startY+i*lh));
+      ctx.restore();
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const x=offsetX+obj.xPct/100*VW;
+        const y=offsetY+obj.yPct/100*VH;
+        const w=obj.wPct/100*VW;
+        const h=obj.hPct/100*VH;
+        ctx.drawImage(img,x,y,w,h);
+        resolve();
+      };
+      img.onerror=reject;
+      img.src=obj.src;
+    });
+  }
+
+  async function objectViolatesFrameBoundary(obj,safeMask){
+    // Padding means visible artwork outside the stage is still detected,
+    // instead of being silently clipped before validation.
+    const pad=160;
+    const cvs=document.createElement('canvas');
+    cvs.width=VW+pad*2;
+    cvs.height=VH+pad*2;
+    const cx=cvs.getContext('2d',{willReadFrequently:true});
+    await drawObjectForValidation(cx,obj,pad,pad);
+
+    const pixels=cx.getImageData(0,0,cvs.width,cvs.height).data;
+    for(let y=0;y<cvs.height;y++){
+      for(let x=0;x<cvs.width;x++){
+        const alpha=pixels[(y*cvs.width+x)*4+3];
+        if(alpha<10) continue;
+
+        const fx=x-pad;
+        const fy=y-pad;
+        if(fx<0 || fy<0 || fx>=VW || fy>=VH) return true;
+        if(!safeMask[fy*VW+fx]) return true;
+      }
+    }
+    return false;
+  }
+
+  async function validateArtworkBeforeProduction(){
+    clearBoundaryValidationFeedback();
+    if(state.plateType!=='frame' || state.objects.length===0) return true;
+
+    const safeMask=await getFrameSafeMask();
+    const invalid=[];
+    for(const obj of state.objects){
+      try{
+        if(await objectViolatesFrameBoundary(obj,safeMask)){
+          obj.boundaryInvalid=true;
+          invalid.push(obj);
+        }
+      }catch(err){
+        console.error('Boundary validation failed for object',obj.id,err);
+        obj.boundaryInvalid=true;
+        invalid.push(obj);
+      }
+    }
+
+    if(!invalid.length){
+      rebuildObjects();
+      return true;
+    }
+
+    state.selectedId=invalid[0].id;
+    rebuildObjects();
+    const banner=ensureBoundaryErrorBanner();
+    banner.style.display='block';
+    renderFrameSafeContour(true);
+
+    alert(
+      'Artwork Outside Printable Area\n\n' +
+      'One or more highlighted items cross the 1 mm safe boundary. ' +
+      'Move the artwork completely inside the red contour before saving, downloading, or submitting.'
+    );
+    return false;
   }
 
   // Builds the style/colour/holes suffix used in both the downloaded
@@ -2713,28 +2898,31 @@
     drawPlate(fctx, state.styleId, state.color, scale, state.bottomHoles);
     refreshSpecSummary();
     refreshFileNamePreview();
-    renderArtworkGuides();
-    requestAnimationFrame(constrainAllArtwork);
+    renderFrameSafeContour(false);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
   // ---------------- object creation ----------------
   function addImageObject(src, naturalW, naturalH, originalFile){
-    const region=artworkRegionByName('bottom') || artworkRegions()[0];
-    if(!region) return;
-    const fitted=fitImageToArtworkRegion(naturalW,naturalH,region);
+    const fitted=fitImageForInitialPlacement(naturalW,naturalH);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, originalFileName: originalFile?.name || 'uploaded-logo', originalFileType: originalFile?.type || '', originalFileData: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      artworkRegion:region.name,
       xPct:fitted.xPct, yPct:fitted.yPct,
       wPct:fitted.wPct, hPct:fitted.hPct, k:fitted.k, aspect:fitted.aspect
     };
     state.objects.push(obj);
     state.selectedId=obj.id;
+    clearBoundaryValidationFeedback();
     rebuildObjects();
-    showArtworkCenterGuide(region);
-    window.setTimeout(hideSnapGuides,500);
+
+    if(state.plateType==='frame'){
+      const zone=nearestLocalZoneForObject(obj);
+      if(zone){
+        showLocalSnapGuides(zone,true,true);
+        window.setTimeout(hideSnapGuides,600);
+      }
+    }
   }
 
   function removeWhiteBackground(src){
@@ -2800,7 +2988,7 @@
     opts = opts || {};
     const obj = Object.assign({
       id:'obj'+(uidCounter++), type:'text', text: text,
-      xPct:50, yPct:12, artworkRegion:'top', fontFamily:'Oswald', fontSize:34,
+      xPct:50, yPct:12, fontFamily:'Oswald', fontSize:34,
       color:'#ffffff', bold:true, italic:false, caps:false,
       align:'center', stretchX:1, stretchY:1
     }, opts);
@@ -2829,6 +3017,11 @@
       const el = document.createElement('div');
       el.className = 'obj' + (obj.id===state.selectedId ? ' selected' : '');
       el.dataset.id = obj.id;
+      if(obj.boundaryInvalid){
+        el.style.outline='3px solid #ff2633';
+        el.style.outlineOffset='2px';
+        el.style.boxShadow='0 0 0 2px rgba(255,255,255,.85)';
+      }
 
       if(obj.type==='image'){
         el.style.left = obj.xPct+'%';
@@ -2873,7 +3066,6 @@
     });
     renderLayersList();
     renderObjPanel();
-    requestAnimationFrame(constrainAllArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -2897,43 +3089,48 @@
     const dxPct = (e.clientX-startClientX)/rect.width*100;
     const dyPct = (e.clientY-startClientY)/rect.height*100;
     let nx=startXPct+dxPct, ny=startYPct+dyPct;
-    const proposedCenterY=obj.type==='image' ? ny+obj.hPct/2 : ny;
-    const region=nearestArtworkRegion(proposedCenterY);
-    if(!region) return;
-    obj.artworkRegion=region.name;
 
+    // Keep a small part of the object recoverable, but do NOT cage it inside
+    // a top/bottom rectangle. The real 1 mm contour is checked on output.
     if(obj.type==='image'){
-      nx=clamp(nx,region.left,region.right-obj.wPct);
-      ny=clamp(ny,region.top,region.bottom-obj.hPct);
-      const centerX=nx+obj.wPct/2;
-      if(Math.abs(centerX-region.centerX)<=ARTWORK_SNAP_PCT){
-        nx=region.centerX-obj.wPct/2;
-        showArtworkCenterGuide(region);
-      } else {
-        hideSnapGuides();
-      }
-    } else {
-      nx=clamp(nx,region.left,region.right);
-      ny=clamp(ny,region.top,region.bottom);
-      if(Math.abs(nx-region.centerX)<=ARTWORK_SNAP_PCT){
-        nx=region.centerX;
-        showArtworkCenterGuide(region);
-      } else {
-        hideSnapGuides();
-      }
+      nx=clamp(nx,-obj.wPct*.9,100-obj.wPct*.1);
+      ny=clamp(ny,-obj.hPct*.9,100-obj.hPct*.1);
+    }else{
+      nx=clamp(nx,-10,110);
+      ny=clamp(ny,-10,110);
+    }
+
+    const centerX=obj.type==='image' ? nx+obj.wPct/2 : nx;
+    const centerY=obj.type==='image' ? ny+obj.hPct/2 : ny;
+    const threshold=Math.max(FRAME_SNAP_THRESHOLD_PCT,10/rect.width*100);
+    const zone=state.plateType==='frame' ? snapZoneForPoint(centerX,centerY,threshold) : null;
+
+    let snapX=false, snapY=false;
+    if(zone){
+      snapX=Math.abs(centerX-zone.centerXPct)<=threshold;
+      snapY=Math.abs(centerY-zone.centerYPct)<=threshold;
+      if(snapX) nx=obj.type==='image' ? zone.centerXPct-obj.wPct/2 : zone.centerXPct;
+      if(snapY) ny=obj.type==='image' ? zone.centerYPct-obj.hPct/2 : zone.centerYPct;
+      showLocalSnapGuides(zone,snapX,snapY);
+    }else{
+      hideSnapGuides();
     }
 
     obj.xPct=nx;
     obj.yPct=ny;
+    obj.boundaryInvalid=false;
     const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
     if(el){
       el.style.left=nx+'%';
       el.style.top=ny+'%';
+      el.style.outline='';
+      el.style.outlineOffset='';
+      el.style.boxShadow='';
     }
-    if(obj.type==='text') requestAnimationFrame(()=>constrainObjectToArtwork(obj));
+    const banner=document.getElementById('boundaryValidationError');
+    if(banner) banner.style.display='none';
   }
   function onDragEnd(){
-    if(dragState) constrainObjectToArtwork(dragState.obj);
     hideSnapGuides();
     dragState=null;
     window.removeEventListener('pointermove', onDragMove);
@@ -2953,22 +3150,22 @@
     if(!resizeState) return;
     const {obj, rect, startClientX, startWPct} = resizeState;
     const dxPct=(e.clientX-startClientX)/rect.width*100;
-    const region=objectArtworkRegion(obj);
-    if(!region) return;
-    const maxWByX=region.right-obj.xPct;
-    const maxWByY=(region.bottom-obj.yPct)/obj.k;
-    const maxAllowed=Math.max(1,Math.min(maxWByX,maxWByY,region.width,region.height/obj.k));
-    const nw=clamp(startWPct+dxPct,1,maxAllowed);
+    const nw=clamp(startWPct+dxPct,1,150);
     obj.wPct=nw;
     obj.hPct=nw*obj.k;
+    obj.boundaryInvalid=false;
     const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
     if(el){
       el.style.width=nw+'%';
       el.style.height=obj.hPct+'%';
+      el.style.outline='';
+      el.style.outlineOffset='';
+      el.style.boxShadow='';
     }
+    const banner=document.getElementById('boundaryValidationError');
+    if(banner) banner.style.display='none';
   }
   function onResizeEnd(){
-    if(resizeState) constrainObjectToArtwork(resizeState.obj);
     resizeState=null;
     window.removeEventListener('pointermove', onResizeMove);
     window.removeEventListener('pointerup', onResizeEnd);
@@ -3321,6 +3518,9 @@
   }
 
   function updateTextEl(obj){
+    obj.boundaryInvalid=false;
+    const banner=document.getElementById('boundaryValidationError');
+    if(banner) banner.style.display='none';
     const wrap = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
     const el = wrap ? wrap.querySelector('.obj-text') : null;
     if(!el) return;
@@ -3425,7 +3625,12 @@
       const lab = document.createElement('span');
       lab.textContent = styles[sid].label;
       btn.appendChild(lab);
-      btn.addEventListener('click', ()=>{ state.styleId=sid; renderStyleRow(); redrawFrame(); });
+      btn.addEventListener('click', ()=>{
+        state.styleId=sid;
+        clearBoundaryValidationFeedback();
+        renderStyleRow();
+        redrawFrame();
+      });
       row.appendChild(btn);
     });
   }
@@ -3530,7 +3735,8 @@
     });
   }
 
-  document.getElementById('downloadBtn').addEventListener('click', ()=>{
+  document.getElementById('downloadBtn').addEventListener('click', async ()=>{
+    if(!(await validateArtworkBeforeProduction())) return;
     renderFullDesignToCanvas(state.plateType === 'cover' ? 2 : 1, (cvs)=>{
       cvs.toBlob((blob)=>{
         const url = URL.createObjectURL(blob);
@@ -3703,7 +3909,8 @@
     return WheelsZip.make(entries);
   }
 
-  function downloadProductionPackage(){
+  async function downloadProductionPackage(){
+    if(!(await validateArtworkBeforeProduction())) return;
     const btn=document.getElementById('downloadPackageBtn');
     const oldLabel=btn ? btn.textContent : '';
     if(btn){ btn.disabled=true; btn.textContent='Creating ZIP...'; }
@@ -3731,7 +3938,8 @@
     return (window.WHEELS_DESIGN_EMAIL_ENDPOINT || (meta && meta.content) || '').trim();
   }
 
-  function emailProductionPackage(){
+  async function emailProductionPackage(){
+    if(!(await validateArtworkBeforeProduction())) return;
     const endpoint=configuredEmailEndpoint();
     if(!endpoint){
       alert('Email submission is ready but is not connected to the Wheels email endpoint yet. Please use Download Files (ZIP) for now.');
