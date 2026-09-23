@@ -1812,14 +1812,42 @@ width: 100% !important;
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  const CENTER_SNAP_PCT = 1.5;
+
+  // Customer artwork must remain inside the 1/8-inch SAFE boundary.
+  // The outer guide is still shown as production bleed information, but
+  // logos/text cannot be dragged or resized through the inner safe line.
   function boundaryRectPct(){
     return {
-      left: -BLEED_X_PCT,
-      right: 100 + BLEED_X_PCT,
-      top: -BLEED_Y_PCT,
-      bottom: 100 + BLEED_Y_PCT
+      left: SAFE_X_PCT,
+      right: 100 - SAFE_X_PCT,
+      top: SAFE_Y_PCT,
+      bottom: 100 - SAFE_Y_PCT
     };
   }
+
+  function ensureCenterGuide(){
+    let line=document.getElementById('artworkCenterGuide');
+    if(line) return line;
+    const guides=document.getElementById('productionGuides') || stage;
+    line=document.createElement('div');
+    line.id='artworkCenterGuide';
+    line.style.position='absolute';
+    line.style.left='50%';
+    line.style.top=SAFE_Y_PCT+'%';
+    line.style.bottom=SAFE_Y_PCT+'%';
+    line.style.width='2px';
+    line.style.background='#25a7ff';
+    line.style.boxShadow='0 0 0 1px rgba(255,255,255,.85)';
+    line.style.display='none';
+    line.style.pointerEvents='none';
+    line.style.zIndex='6';
+    guides.appendChild(line);
+    return line;
+  }
+
+  function showCenterGuide(){ ensureCenterGuide().style.display='block'; }
+  function hideCenterGuide(){ const line=document.getElementById('artworkCenterGuide'); if(line) line.style.display='none'; }
 
   function centerObjectHorizontally(obj){
     if(!obj) return;
@@ -1829,6 +1857,8 @@ width: 100% !important;
       obj.xPct = 50;
     }
     rebuildObjects();
+    showCenterGuide();
+    setTimeout(hideCenterGuide,450);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -1948,15 +1978,21 @@ width: 100% !important;
   function addImageObject(src, naturalW, naturalH){
     const aspect = naturalW/naturalH;
     const k = (VW/VH)/aspect;
-    const wPct = 24;
+    const bounds = boundaryRectPct();
+    const usableW = (bounds.right-bounds.left)*0.82;
+    const usableH = (bounds.bottom-bounds.top)*0.82;
+    const wPct = Math.max(1,Math.min(usableW,usableH/k));
+    const hPct = wPct*k;
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k
+      xPct:50-wPct/2, yPct:50-hPct/2, wPct, hPct, k
     };
     state.objects.push(obj);
-    selectObject(obj.id);
+    state.selectedId=obj.id;
     rebuildObjects();
+    showCenterGuide();
+    setTimeout(hideCenterGuide,450);
   }
 
   function removeWhiteBackground(src){
@@ -2132,11 +2168,20 @@ width: 100% !important;
     if(obj.type==='image'){
       nx = clamp(nx, bounds.left, bounds.right-obj.wPct);
       ny = clamp(ny, bounds.top, bounds.bottom-obj.hPct);
+      const centerX=nx+obj.wPct/2;
+      if(Math.abs(centerX-50)<=CENTER_SNAP_PCT){
+        nx=50-obj.wPct/2;
+        showCenterGuide();
+      } else hideCenterGuide();
     } else {
       // Text is centred on x/y, so move first and then clamp the actual
       // rendered edges against the hard production boundary.
       nx = clamp(nx, bounds.left, bounds.right);
       ny = clamp(ny, bounds.top, bounds.bottom);
+      if(Math.abs(nx-50)<=CENTER_SNAP_PCT){
+        nx=50;
+        showCenterGuide();
+      } else hideCenterGuide();
     }
     obj.xPct = nx; obj.yPct = ny;
     const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
@@ -2148,6 +2193,7 @@ width: 100% !important;
   }
   function onDragEnd(){
     dragState=null;
+    hideCenterGuide();
     window.removeEventListener('pointermove', onDragMove);
     window.removeEventListener('pointerup', onDragEnd);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
