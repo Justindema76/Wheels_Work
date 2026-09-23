@@ -2441,6 +2441,7 @@
   const FRAME_SAFE_RADIUS_PX = (VW / FRAME_PHYSICAL_WIDTH_MM) * FRAME_SAFE_MM;
   const FRAME_SNAP_THRESHOLD_PCT = 1.5;
   const frameSafeMaskCache = new Map();
+  const frameSnapZoneCache = new Map();
 
   function waitForImage(img){
     if(img.complete && img.naturalWidth) return Promise.resolve(img);
@@ -2544,6 +2545,9 @@
     // State may have changed while the SVG was loading.
     if(state.plateType!=='frame') return;
 
+    const zoneKey=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
+    frameSnapZoneCache.set(zoneKey,deriveFrameSnapZonesFromMask(safe));
+
     const image=cx.createImageData(VW,VH);
     const p=image.data;
     for(let y=1;y<VH-1;y++){
@@ -2572,66 +2576,105 @@
     cx.putImageData(image,0,0);
   }
 
-  function frameSnapZones(){
-    if(state.plateType!=='frame') return [];
-    const cfg=FRAME_STYLE_CFG[state.styleId];
-    if(!cfg) return [];
+  function maskRunVertical(mask,x,yStart,yEnd){
+    x=Math.max(0,Math.min(VW-1,Math.round(x)));
+    yStart=Math.max(0,Math.min(VH-1,Math.round(yStart)));
+    yEnd=Math.max(0,Math.min(VH-1,Math.round(yEnd)));
 
-    const safe=FRAME_SAFE_RADIUS_PX;
-    const topPadHalf=30.5;
+    const runs=[];
+    let start=-1;
+    for(let y=yStart;y<=yEnd;y++){
+      const on=!!mask[y*VW+x];
+      if(on && start<0) start=y;
+      if((!on || y===yEnd) && start>=0){
+        const end=on && y===yEnd ? y : y-1;
+        if(end-start>=3) runs.push({start,end});
+        start=-1;
+      }
+    }
+    return runs;
+  }
+
+  function maskRunHorizontal(mask,y,xSeed){
+    y=Math.max(0,Math.min(VH-1,Math.round(y)));
+    xSeed=Math.max(0,Math.min(VW-1,Math.round(xSeed)));
+    if(!mask[y*VW+xSeed]) return null;
+
+    let left=xSeed;
+    let right=xSeed;
+    while(left>0 && mask[y*VW+(left-1)]) left--;
+    while(right<VW-1 && mask[y*VW+(right+1)]) right++;
+    return {left,right};
+  }
+
+  function finishSnapZone(zone){
+    zone.leftPct=zone.left/VW*100;
+    zone.rightPct=zone.right/VW*100;
+    zone.topPct=zone.top/VH*100;
+    zone.bottomPct=zone.bottom/VH*100;
+    zone.centerXPct=((zone.left+zone.right)/2)/VW*100;
+    zone.centerYPct=((zone.top+zone.bottom)/2)/VH*100;
+    zone.widthPct=zone.rightPct-zone.leftPct;
+    zone.heightPct=zone.bottomPct-zone.topPct;
+    return zone;
+  }
+
+  function deriveFrameSnapZonesFromMask(mask){
+    if(!mask) return [];
+
+    // This is the CAD-style rule:
+    // 1) use the geometric centre of the frame as the probe line;
+    // 2) find the complete top and bottom material bands on that line;
+    // 3) at each band's vertical midpoint, chain the full uninterrupted
+    //    horizontal material EDGE TO EDGE;
+    // 4) the midpoint of that resulting box is the snap crosshair.
+    //
+    // Mounting bosses/holes do NOT redefine the centre of the large area.
+    const xProbe=Math.round(VW/2);
+    const verticalRuns=maskRunVertical(mask,xProbe,0,VH-1);
+    if(!verticalRuns.length) return [];
+
     const zones=[];
 
-    // Large uninterrupted centre section of the top band, between the two
-    // mounting bosses. It gets its own X/Y centre.
-    const top={
-      name:'top',
-      left:170+topPadHalf+safe,
-      right:628-topPadHalf-safe,
-      top:safe,
-      bottom:Math.max(safe,cfg.insetT-safe)
+    const makeZone=(name,run)=>{
+      const centerY=Math.round((run.start+run.end)/2);
+      const horizontal=maskRunHorizontal(mask,centerY,xProbe);
+      if(!horizontal) return null;
+      return finishSnapZone({
+        name,
+        left:horizontal.left,
+        right:horizontal.right,
+        top:run.start,
+        bottom:run.end
+      });
     };
-    if(top.bottom-top.top>4) zones.push(top);
 
-    // Each style's large lower section gets its own X/Y centre.
-    let bottom;
-    if(cfg.tab){
-      bottom={
-        name:'bottom',
-        left:cfg.tab.x1+safe,
-        right:cfg.tab.x2-safe,
-        top:cfg.tab.topY+safe,
-        bottom:VH-safe
-      };
-    } else if(state.styleId==='104'){
-      bottom={
-        name:'bottom',
-        left:170+topPadHalf+safe,
-        right:628-topPadHalf-safe,
-        top:(VH-cfg.insetB)+safe,
-        bottom:VH-safe
-      };
-    } else {
-      bottom={
-        name:'bottom',
-        left:safe,
-        right:VW-safe,
-        top:(VH-cfg.insetB)+safe,
-        bottom:VH-safe
-      };
+    const top=makeZone('top',verticalRuns[0]);
+    if(top) zones.push(top);
+
+    if(verticalRuns.length>1){
+      const bottom=makeZone('bottom',verticalRuns[verticalRuns.length-1]);
+      if(bottom && (!top || Math.abs(bottom.centerYPct-top.centerYPct)>2)) zones.push(bottom);
     }
-    if(bottom.bottom-bottom.top>4) zones.push(bottom);
 
-    zones.forEach(z=>{
-      z.leftPct=z.left/VW*100;
-      z.rightPct=z.right/VW*100;
-      z.topPct=z.top/VH*100;
-      z.bottomPct=z.bottom/VH*100;
-      z.centerXPct=(z.left+z.right)/2/VW*100;
-      z.centerYPct=(z.top+z.bottom)/2/VH*100;
-      z.widthPct=z.rightPct-z.leftPct;
-      z.heightPct=z.bottomPct-z.topPct;
-    });
     return zones;
+  }
+
+  async function ensureFrameSnapZones(){
+    if(state.plateType!=='frame') return [];
+    const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
+    if(frameSnapZoneCache.has(key)) return frameSnapZoneCache.get(key);
+
+    const safe=await getFrameSafeMask();
+    const zones=deriveFrameSnapZonesFromMask(safe);
+    frameSnapZoneCache.set(key,zones);
+    return zones;
+  }
+
+  function frameSnapZones(){
+    if(state.plateType!=='frame') return [];
+    const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
+    return frameSnapZoneCache.get(key) || [];
   }
 
   function snapZoneForPoint(xPct,yPct,thresholdPct){
@@ -2903,7 +2946,8 @@
   }
 
   // ---------------- object creation ----------------
-  function addImageObject(src, naturalW, naturalH, originalFile){
+  async function addImageObject(src, naturalW, naturalH, originalFile){
+    if(state.plateType==='frame') await ensureFrameSnapZones();
     const fitted=fitImageForInitialPlacement(naturalW,naturalH);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, originalFileName: originalFile?.name || 'uploaded-logo', originalFileType: originalFile?.type || '', originalFileData: src, bgRemoved:false,
@@ -3630,6 +3674,7 @@
         clearBoundaryValidationFeedback();
         renderStyleRow();
         redrawFrame();
+        ensureFrameSnapZones();
       });
       row.appendChild(btn);
     });
@@ -3641,6 +3686,7 @@
   bottomHolesToggle.addEventListener('change', ()=>{
     state.bottomHoles = bottomHolesToggle.checked;
     redrawFrame();
+    ensureFrameSnapZones();
     renderStyleRow();
   });
 
@@ -3678,6 +3724,7 @@
     renderColourRow();
     renderStyleRow();
     redrawFrame();
+    ensureFrameSnapZones();
     rebuildObjects();
   }
 
