@@ -2427,6 +2427,11 @@
   function hideSnapGuides(){
     snapGuideV.classList.remove('show');
     snapGuideH.classList.remove('show');
+
+    // Never leave a stale guide on screen. Inline display wins even if an
+    // older cached stylesheet still has full-stage guide defaults.
+    snapGuideV.style.display='none';
+    snapGuideH.style.display='none';
   }
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
@@ -2839,6 +2844,7 @@
     snapGuideV.style.bottom='auto';
     snapGuideV.style.width='2px';
     snapGuideV.style.height=zone.heightPct+'%';
+    snapGuideV.style.display=snapX ? 'block' : 'none';
     snapGuideV.classList.toggle('show',!!snapX);
 
     // Horizontal guide is physically clipped to the active zone.
@@ -2848,6 +2854,7 @@
     snapGuideH.style.bottom='auto';
     snapGuideH.style.width=zone.widthPct+'%';
     snapGuideH.style.height='2px';
+    snapGuideH.style.display=snapY ? 'block' : 'none';
     snapGuideH.classList.toggle('show',!!snapY);
   }
 
@@ -3266,6 +3273,15 @@
 
   // ---------------- drag ----------------
   let dragState=null, resizeState=null;
+
+  // Fail-safe cleanup: guides are only allowed while the user is actively
+  // dragging/resizing. Losing the pointer/window can never leave them stuck.
+  window.addEventListener('pointerup', hideSnapGuides);
+  window.addEventListener('pointercancel', hideSnapGuides);
+  window.addEventListener('blur', hideSnapGuides);
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden) hideSnapGuides();
+  });
 
   function startDrag(e,obj){
     e.preventDefault();
@@ -3862,6 +3878,7 @@
   });
 
   function clearDesigner(){
+    hideSnapGuides();
     state.plateType = IS_LEXAN ? 'cover' : 'frame';
     state.styleId = '101';
     state.color = 'black';
@@ -3985,6 +4002,13 @@
   }
 
   document.getElementById('openPreviewBtn').addEventListener('click', openLivePreview);
+
+  window.addEventListener('pagehide', ()=>{
+    if(previewWin && !previewWin.closed){
+      try{ previewWin.close(); }catch(_){}
+    }
+    previewWin=null;
+  });
 
 
   // ---------------- deselect on empty stage click ----------------
@@ -4177,6 +4201,13 @@
 
   // ---------------- init ----------------
   function init(){
+    // A page load or hard refresh always starts visually clean. There are no
+    // default artwork objects and no leftover snap guides.
+    state.objects = [];
+    state.selectedId = null;
+    objLayer.innerHTML = '';
+    hideSnapGuides();
+
     setupPrintMethodControls();
     setupProductionPackage();
     renderColourRow();
