@@ -2607,6 +2607,22 @@
     return {left,right};
   }
 
+  function maskRunsHorizontal(mask,y){
+    y=Math.max(0,Math.min(VH-1,Math.round(y)));
+    const runs=[];
+    let start=-1;
+    for(let x=0;x<VW;x++){
+      const on=!!mask[y*VW+x];
+      if(on && start<0) start=x;
+      if((!on || x===VW-1) && start>=0){
+        const end=on && x===VW-1 ? x : x-1;
+        if(end-start>=3) runs.push({left:start,right:end});
+        start=-1;
+      }
+    }
+    return runs;
+  }
+
   function finishSnapZone(zone){
     zone.leftPct=zone.left/VW*100;
     zone.rightPct=zone.right/VW*100;
@@ -2622,21 +2638,17 @@
   function deriveFrameSnapZonesFromMask(mask){
     if(!mask) return [];
 
-    // This is the CAD-style rule:
-    // 1) use the geometric centre of the frame as the probe line;
-    // 2) find the complete top and bottom material bands on that line;
-    // 3) at each band's vertical midpoint, chain the full uninterrupted
-    //    horizontal material EDGE TO EDGE;
-    // 4) the midpoint of that resulting box is the snap crosshair.
-    //
-    // Mounting bosses/holes do NOT redefine the centre of the large area.
     const xProbe=Math.round(VW/2);
     const verticalRuns=maskRunVertical(mask,xProbe,0,VH-1);
     if(!verticalRuns.length) return [];
 
     const zones=[];
 
-    const makeZone=(name,run)=>{
+    // TOP MAIN ZONE:
+    // Find the complete horizontal printable box edge-to-edge at the
+    // vertical midpoint of the top band. The mounting holes do not redefine
+    // this box or its centre.
+    const makeHorizontalZone=(name,run)=>{
       const centerY=Math.round((run.start+run.end)/2);
       const horizontal=maskRunHorizontal(mask,centerY,xProbe);
       if(!horizontal) return null;
@@ -2649,12 +2661,50 @@
       });
     };
 
-    const top=makeZone('top',verticalRuns[0]);
+    const top=makeHorizontalZone('top',verticalRuns[0]);
     if(top) zones.push(top);
 
+    // BOTTOM MAIN ZONE remains style-specific because the lower frame
+    // geometry changes from 101-104.
     if(verticalRuns.length>1){
-      const bottom=makeZone('bottom',verticalRuns[verticalRuns.length-1]);
-      if(bottom && (!top || Math.abs(bottom.centerYPct-top.centerYPct)>2)) zones.push(bottom);
+      const bottom=makeHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
+      if(bottom && (!top || Math.abs(bottom.centerYPct-top.centerYPct)>2)){
+        zones.push(bottom);
+      }
+    }
+
+    // LEFT / RIGHT SIDE ZONES:
+    // Probe through the middle of the frame opening. The first material run
+    // is the left rail. Build its full vertical printable box, then MIRROR
+    // that box exactly to make the right rail. This guarantees symmetry.
+    const sideProbeY=Math.round(VH/2);
+    const sideRuns=maskRunsHorizontal(mask,sideProbeY);
+    if(sideRuns.length>=2){
+      const leftRun=sideRuns[0];
+      const leftCenterX=Math.round((leftRun.left+leftRun.right)/2);
+      const leftVerticalRuns=maskRunVertical(mask,leftCenterX,0,VH-1);
+      const containing=leftVerticalRuns.find(r=>sideProbeY>=r.start && sideProbeY<=r.end);
+
+      if(containing){
+        const left=finishSnapZone({
+          name:'left',
+          left:leftRun.left,
+          right:leftRun.right,
+          top:containing.start,
+          bottom:containing.end
+        });
+
+        // Exact mirror — no separate measurement on the right.
+        const right=finishSnapZone({
+          name:'right',
+          left:(VW-1)-left.right,
+          right:(VW-1)-left.left,
+          top:left.top,
+          bottom:left.bottom
+        });
+
+        zones.push(left,right);
+      }
     }
 
     return zones;
@@ -2680,13 +2730,23 @@
   function snapZoneForPoint(xPct,yPct,thresholdPct){
     const zones=frameSnapZones();
     let best=null, bestScore=Infinity;
+    const margin=Math.max(thresholdPct*2,2.5);
+
     for(const zone of zones){
-      const yMargin=Math.max(thresholdPct*2,2.5);
-      if(yPct<zone.topPct-yMargin || yPct>zone.bottomPct+yMargin) continue;
+      if(
+        xPct < zone.leftPct-margin ||
+        xPct > zone.rightPct+margin ||
+        yPct < zone.topPct-margin ||
+        yPct > zone.bottomPct+margin
+      ) continue;
+
       const dx=Math.abs(xPct-zone.centerXPct);
       const dy=Math.abs(yPct-zone.centerYPct);
       const score=dx+dy;
-      if(score<bestScore){best=zone;bestScore=score;}
+      if(score<bestScore){
+        best=zone;
+        bestScore=score;
+      }
     }
     return best;
   }
@@ -2712,8 +2772,15 @@
     const cy=obj.type==='image' ? obj.yPct+obj.hPct/2 : obj.yPct;
     const zones=frameSnapZones();
     if(!zones.length) return null;
+
+    const distanceToZone=(z)=>{
+      const dx=cx<z.leftPct ? z.leftPct-cx : cx>z.rightPct ? cx-z.rightPct : 0;
+      const dy=cy<z.topPct ? z.topPct-cy : cy>z.bottomPct ? cy-z.bottomPct : 0;
+      return dx*dx+dy*dy;
+    };
+
     return zones.reduce((best,z)=>
-      Math.abs(z.centerYPct-cy)<Math.abs(best.centerYPct-cy) ? z : best
+      distanceToZone(z)<distanceToZone(best) ? z : best
     ,zones[0]);
   }
 
