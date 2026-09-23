@@ -103,6 +103,57 @@
     position:absolute;
     inset:0;
   }
+
+  /* Production guides: exactly 1/8 in inside and outside a 12 x 6 in plate. */
+  #productionGuides{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:4;
+  }
+  .production-guide{
+    position:absolute;
+    pointer-events:none;
+    border-radius:inherit;
+  }
+  .production-guide.safe{
+    left:1.0416667%;
+    right:1.0416667%;
+    top:2.0833333%;
+    bottom:2.0833333%;
+    border:2px dashed rgba(255,255,255,.82);
+    box-shadow:0 0 0 1px rgba(0,0,0,.36);
+  }
+  .production-guide.bleed{
+    left:-1.0416667%;
+    right:-1.0416667%;
+    top:-2.0833333%;
+    bottom:-2.0833333%;
+    border:2px dashed rgba(201,23,31,.9);
+  }
+  .production-guide-label{
+    position:absolute;
+    padding:3px 6px;
+    border-radius:4px;
+    font:600 10px/1 'Inter',sans-serif;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    box-shadow:0 1px 3px rgba(0,0,0,.18);
+  }
+  .production-guide.safe .production-guide-label{
+    top:5px;
+    left:5px;
+    color:#17181c;
+    background:rgba(255,255,255,.9);
+  }
+  .production-guide.bleed .production-guide-label{
+    right:5px;
+    bottom:5px;
+    color:#fff;
+    background:rgba(201,23,31,.92);
+  }
+
   .obj{
     position:absolute;
     cursor:grab;
@@ -1154,6 +1205,10 @@ width: 100% !important;
     <div class="stage-wrap">
       <div id="stage">
         <canvas id="frameCanvas"></canvas>
+        <div id="productionGuides" aria-hidden="true">
+          <div class="production-guide safe"><span class="production-guide-label">1/8 in safe</span></div>
+          <div class="production-guide bleed"><span class="production-guide-label">1/8 in bleed limit</span></div>
+        </div>
         <div id="objLayer"></div>
       </div>
     </div>
@@ -1257,6 +1312,16 @@ width: 100% !important;
   // North American passenger plate: 12 × 6 in.  The 800 × 400 design
   // canvas keeps its real 2:1 proportions throughout preview and export.
   const VW = 800, VH = 400;
+
+  // Production boundary: 1/8 in inside + 1/8 in outside the 12 x 6 in trim.
+  // VW/VH are a true 12 x 6 physical scale, so the percentages stay exact
+  // regardless of browser size or export resolution.
+  const EIGHTH_IN = 1/8;
+  const BLEED_X_PCT = (EIGHTH_IN / 12) * 100;
+  const BLEED_Y_PCT = (EIGHTH_IN / 6) * 100;
+  const SAFE_X_PCT = BLEED_X_PCT;
+  const SAFE_Y_PCT = BLEED_Y_PCT;
+
   // The frame retains the original four styles exactly.  Lexan has its own
   // four layouts; the printed bands are intentionally independent of frame
   // material and colour choices.
@@ -1714,6 +1779,74 @@ width: 100% !important;
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  function boundaryRectPct(){
+    return {
+      left: -BLEED_X_PCT,
+      right: 100 + BLEED_X_PCT,
+      top: -BLEED_Y_PCT,
+      bottom: 100 + BLEED_Y_PCT
+    };
+  }
+
+  function centerObjectHorizontally(obj){
+    if(!obj) return;
+    if(obj.type === 'image'){
+      obj.xPct = 50 - (obj.wPct / 2);
+    } else {
+      obj.xPct = 50;
+    }
+    rebuildObjects();
+    if(typeof updatePreviewWindow==='function') updatePreviewWindow();
+  }
+
+  function constrainRenderedObject(obj){
+    const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(!el) return;
+
+    const stageRect = stage.getBoundingClientRect();
+    const bounds = boundaryRectPct();
+    const minX = stageRect.left + (bounds.left/100)*stageRect.width;
+    const maxX = stageRect.left + (bounds.right/100)*stageRect.width;
+    const minY = stageRect.top + (bounds.top/100)*stageRect.height;
+    const maxY = stageRect.top + (bounds.bottom/100)*stageRect.height;
+    const allowedW = maxX-minX;
+    const allowedH = maxY-minY;
+
+    // Text can be stretched, resized, or changed after placement. If the
+    // rendered text itself becomes larger than the production boundary,
+    // reduce only the offending stretch axis until it fits.
+    if(obj.type === 'text'){
+      let r = el.getBoundingClientRect();
+      if(r.width > allowedW && r.width > 0){
+        obj.stretchX = Math.max(.25, (obj.stretchX||1) * (allowedW/r.width));
+        el.style.transform = `translate(-50%,-50%) scale(${obj.stretchX}, ${obj.stretchY||1})`;
+      }
+      r = el.getBoundingClientRect();
+      if(r.height > allowedH && r.height > 0){
+        obj.stretchY = Math.max(.25, (obj.stretchY||1) * (allowedH/r.height));
+        el.style.transform = `translate(-50%,-50%) scale(${obj.stretchX||1}, ${obj.stretchY})`;
+      }
+    }
+
+    const r = el.getBoundingClientRect();
+    let shiftXPct = 0, shiftYPct = 0;
+    if(r.left < minX) shiftXPct += ((minX-r.left)/stageRect.width)*100;
+    if(r.right > maxX) shiftXPct -= ((r.right-maxX)/stageRect.width)*100;
+    if(r.top < minY) shiftYPct += ((minY-r.top)/stageRect.height)*100;
+    if(r.bottom > maxY) shiftYPct -= ((r.bottom-maxY)/stageRect.height)*100;
+
+    if(shiftXPct || shiftYPct){
+      obj.xPct += shiftXPct;
+      obj.yPct += shiftYPct;
+      el.style.left = obj.xPct+'%';
+      el.style.top = obj.yPct+'%';
+    }
+  }
+
+  function constrainAllObjects(){
+    state.objects.forEach(constrainRenderedObject);
+  }
+
   function cleanDisplayText(value){
     return String(value ?? '')
       .replace(/&#183;|&middot;|·/gi, ' - ')
@@ -1774,6 +1907,7 @@ width: 100% !important;
     drawPlate(fctx, state.styleId, state.color, scale, state.bottomHoles);
     refreshSpecSummary();
     refreshFileNamePreview();
+    requestAnimationFrame(constrainAllObjects);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -1937,6 +2071,7 @@ width: 100% !important;
     });
     renderLayersList();
     renderObjPanel();
+    requestAnimationFrame(constrainAllObjects);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -1960,16 +2095,23 @@ width: 100% !important;
     const dxPct = (e.clientX-startClientX)/rect.width*100;
     const dyPct = (e.clientY-startClientY)/rect.height*100;
     let nx = startXPct+dxPct, ny = startYPct+dyPct;
+    const bounds = boundaryRectPct();
     if(obj.type==='image'){
-      nx = clamp(nx, -obj.wPct*0.4, 100-obj.wPct*0.6);
-      ny = clamp(ny, -obj.hPct*0.4, 100-obj.hPct*0.6);
+      nx = clamp(nx, bounds.left, bounds.right-obj.wPct);
+      ny = clamp(ny, bounds.top, bounds.bottom-obj.hPct);
     } else {
-      nx = clamp(nx, 2, 98);
-      ny = clamp(ny, 2, 98);
+      // Text is centred on x/y, so move first and then clamp the actual
+      // rendered edges against the hard production boundary.
+      nx = clamp(nx, bounds.left, bounds.right);
+      ny = clamp(ny, bounds.top, bounds.bottom);
     }
     obj.xPct = nx; obj.yPct = ny;
     const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){ el.style.left = nx+'%'; el.style.top = ny+'%'; }
+    if(el){
+      el.style.left = nx+'%';
+      el.style.top = ny+'%';
+      if(obj.type==='text') constrainRenderedObject(obj);
+    }
   }
   function onDragEnd(){
     dragState=null;
@@ -2004,11 +2146,19 @@ width: 100% !important;
       obj.stretchX = clamp(resizeState.startStretchX*(1+dx/resizeState.textWidth), 0.25, 5);
       obj.stretchY = clamp(resizeState.startStretchY*(1+dy/resizeState.textHeight), 0.25, 5);
       const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-      if(el) el.style.transform = `translate(-50%,-50%) scale(${obj.stretchX}, ${obj.stretchY})`;
+      if(el){
+        el.style.transform = `translate(-50%,-50%) scale(${obj.stretchX}, ${obj.stretchY})`;
+        constrainRenderedObject(obj);
+      }
       return;
     }
     const dxPct = (e.clientX-startClientX)/rect.width*100;
-    let nw = clamp(startWPct+dxPct, 4, 92);
+    const bounds = boundaryRectPct();
+    const maxWByX = bounds.right - obj.xPct;
+    const maxH = bounds.bottom - obj.yPct;
+    const maxWByY = maxH / obj.k;
+    const maxAllowedW = Math.max(4, Math.min(maxWByX, maxWByY));
+    let nw = clamp(startWPct+dxPct, 4, maxAllowedW);
     obj.wPct = nw;
     obj.hPct = nw*obj.k;
     const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
@@ -2098,6 +2248,18 @@ width: 100% !important;
     delBtn.addEventListener('click', ()=> deleteObject(obj.id));
     title.appendChild(delBtn);
     panel.appendChild(title);
+
+    const positionField = document.createElement('div');
+    positionField.className = 'field';
+    positionField.innerHTML = '<label>Position</label>';
+    const centerBtn = document.createElement('button');
+    centerBtn.type = 'button';
+    centerBtn.className = 'btn';
+    centerBtn.style.width = '100%';
+    centerBtn.textContent = 'Center Horizontally';
+    centerBtn.addEventListener('click', ()=> centerObjectHorizontally(obj));
+    positionField.appendChild(centerBtn);
+    panel.appendChild(positionField);
 
     if(obj.type==='text'){
       const fText = document.createElement('div');
@@ -2380,6 +2542,7 @@ width: 100% !important;
     el.style.textAlign = obj.align;
     if(wrap){
       wrap.style.transform = `translate(-50%,-50%) scale(${obj.stretchX||1}, ${obj.stretchY||1})`;
+      requestAnimationFrame(()=>constrainRenderedObject(obj));
     }
   }
 
