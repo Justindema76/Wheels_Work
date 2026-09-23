@@ -1184,8 +1184,11 @@ width: 100% !important;
   <header class="studio-toolbar">
     <div class="studio-brand"><span class="studio-mark">W</span> Wheels Design Studio</div>
     <div class="studio-actions">
+      <button class="btn" id="openProjectBtn">Open Project</button>
+      <button class="btn" id="saveProjectBtn">Save Project</button>
       <button class="btn" id="topPreviewBtn">Full Preview</button>
       <button class="btn btn-primary" id="topDownloadBtn">Download PNG</button>
+      <input type="file" id="projectFileInput" accept=".plateproject,.json,application/json">
     </div>
   </header>
   <div class="stage-col">
@@ -2697,6 +2700,126 @@ width: 100% !important;
 
   document.getElementById('addTextBtn').addEventListener('click', ()=>{
     addTextObject('YOUR TEXT HERE', {yPct: 50, fontSize:30, color: getContrastTextColor(state.color)});
+  });
+
+  // ---------------- editable project save / open ----------------
+  // Project files are self-contained JSON. Uploaded images are already held
+  // as data URLs in state.objects, so the logo travels inside the project
+  // instead of depending on a separate file path on the original computer.
+  const PROJECT_FORMAT = 'just-innovate-plate-designer';
+  const PROJECT_VERSION = 1;
+
+  function projectFileName(){
+    return sanitizeFileName(downloadNameInput.value) + '.plateproject';
+  }
+
+  function buildProjectFile(){
+    return {
+      format: PROJECT_FORMAT,
+      version: PROJECT_VERSION,
+      savedAt: new Date().toISOString(),
+      canvas: {
+        width: VW,
+        height: VH,
+        plateWidthIn: 12,
+        plateHeightIn: 6,
+        productionBoundaryIn: EIGHTH_IN
+      },
+      name: downloadNameInput.value || 'my-custom-plate',
+      state: JSON.parse(JSON.stringify({
+        ...state,
+        selectedId: null
+      }))
+    };
+  }
+
+  function saveEditableProject(){
+    const payload = buildProjectFile();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = projectFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function restoreProjectControls(){
+    downloadNameInput.value = downloadNameInput.value || 'my-custom-plate';
+    document.getElementById('borderWidthSelect').value = String(state.borderWidth);
+    document.getElementById('borderInsetSelect').value = String(state.borderInset);
+    document.getElementById('borderRadiusSelect').value = String(state.borderRadius);
+    document.getElementById('embossingToggle').checked = !!state.embossed;
+    renderColourRow();
+    renderBorderColourRow();
+    renderStyleRow();
+    redrawFrame();
+    rebuildObjects();
+    refreshSpecSummary();
+    refreshFileNamePreview();
+  }
+
+  function loadEditableProject(project){
+    if(!project || project.format !== PROJECT_FORMAT || !project.state){
+      throw new Error('This is not a valid Plate Designer project file.');
+    }
+    if(Number(project.version) > PROJECT_VERSION){
+      throw new Error('This project was created by a newer version of the Plate Designer.');
+    }
+
+    const saved = project.state;
+    state.plateType = saved.plateType || 'cover';
+    state.styleId = saved.styleId || '101';
+    state.color = saved.color || 'black';
+    state.borderColor = saved.borderColor || 'white';
+    state.borderWidth = Number.isFinite(Number(saved.borderWidth)) ? Number(saved.borderWidth) : 4;
+    state.borderInset = Number.isFinite(Number(saved.borderInset)) ? Number(saved.borderInset) : 10;
+    state.borderRadius = Number.isFinite(Number(saved.borderRadius)) ? Number(saved.borderRadius) : 16;
+    state.embossed = !!saved.embossed;
+    state.bottomHoles = !!saved.bottomHoles;
+    state.objects = Array.isArray(saved.objects) ? saved.objects : [];
+    state.selectedId = null;
+
+    // Continue object IDs after the highest saved ID so newly-added objects
+    // never collide with objects restored from the project.
+    let highestId = -1;
+    state.objects.forEach(o=>{
+      const m = String(o.id || '').match(/^obj(\d+)$/);
+      if(m) highestId = Math.max(highestId, Number(m[1]));
+    });
+    uidCounter = highestId + 1;
+
+    downloadNameInput.value = project.name || 'my-custom-plate';
+    restoreProjectControls();
+  }
+
+  document.getElementById('saveProjectBtn').addEventListener('click', saveEditableProject);
+
+  document.getElementById('openProjectBtn').addEventListener('click', ()=>{
+    document.getElementById('projectFileInput').click();
+  });
+
+  document.getElementById('projectFileInput').addEventListener('change', (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const project = JSON.parse(reader.result);
+        loadEditableProject(project);
+      } catch(err){
+        console.error(err);
+        alert(err && err.message ? err.message : 'Unable to open this project file.');
+      }
+    };
+    reader.onerror = ()=>{
+      alert('Unable to read this project file.');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   });
 
   function clearDesigner(){
