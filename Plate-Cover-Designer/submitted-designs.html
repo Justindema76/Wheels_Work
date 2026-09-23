@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plate Designer | Submitted Designs</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#c9171f;--ink:#17181c;--muted:#737b88;--line:#e3e5e8;--paper:#f4f5f7;--panel:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}
+.topbar{height:62px;background:#111216;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.mark{width:30px;height:30px;display:grid;place-items:center;background:var(--red);border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
+h1{font-family:Oswald,sans-serif;text-transform:uppercase;margin:0 0 6px;font-size:30px}
+.sub{color:var(--muted);margin:0 0 26px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+.row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px;min-width:260px;flex:1}
+label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+input,select{height:40px;border:1px solid #cfd3d8;border-radius:7px;padding:0 10px;font:13px Inter,sans-serif;background:#fff}
+button,.btn{height:40px;border:1px solid #cfd3d8;border-radius:7px;background:#fff;padding:0 14px;font:600 13px Inter,sans-serif;cursor:pointer;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.primary{background:var(--red);border-color:var(--red);color:#fff}
+.ghost{background:#262a32;border-color:#343842;color:#fff}
+.hidden{display:none!important}
+.message{font-size:13px;color:var(--muted);margin-top:10px}
+.error{color:var(--red)}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:22px 0 12px}
+.toolbar h2{font-family:Oswald,sans-serif;text-transform:uppercase;margin:0;font-size:19px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:#fafafa}
+tr:last-child td{border-bottom:0}
+.ref{font-weight:800}
+.customer strong{display:block}
+.customer span{font-size:12px;color:var(--muted)}
+.status{min-width:126px}
+.actions{white-space:nowrap}
+.empty{text-align:center;color:var(--muted);padding:30px}
+@media(max-width:760px){
+  .wrap{padding:22px 12px 40px}
+  table,thead,tbody,tr,th,td{display:block}
+  thead{display:none}
+  tr{padding:12px;border-bottom:1px solid var(--line)}
+  td{border:0;padding:5px 0}
+  .actions{white-space:normal}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="mark">J</span> Plate Designer Admin</div>
+  <button id="signOutBtn" class="ghost hidden">Sign Out</button>
+</header>
+
+<main class="wrap">
+  <h1>Submitted Designs</h1>
+  <p class="sub">Open customer submissions, edit the original project, and save revisions.</p>
+
+  <section id="loginCard" class="card">
+    <div class="row">
+      <div class="field">
+        <label for="loginEmail">Admin Email</label>
+        <input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <button id="loginBtn" class="primary">Send Sign-In Link</button>
+    </div>
+    <div id="loginMessage" class="message">A secure sign-in link will be sent to your email.</div>
+  </section>
+
+  <section id="claimCard" class="card hidden">
+    <div class="row">
+      <div class="field">
+        <label for="ownerCode">One-Time Owner Code</label>
+        <input id="ownerCode" type="password" placeholder="Enter owner code">
+      </div>
+      <button id="claimBtn" class="primary">Claim Admin Access</button>
+    </div>
+    <div id="claimMessage" class="message">This is only needed once for the first Plate Designer admin.</div>
+  </section>
+
+  <section id="adminArea" class="hidden">
+    <div class="toolbar">
+      <h2>Customer Submissions</h2>
+      <button id="refreshBtn">Refresh</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Customer</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="designRows">
+          <tr><td colspan="5" class="empty">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://okxzcfwegwiqbeovzvna.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Z7QHkalWYYoAJ3D1CTSlog_I-4U9xWn';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const loginCard = document.getElementById('loginCard');
+const claimCard = document.getElementById('claimCard');
+const adminArea = document.getElementById('adminArea');
+const signOutBtn = document.getElementById('signOutBtn');
+
+function message(el,text,error=false){
+  el.textContent = text;
+  el.classList.toggle('error', error);
+}
+function prettyDate(value){
+  if(!value) return '';
+  return new Date(value).toLocaleString();
+}
+async function checkAdmin(){
+  const {data:{session}} = await supabaseClient.auth.getSession();
+  if(!session){
+    loginCard.classList.remove('hidden');
+    claimCard.classList.add('hidden');
+    adminArea.classList.add('hidden');
+    signOutBtn.classList.add('hidden');
+    return false;
+  }
+
+  loginCard.classList.add('hidden');
+  signOutBtn.classList.remove('hidden');
+
+  const {data,error} = await supabaseClient.rpc('is_plate_admin');
+  if(error){
+    console.error(error);
+    claimCard.classList.remove('hidden');
+    adminArea.classList.add('hidden');
+    return false;
+  }
+
+  if(data === true){
+    claimCard.classList.add('hidden');
+    adminArea.classList.remove('hidden');
+    await loadDesigns();
+    return true;
+  }
+
+  claimCard.classList.remove('hidden');
+  adminArea.classList.add('hidden');
+  return false;
+}
+
+async function loadDesigns(){
+  const body = document.getElementById('designRows');
+  body.innerHTML = '<tr><td colspan="5" class="empty">Loading...</td></tr>';
+
+  const {data,error} = await supabaseClient
+    .from('plate_designs')
+    .select('id,design_number,customer_name,customer_email,created_at,status')
+    .order('created_at',{ascending:false});
+
+  if(error){
+    body.innerHTML = '<tr><td colspan="5" class="empty">Unable to load submissions.</td></tr>';
+    console.error(error);
+    return;
+  }
+  if(!data || data.length===0){
+    body.innerHTML = '<tr><td colspan="5" class="empty">No submitted designs yet.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = '';
+  data.forEach(row=>{
+    const tr = document.createElement('tr');
+
+    const ref = document.createElement('td');
+    ref.className = 'ref';
+    ref.textContent = row.design_number;
+    tr.appendChild(ref);
+
+    const customer = document.createElement('td');
+    customer.className = 'customer';
+    const strong = document.createElement('strong');
+    strong.textContent = row.customer_name;
+    const span = document.createElement('span');
+    span.textContent = row.customer_email;
+    customer.append(strong, span);
+    tr.appendChild(customer);
+
+    const date = document.createElement('td');
+    date.textContent = prettyDate(row.created_at);
+    tr.appendChild(date);
+
+    const statusTd = document.createElement('td');
+    const select = document.createElement('select');
+    select.className = 'status';
+    ['submitted','in_review','revision','approved','archived'].forEach(status=>{
+      const opt = document.createElement('option');
+      opt.value = status;
+      opt.textContent = status.replace('_',' ');
+      if(status===row.status) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', async ()=>{
+      select.disabled = true;
+      const {error:updateError} = await supabaseClient.from('plate_designs')
+        .update({status:select.value})
+        .eq('id',row.id);
+      if(updateError){
+        alert(updateError.message);
+        select.value = row.status;
+      } else {
+        row.status = select.value;
+      }
+      select.disabled = false;
+    });
+    statusTd.appendChild(select);
+    tr.appendChild(statusTd);
+
+    const actions = document.createElement('td');
+    actions.className = 'actions';
+    const open = document.createElement('a');
+    open.className = 'btn primary';
+    open.href = 'plate-cover-designer.html?design=' + encodeURIComponent(row.id) + '&admin=1';
+    open.textContent = 'Open Design';
+    actions.appendChild(open);
+    tr.appendChild(actions);
+
+    body.appendChild(tr);
+  });
+}
+
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('loginEmail').value.trim();
+  const msg = document.getElementById('loginMessage');
+  if(!email){ message(msg,'Enter your email first.',true); return; }
+  message(msg,'Sending sign-in link...');
+  const redirectTo = window.location.href.split('?')[0];
+  const {error} = await supabaseClient.auth.signInWithOtp({
+    email,
+    options:{ emailRedirectTo:redirectTo, shouldCreateUser:true }
+  });
+  if(error) message(msg,error.message,true);
+  else message(msg,'Sign-in link sent. Open the email on this device/browser.');
+});
+
+document.getElementById('claimBtn').addEventListener('click', async ()=>{
+  const code = document.getElementById('ownerCode').value.trim();
+  const msg = document.getElementById('claimMessage');
+  if(!code){ message(msg,'Enter the one-time owner code.',true); return; }
+  message(msg,'Claiming admin access...');
+  const {data,error} = await supabaseClient.rpc('claim_plate_admin',{claim_code:code});
+  if(error || data !== true){
+    message(msg,error ? error.message : 'That owner code is invalid or has already been used.',true);
+    return;
+  }
+  message(msg,'Admin access granted.');
+  document.getElementById('ownerCode').value = '';
+  await checkAdmin();
+});
+
+document.getElementById('refreshBtn').addEventListener('click',loadDesigns);
+signOutBtn.addEventListener('click',async ()=>{
+  await supabaseClient.auth.signOut();
+  await checkAdmin();
+});
+
+supabaseClient.auth.onAuthStateChange(()=>{ setTimeout(checkAdmin,0); });
+checkAdmin();
+</script>
+</body>
+</html>
