@@ -2644,11 +2644,7 @@
 
     const zones=[];
 
-    // TOP MAIN ZONE:
-    // Find the complete horizontal printable box edge-to-edge at the
-    // vertical midpoint of the top band. The mounting holes do not redefine
-    // this box or its centre.
-    const makeHorizontalZone=(name,run)=>{
+    const makeFullHorizontalZone=(name,run)=>{
       const centerY=Math.round((run.start+run.end)/2);
       const horizontal=maskRunHorizontal(mask,centerY,xProbe);
       if(!horizontal) return null;
@@ -2661,22 +2657,65 @@
       });
     };
 
-    const top=makeHorizontalZone('top',verticalRuns[0]);
-    if(top) zones.push(top);
+    // TOP: three fixed snap boxes shared by all frame styles.
+    // The mounting bosses divide the top rail into:
+    //   1) top-left
+    //   2) top-centre (the large middle box)
+    //   3) top-right
+    // Left/right are exact mirrors. Guides must never extend outside
+    // the active box.
+    const topRun=verticalRuns[0];
+    const topFull=makeFullHorizontalZone('top-full',topRun);
 
-    // BOTTOM MAIN ZONE remains style-specific because the lower frame
-    // geometry changes from 101-104.
-    if(verticalRuns.length>1){
-      const bottom=makeHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
-      if(bottom && (!top || Math.abs(bottom.centerYPct-top.centerYPct)>2)){
-        zones.push(bottom);
-      }
+    if(topFull){
+      const mountXLeft=170;
+      const mountXRight=628;
+      const mountPadHalf=30.5;
+      const gap=FRAME_SAFE_RADIUS_PX;
+
+      const leftEnd=Math.floor(mountXLeft-mountPadHalf-gap);
+      const centerStart=Math.ceil(mountXLeft+mountPadHalf+gap);
+      const centerEnd=Math.floor(mountXRight-mountPadHalf-gap);
+
+      const topLeft=finishSnapZone({
+        name:'top-left',
+        left:topFull.left,
+        right:leftEnd,
+        top:topRun.start,
+        bottom:topRun.end
+      });
+
+      const topCenter=finishSnapZone({
+        name:'top-center',
+        left:centerStart,
+        right:centerEnd,
+        top:topRun.start,
+        bottom:topRun.end
+      });
+
+      // Mirror the left box exactly for the right side.
+      const topRight=finishSnapZone({
+        name:'top-right',
+        left:(VW-1)-topLeft.right,
+        right:(VW-1)-topLeft.left,
+        top:topLeft.top,
+        bottom:topLeft.bottom
+      });
+
+      if(topLeft.right-topLeft.left>4) zones.push(topLeft);
+      if(topCenter.right-topCenter.left>4) zones.push(topCenter);
+      if(topRight.right-topRight.left>4) zones.push(topRight);
     }
 
-    // LEFT / RIGHT SIDE ZONES:
-    // Probe through the middle of the frame opening. The first material run
-    // is the left rail. Build its full vertical printable box, then MIRROR
-    // that box exactly to make the right rail. This guarantees symmetry.
+    // BOTTOM main box stays style-specific.
+    let bottomZone=null;
+    if(verticalRuns.length>1){
+      bottomZone=makeFullHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
+      if(bottomZone) zones.push(bottomZone);
+    }
+
+    // LEFT / RIGHT vertical rails. Keep these between the top and bottom
+    // boxes so they do not overlap any of the three top zones.
     const sideProbeY=Math.round(VH/2);
     const sideRuns=maskRunsHorizontal(mask,sideProbeY);
     if(sideRuns.length>=2){
@@ -2686,24 +2725,28 @@
       const containing=leftVerticalRuns.find(r=>sideProbeY>=r.start && sideProbeY<=r.end);
 
       if(containing){
-        const left=finishSnapZone({
-          name:'left',
-          left:leftRun.left,
-          right:leftRun.right,
-          top:containing.start,
-          bottom:containing.end
-        });
+        const topLimit=topRun ? topRun.end+Math.ceil(FRAME_SAFE_RADIUS_PX) : containing.start;
+        const bottomLimit=bottomZone ? bottomZone.top-Math.ceil(FRAME_SAFE_RADIUS_PX) : containing.end;
 
-        // Exact mirror — no separate measurement on the right.
-        const right=finishSnapZone({
-          name:'right',
-          left:(VW-1)-left.right,
-          right:(VW-1)-left.left,
-          top:left.top,
-          bottom:left.bottom
-        });
+        if(bottomLimit-topLimit>4){
+          const sideLeft=finishSnapZone({
+            name:'side-left',
+            left:leftRun.left,
+            right:leftRun.right,
+            top:Math.max(containing.start,topLimit),
+            bottom:Math.min(containing.end,bottomLimit)
+          });
 
-        zones.push(left,right);
+          const sideRight=finishSnapZone({
+            name:'side-right',
+            left:(VW-1)-sideLeft.right,
+            right:(VW-1)-sideLeft.left,
+            top:sideLeft.top,
+            bottom:sideLeft.bottom
+          });
+
+          zones.push(sideLeft,sideRight);
+        }
       }
     }
 
@@ -2754,16 +2797,22 @@
   function showLocalSnapGuides(zone,snapX,snapY){
     if(!zone){ hideSnapGuides(); return; }
 
+    // Vertical guide is physically clipped to the active zone.
     snapGuideV.style.left=zone.centerXPct+'%';
     snapGuideV.style.top=zone.topPct+'%';
+    snapGuideV.style.right='auto';
     snapGuideV.style.bottom='auto';
+    snapGuideV.style.width='2px';
     snapGuideV.style.height=zone.heightPct+'%';
     snapGuideV.classList.toggle('show',!!snapX);
 
-    snapGuideH.style.top=zone.centerYPct+'%';
+    // Horizontal guide is physically clipped to the active zone.
     snapGuideH.style.left=zone.leftPct+'%';
+    snapGuideH.style.top=zone.centerYPct+'%';
     snapGuideH.style.right='auto';
+    snapGuideH.style.bottom='auto';
     snapGuideH.style.width=zone.widthPct+'%';
+    snapGuideH.style.height='2px';
     snapGuideH.classList.toggle('show',!!snapY);
   }
 
