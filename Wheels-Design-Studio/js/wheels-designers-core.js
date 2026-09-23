@@ -573,6 +573,136 @@
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  // ---------------- production artwork boundaries ----------------
+  const ARTWORK_SAFE_PX = IS_MOTORCYCLE ? 12.5 : (VW/12)*0.125;
+  const ARTWORK_SNAP_PCT = 1.5;
+
+  function artworkBounds(){
+    return {
+      left:(ARTWORK_SAFE_PX/VW)*100,
+      right:100-(ARTWORK_SAFE_PX/VW)*100,
+      top:(ARTWORK_SAFE_PX/VH)*100,
+      bottom:100-(ARTWORK_SAFE_PX/VH)*100
+    };
+  }
+
+  function ensureArtworkGuide(){
+    let box=document.getElementById('productionSafeBox');
+    if(!box){
+      box=document.createElement('div');
+      box.id='productionSafeBox';
+      box.style.position='absolute';
+      box.style.border='2px dashed #df242b';
+      box.style.boxSizing='border-box';
+      box.style.pointerEvents='none';
+      box.style.zIndex='4';
+      const label=document.createElement('span');
+      label.textContent='1/8 in safe';
+      label.style.position='absolute';
+      label.style.left='4px';
+      label.style.top='4px';
+      label.style.padding='2px 4px';
+      label.style.borderRadius='3px';
+      label.style.background='rgba(223,36,43,.92)';
+      label.style.color='#fff';
+      label.style.font='700 9px/1 Inter,sans-serif';
+      label.style.textTransform='uppercase';
+      box.appendChild(label);
+      stage.insertBefore(box,objLayer);
+    }
+    const b=artworkBounds();
+    box.style.left=b.left+'%';
+    box.style.top=b.top+'%';
+    box.style.width=(b.right-b.left)+'%';
+    box.style.height=(b.bottom-b.top)+'%';
+  }
+
+  function showArtworkCenterGuide(){
+    const b=artworkBounds();
+    snapGuideV.style.left='50%';
+    snapGuideV.style.top=b.top+'%';
+    snapGuideV.style.bottom='auto';
+    snapGuideV.style.height=(b.bottom-b.top)+'%';
+    snapGuideV.classList.add('show');
+  }
+
+  function fitImageToSafeArea(naturalW,naturalH){
+    const aspect=naturalW/naturalH;
+    const k=(VW/VH)/aspect;
+    const b=artworkBounds();
+    const usableW=(b.right-b.left)*.82;
+    const usableH=(b.bottom-b.top)*.82;
+    const wPct=Math.max(1,Math.min(usableW,usableH/k));
+    const hPct=wPct*k;
+    return {aspect,k,wPct,hPct,xPct:50-wPct/2,yPct:50-hPct/2};
+  }
+
+  function constrainObjectToSafeArea(obj){
+    if(!obj) return;
+    const b=artworkBounds();
+
+    if(obj.type==='image'){
+      const maxW=Math.min(b.right-b.left,(b.bottom-b.top)/obj.k);
+      if(obj.wPct>maxW){
+        obj.wPct=maxW;
+        obj.hPct=maxW*obj.k;
+      }
+      obj.xPct=clamp(obj.xPct,b.left,b.right-obj.wPct);
+      obj.yPct=clamp(obj.yPct,b.top,b.bottom-obj.hPct);
+      const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+      if(el){
+        el.style.left=obj.xPct+'%';
+        el.style.top=obj.yPct+'%';
+        el.style.width=obj.wPct+'%';
+        el.style.height=obj.hPct+'%';
+      }
+      return;
+    }
+
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(!el) return;
+    const stageRect=stage.getBoundingClientRect();
+    const minX=stageRect.left+b.left/100*stageRect.width;
+    const maxX=stageRect.left+b.right/100*stageRect.width;
+    const minY=stageRect.top+b.top/100*stageRect.height;
+    const maxY=stageRect.top+b.bottom/100*stageRect.height;
+    const txt=el.querySelector('.obj-text');
+
+    let r=el.getBoundingClientRect();
+    const scale=Math.min(1,
+      r.width>0 ? (maxX-minX)/r.width : 1,
+      r.height>0 ? (maxY-minY)/r.height : 1
+    );
+    if(scale<1 && txt){
+      obj.fontSize=Math.max(8,Math.floor(obj.fontSize*scale*.96));
+      txt.style.fontSize=(obj.fontSize*.125)+'cqw';
+      r=el.getBoundingClientRect();
+    }
+
+    let dx=0,dy=0;
+    if(r.left<minX) dx+=(minX-r.left)/stageRect.width*100;
+    if(r.right>maxX) dx-=(r.right-maxX)/stageRect.width*100;
+    if(r.top<minY) dy+=(minY-r.top)/stageRect.height*100;
+    if(r.bottom>maxY) dy-=(r.bottom-maxY)/stageRect.height*100;
+    obj.xPct+=dx;
+    obj.yPct+=dy;
+    el.style.left=obj.xPct+'%';
+    el.style.top=obj.yPct+'%';
+  }
+
+  function constrainAllArtwork(){
+    state.objects.forEach(constrainObjectToSafeArea);
+  }
+
+  function centerObjectHorizontally(obj){
+    if(!obj) return;
+    if(obj.type==='image') obj.xPct=50-obj.wPct/2;
+    else obj.xPct=50;
+    rebuildObjects();
+    showArtworkCenterGuide();
+    window.setTimeout(hideSnapGuides,500);
+  }
+
   function updatePlateGeometry(){
     VH = IS_MOTORCYCLE ? Math.round(state.plateHeight * 100) : 400;
     stage.style.aspectRatio = `${VW} / ${VH}`;
@@ -582,6 +712,8 @@
         obj.hPct = obj.wPct * obj.k;
       }
     });
+    ensureArtworkGuide();
+    requestAnimationFrame(constrainAllArtwork);
   }
 
   function cleanDisplayText(value){
@@ -651,22 +783,25 @@
     drawPlate(fctx, state.styleId, state.color, scale, state.bottomHoles);
     refreshSpecSummary();
     refreshFileNamePreview();
+    ensureArtworkGuide();
+    requestAnimationFrame(constrainAllArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
   // ---------------- object creation ----------------
   function addImageObject(src, naturalW, naturalH, originalFile){
-    const aspect = naturalW/naturalH;
-    const k = (VW/VH)/aspect;
-    const wPct = 24;
+    const fitted=fitImageToSafeArea(naturalW,naturalH);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, originalFileName: originalFile?.name || 'uploaded-logo', originalFileType: originalFile?.type || '', originalFileData: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k, aspect
+      xPct:fitted.xPct, yPct:fitted.yPct,
+      wPct:fitted.wPct, hPct:fitted.hPct, k:fitted.k, aspect:fitted.aspect
     };
     state.objects.push(obj);
-    selectObject(obj.id);
+    state.selectedId=obj.id;
     rebuildObjects();
+    showArtworkCenterGuide();
+    window.setTimeout(hideSnapGuides,500);
   }
 
   function removeWhiteBackground(src){
@@ -805,6 +940,7 @@
     });
     renderLayersList();
     renderObjPanel();
+    requestAnimationFrame(constrainAllArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -827,32 +963,40 @@
     const {obj, rect, startClientX, startClientY, startXPct, startYPct} = dragState;
     const dxPct = (e.clientX-startClientX)/rect.width*100;
     const dyPct = (e.clientY-startClientY)/rect.height*100;
-    let nx = startXPct+dxPct, ny = startYPct+dyPct;
+    let nx=startXPct+dxPct, ny=startYPct+dyPct;
+    const b=artworkBounds();
+
     if(obj.type==='image'){
-      nx = clamp(nx, -obj.wPct*0.4, 100-obj.wPct*0.6);
-      ny = clamp(ny, -obj.hPct*0.4, 100-obj.hPct*0.6);
+      nx=clamp(nx,b.left,b.right-obj.wPct);
+      ny=clamp(ny,b.top,b.bottom-obj.hPct);
+      if(Math.abs((nx+obj.wPct/2)-50)<=ARTWORK_SNAP_PCT){
+        nx=50-obj.wPct/2;
+        showArtworkCenterGuide();
+      } else {
+        hideSnapGuides();
+      }
     } else {
-      nx = clamp(nx, 2, 98);
-      ny = clamp(ny, 2, 98);
+      nx=clamp(nx,b.left,b.right);
+      ny=clamp(ny,b.top,b.bottom);
+      if(Math.abs(nx-50)<=ARTWORK_SNAP_PCT){
+        nx=50;
+        showArtworkCenterGuide();
+      } else {
+        hideSnapGuides();
+      }
     }
 
-    // Snap the OBJECT CENTER to the plate center. Images store their top-left
-    // position; text stores its center position because it uses translate(-50%,-50%).
-    const snapThresholdPct = Math.max(1.25, 10 / rect.width * 100);
-    const centerX = obj.type==='image' ? nx + obj.wPct/2 : nx;
-    const centerY = obj.type==='image' ? ny + obj.hPct/2 : ny;
-    const snapX = Math.abs(centerX - 50) <= snapThresholdPct;
-    const snapY = Math.abs(centerY - 50) <= snapThresholdPct;
-    if(snapX) nx = obj.type==='image' ? 50 - obj.wPct/2 : 50;
-    if(snapY) ny = obj.type==='image' ? 50 - obj.hPct/2 : 50;
-    snapGuideV.classList.toggle('show', snapX);
-    snapGuideH.classList.toggle('show', snapY);
-
-    obj.xPct = nx; obj.yPct = ny;
-    const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){ el.style.left = nx+'%'; el.style.top = ny+'%'; }
+    obj.xPct=nx;
+    obj.yPct=ny;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.left=nx+'%';
+      el.style.top=ny+'%';
+    }
+    if(obj.type==='text') requestAnimationFrame(()=>constrainObjectToSafeArea(obj));
   }
   function onDragEnd(){
+    if(dragState) constrainObjectToSafeArea(dragState.obj);
     hideSnapGuides();
     dragState=null;
     window.removeEventListener('pointermove', onDragMove);
@@ -871,14 +1015,22 @@
   function onResizeMove(e){
     if(!resizeState) return;
     const {obj, rect, startClientX, startWPct} = resizeState;
-    const dxPct = (e.clientX-startClientX)/rect.width*100;
-    let nw = clamp(startWPct+dxPct, 4, 92);
-    obj.wPct = nw;
-    obj.hPct = nw*obj.k;
-    const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){ el.style.width = nw+'%'; el.style.height = obj.hPct+'%'; }
+    const dxPct=(e.clientX-startClientX)/rect.width*100;
+    const b=artworkBounds();
+    const maxWByX=b.right-obj.xPct;
+    const maxWByY=(b.bottom-obj.yPct)/obj.k;
+    const maxAllowed=Math.max(1,Math.min(maxWByX,maxWByY,b.right-b.left,(b.bottom-b.top)/obj.k));
+    const nw=clamp(startWPct+dxPct,1,maxAllowed);
+    obj.wPct=nw;
+    obj.hPct=nw*obj.k;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.width=nw+'%';
+      el.style.height=obj.hPct+'%';
+    }
   }
   function onResizeEnd(){
+    if(resizeState) constrainObjectToSafeArea(resizeState.obj);
     resizeState=null;
     window.removeEventListener('pointermove', onResizeMove);
     window.removeEventListener('pointerup', onResizeEnd);
@@ -1001,6 +1153,18 @@
     delBtn.addEventListener('click', ()=> deleteObject(obj.id));
     title.appendChild(delBtn);
     panel.appendChild(title);
+
+    const positionField=document.createElement('div');
+    positionField.className='field';
+    positionField.innerHTML='<label>Position</label>';
+    const centerBtn=document.createElement('button');
+    centerBtn.type='button';
+    centerBtn.className='btn';
+    centerBtn.style.width='100%';
+    centerBtn.textContent='Center Horizontally';
+    centerBtn.addEventListener('click',()=>centerObjectHorizontally(obj));
+    positionField.appendChild(centerBtn);
+    panel.appendChild(positionField);
 
     if(obj.type==='text'){
       const fText = document.createElement('div');
@@ -2267,6 +2431,236 @@
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  // ---------------- production artwork boundaries ----------------
+  // The live frame artwork is based on a ~12.25 in production width.
+  // Keep customer artwork 1/8 in inside the actual printable substrate.
+  const ARTWORK_SAFE_IN = 1/8;
+  const ARTWORK_SAFE_PX = (VW / 12.25) * ARTWORK_SAFE_IN;
+  const ARTWORK_SNAP_PCT = 1.5;
+
+  function artworkRectToPct(rect){
+    return {
+      name:rect.name,
+      left:(rect.left/VW)*100,
+      right:(rect.right/VW)*100,
+      top:(rect.top/VH)*100,
+      bottom:(rect.bottom/VH)*100,
+      get width(){ return this.right-this.left; },
+      get height(){ return this.bottom-this.top; },
+      get centerX(){ return (this.left+this.right)/2; },
+      get centerY(){ return (this.top+this.bottom)/2; }
+    };
+  }
+
+  function artworkGeometry(){
+    if(state.plateType==='frame') return FRAME_STYLE_CFG[state.styleId];
+    const lexan=LEXAN_STYLE_CFG[state.styleId];
+    if(!lexan) return null;
+    return lexan.frameStyle ? FRAME_STYLE_CFG[lexan.frameStyle] : lexan;
+  }
+
+  function artworkRegions(){
+    const cfg=artworkGeometry();
+    if(!cfg) return [];
+    const safe=ARTWORK_SAFE_PX;
+    const regions=[];
+
+    const top={
+      name:'top',
+      left:safe,
+      right:VW-safe,
+      top:safe,
+      bottom:Math.max(safe,cfg.insetT-safe)
+    };
+    if(top.bottom-top.top>=8) regions.push(artworkRectToPct(top));
+
+    let bottom;
+    if(cfg.tab){
+      bottom={
+        name:'bottom',
+        left:cfg.tab.x1+safe,
+        right:cfg.tab.x2-safe,
+        top:cfg.tab.topY+safe,
+        bottom:VH-safe
+      };
+    } else {
+      bottom={
+        name:'bottom',
+        left:safe,
+        right:VW-safe,
+        top:(VH-cfg.insetB)+safe,
+        bottom:VH-safe
+      };
+    }
+    if(bottom.bottom-bottom.top>=8) regions.push(artworkRectToPct(bottom));
+
+    return regions;
+  }
+
+  function artworkRegionByName(name){
+    const regions=artworkRegions();
+    return regions.find(r=>r.name===name) || regions[regions.length-1] || null;
+  }
+
+  function nearestArtworkRegion(centerY){
+    const regions=artworkRegions();
+    if(!regions.length) return null;
+    return regions.reduce((best,r)=>
+      Math.abs(r.centerY-centerY)<Math.abs(best.centerY-centerY) ? r : best
+    ,regions[0]);
+  }
+
+  function objectArtworkRegion(obj){
+    if(!obj) return null;
+    const cy=obj.type==='image' ? obj.yPct+(obj.hPct||0)/2 : obj.yPct;
+    return artworkRegionByName(obj.artworkRegion) || nearestArtworkRegion(cy);
+  }
+
+  function ensureArtworkGuideLayer(){
+    let layer=document.getElementById('productionArtworkGuides');
+    if(layer) return layer;
+    layer=document.createElement('div');
+    layer.id='productionArtworkGuides';
+    layer.style.position='absolute';
+    layer.style.inset='0';
+    layer.style.pointerEvents='none';
+    layer.style.zIndex='4';
+    stage.insertBefore(layer,objLayer);
+    return layer;
+  }
+
+  function renderArtworkGuides(){
+    const layer=ensureArtworkGuideLayer();
+    layer.innerHTML='';
+    artworkRegions().forEach(region=>{
+      const box=document.createElement('div');
+      box.className='production-safe-box';
+      box.style.position='absolute';
+      box.style.left=region.left+'%';
+      box.style.top=region.top+'%';
+      box.style.width=region.width+'%';
+      box.style.height=region.height+'%';
+      box.style.border='2px dashed #df242b';
+      box.style.boxSizing='border-box';
+      box.style.pointerEvents='none';
+
+      const label=document.createElement('span');
+      label.textContent='1/8 in safe';
+      label.style.position='absolute';
+      label.style.left='4px';
+      label.style.top='4px';
+      label.style.padding='2px 4px';
+      label.style.borderRadius='3px';
+      label.style.background='rgba(223,36,43,.92)';
+      label.style.color='#fff';
+      label.style.font='700 9px/1 Inter,sans-serif';
+      label.style.textTransform='uppercase';
+      box.appendChild(label);
+      layer.appendChild(box);
+    });
+  }
+
+  function showArtworkCenterGuide(region){
+    if(!region) return;
+    snapGuideH.classList.remove('show');
+    snapGuideV.style.left=region.centerX+'%';
+    snapGuideV.style.top=region.top+'%';
+    snapGuideV.style.bottom='auto';
+    snapGuideV.style.height=region.height+'%';
+    snapGuideV.classList.add('show');
+  }
+
+  function fitImageToArtworkRegion(naturalW,naturalH,region){
+    const aspect=naturalW/naturalH;
+    const k=(VW/VH)/aspect;
+    const usableW=region.width*.82;
+    const usableH=region.height*.82;
+    const wPct=Math.max(1,Math.min(usableW,usableH/k));
+    const hPct=wPct*k;
+    return {
+      aspect,k,wPct,hPct,
+      xPct:region.centerX-wPct/2,
+      yPct:region.centerY-hPct/2
+    };
+  }
+
+  function constrainImageToArtwork(obj,region){
+    if(!region) return;
+    const maxW=Math.min(region.width,region.height/obj.k);
+    if(obj.wPct>maxW){
+      obj.wPct=maxW;
+      obj.hPct=maxW*obj.k;
+    }
+    obj.xPct=clamp(obj.xPct,region.left,region.right-obj.wPct);
+    obj.yPct=clamp(obj.yPct,region.top,region.bottom-obj.hPct);
+    obj.artworkRegion=region.name;
+
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.left=obj.xPct+'%';
+      el.style.top=obj.yPct+'%';
+      el.style.width=obj.wPct+'%';
+      el.style.height=obj.hPct+'%';
+    }
+  }
+
+  function constrainTextToArtwork(obj,region){
+    if(!region) return;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(!el) return;
+    const stageRect=stage.getBoundingClientRect();
+    const minX=stageRect.left+region.left/100*stageRect.width;
+    const maxX=stageRect.left+region.right/100*stageRect.width;
+    const minY=stageRect.top+region.top/100*stageRect.height;
+    const maxY=stageRect.top+region.bottom/100*stageRect.height;
+    const txt=el.querySelector('.obj-text');
+
+    let r=el.getBoundingClientRect();
+    const allowedW=maxX-minX;
+    const allowedH=maxY-minY;
+    const scale=Math.min(1,
+      r.width>0 ? allowedW/r.width : 1,
+      r.height>0 ? allowedH/r.height : 1
+    );
+    if(scale<1 && txt){
+      obj.fontSize=Math.max(8,Math.floor(obj.fontSize*scale*.96));
+      txt.style.fontSize=(obj.fontSize*.125)+'cqw';
+      r=el.getBoundingClientRect();
+    }
+
+    let dx=0,dy=0;
+    if(r.left<minX) dx+=(minX-r.left)/stageRect.width*100;
+    if(r.right>maxX) dx-=(r.right-maxX)/stageRect.width*100;
+    if(r.top<minY) dy+=(minY-r.top)/stageRect.height*100;
+    if(r.bottom>maxY) dy-=(r.bottom-maxY)/stageRect.height*100;
+    obj.xPct+=dx;
+    obj.yPct+=dy;
+    obj.artworkRegion=region.name;
+    el.style.left=obj.xPct+'%';
+    el.style.top=obj.yPct+'%';
+  }
+
+  function constrainObjectToArtwork(obj){
+    const region=objectArtworkRegion(obj);
+    if(!region) return;
+    if(obj.type==='image') constrainImageToArtwork(obj,region);
+    else constrainTextToArtwork(obj,region);
+  }
+
+  function constrainAllArtwork(){
+    state.objects.forEach(constrainObjectToArtwork);
+  }
+
+  function centerObjectHorizontally(obj){
+    const region=objectArtworkRegion(obj);
+    if(!obj||!region) return;
+    if(obj.type==='image') obj.xPct=region.centerX-obj.wPct/2;
+    else obj.xPct=region.centerX;
+    rebuildObjects();
+    showArtworkCenterGuide(region);
+    window.setTimeout(hideSnapGuides,500);
+  }
+
   // Builds the style/colour/holes suffix used in both the downloaded
   // filename and the on-screen summary, so they always stay in sync.
   function specSuffix(){
@@ -2319,22 +2713,28 @@
     drawPlate(fctx, state.styleId, state.color, scale, state.bottomHoles);
     refreshSpecSummary();
     refreshFileNamePreview();
+    renderArtworkGuides();
+    requestAnimationFrame(constrainAllArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
   // ---------------- object creation ----------------
   function addImageObject(src, naturalW, naturalH, originalFile){
-    const aspect = naturalW/naturalH;
-    const k = (VW/VH)/aspect;
-    const wPct = 24;
+    const region=artworkRegionByName('bottom') || artworkRegions()[0];
+    if(!region) return;
+    const fitted=fitImageToArtworkRegion(naturalW,naturalH,region);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, originalFileName: originalFile?.name || 'uploaded-logo', originalFileType: originalFile?.type || '', originalFileData: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k
+      artworkRegion:region.name,
+      xPct:fitted.xPct, yPct:fitted.yPct,
+      wPct:fitted.wPct, hPct:fitted.hPct, k:fitted.k, aspect:fitted.aspect
     };
     state.objects.push(obj);
-    selectObject(obj.id);
+    state.selectedId=obj.id;
     rebuildObjects();
+    showArtworkCenterGuide(region);
+    window.setTimeout(hideSnapGuides,500);
   }
 
   function removeWhiteBackground(src){
@@ -2400,7 +2800,7 @@
     opts = opts || {};
     const obj = Object.assign({
       id:'obj'+(uidCounter++), type:'text', text: text,
-      xPct:50, yPct:12, fontFamily:'Oswald', fontSize:34,
+      xPct:50, yPct:12, artworkRegion:'top', fontFamily:'Oswald', fontSize:34,
       color:'#ffffff', bold:true, italic:false, caps:false,
       align:'center', stretchX:1, stretchY:1
     }, opts);
@@ -2473,6 +2873,7 @@
     });
     renderLayersList();
     renderObjPanel();
+    requestAnimationFrame(constrainAllArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -2495,32 +2896,44 @@
     const {obj, rect, startClientX, startClientY, startXPct, startYPct} = dragState;
     const dxPct = (e.clientX-startClientX)/rect.width*100;
     const dyPct = (e.clientY-startClientY)/rect.height*100;
-    let nx = startXPct+dxPct, ny = startYPct+dyPct;
+    let nx=startXPct+dxPct, ny=startYPct+dyPct;
+    const proposedCenterY=obj.type==='image' ? ny+obj.hPct/2 : ny;
+    const region=nearestArtworkRegion(proposedCenterY);
+    if(!region) return;
+    obj.artworkRegion=region.name;
+
     if(obj.type==='image'){
-      nx = clamp(nx, -obj.wPct*0.4, 100-obj.wPct*0.6);
-      ny = clamp(ny, -obj.hPct*0.4, 100-obj.hPct*0.6);
+      nx=clamp(nx,region.left,region.right-obj.wPct);
+      ny=clamp(ny,region.top,region.bottom-obj.hPct);
+      const centerX=nx+obj.wPct/2;
+      if(Math.abs(centerX-region.centerX)<=ARTWORK_SNAP_PCT){
+        nx=region.centerX-obj.wPct/2;
+        showArtworkCenterGuide(region);
+      } else {
+        hideSnapGuides();
+      }
     } else {
-      nx = clamp(nx, 2, 98);
-      ny = clamp(ny, 2, 98);
+      nx=clamp(nx,region.left,region.right);
+      ny=clamp(ny,region.top,region.bottom);
+      if(Math.abs(nx-region.centerX)<=ARTWORK_SNAP_PCT){
+        nx=region.centerX;
+        showArtworkCenterGuide(region);
+      } else {
+        hideSnapGuides();
+      }
     }
 
-    // Snap the OBJECT CENTER to the plate center. Images store their top-left
-    // position; text stores its center position because it uses translate(-50%,-50%).
-    const snapThresholdPct = Math.max(1.25, 10 / rect.width * 100);
-    const centerX = obj.type==='image' ? nx + obj.wPct/2 : nx;
-    const centerY = obj.type==='image' ? ny + obj.hPct/2 : ny;
-    const snapX = Math.abs(centerX - 50) <= snapThresholdPct;
-    const snapY = Math.abs(centerY - 50) <= snapThresholdPct;
-    if(snapX) nx = obj.type==='image' ? 50 - obj.wPct/2 : 50;
-    if(snapY) ny = obj.type==='image' ? 50 - obj.hPct/2 : 50;
-    snapGuideV.classList.toggle('show', snapX);
-    snapGuideH.classList.toggle('show', snapY);
-
-    obj.xPct = nx; obj.yPct = ny;
-    const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){ el.style.left = nx+'%'; el.style.top = ny+'%'; }
+    obj.xPct=nx;
+    obj.yPct=ny;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.left=nx+'%';
+      el.style.top=ny+'%';
+    }
+    if(obj.type==='text') requestAnimationFrame(()=>constrainObjectToArtwork(obj));
   }
   function onDragEnd(){
+    if(dragState) constrainObjectToArtwork(dragState.obj);
     hideSnapGuides();
     dragState=null;
     window.removeEventListener('pointermove', onDragMove);
@@ -2539,14 +2952,23 @@
   function onResizeMove(e){
     if(!resizeState) return;
     const {obj, rect, startClientX, startWPct} = resizeState;
-    const dxPct = (e.clientX-startClientX)/rect.width*100;
-    let nw = clamp(startWPct+dxPct, 4, 92);
-    obj.wPct = nw;
-    obj.hPct = nw*obj.k;
-    const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
-    if(el){ el.style.width = nw+'%'; el.style.height = obj.hPct+'%'; }
+    const dxPct=(e.clientX-startClientX)/rect.width*100;
+    const region=objectArtworkRegion(obj);
+    if(!region) return;
+    const maxWByX=region.right-obj.xPct;
+    const maxWByY=(region.bottom-obj.yPct)/obj.k;
+    const maxAllowed=Math.max(1,Math.min(maxWByX,maxWByY,region.width,region.height/obj.k));
+    const nw=clamp(startWPct+dxPct,1,maxAllowed);
+    obj.wPct=nw;
+    obj.hPct=nw*obj.k;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.width=nw+'%';
+      el.style.height=obj.hPct+'%';
+    }
   }
   function onResizeEnd(){
+    if(resizeState) constrainObjectToArtwork(resizeState.obj);
     resizeState=null;
     window.removeEventListener('pointermove', onResizeMove);
     window.removeEventListener('pointerup', onResizeEnd);
@@ -2669,6 +3091,18 @@
     delBtn.addEventListener('click', ()=> deleteObject(obj.id));
     title.appendChild(delBtn);
     panel.appendChild(title);
+
+    const positionField=document.createElement('div');
+    positionField.className='field';
+    positionField.innerHTML='<label>Position</label>';
+    const centerBtn=document.createElement('button');
+    centerBtn.type='button';
+    centerBtn.className='btn';
+    centerBtn.style.width='100%';
+    centerBtn.textContent='Center Horizontally';
+    centerBtn.addEventListener('click',()=>centerObjectHorizontally(obj));
+    positionField.appendChild(centerBtn);
+    panel.appendChild(positionField);
 
     if(obj.type==='text'){
       const fText = document.createElement('div');
