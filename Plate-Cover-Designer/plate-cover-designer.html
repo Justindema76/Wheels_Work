@@ -1187,7 +1187,9 @@ width: 100% !important;
       <button class="btn" id="openProjectBtn">Open Project</button>
       <button class="btn" id="saveProjectBtn">Save Project</button>
       <button class="btn" id="topPreviewBtn">Full Preview</button>
-      <button class="btn btn-primary" id="topDownloadBtn">Download PNG</button>
+      <button class="btn btn-primary" id="submitDesignBtn">Submit Design</button>
+      <button class="btn btn-primary" id="saveCloudChangesBtn" hidden>Save Changes</button>
+      <button class="btn" id="topDownloadBtn">Download PNG</button>
       <input type="file" id="projectFileInput" accept=".plateproject,.json,application/json">
     </div>
   </header>
@@ -1231,6 +1233,25 @@ width: 100% !important;
   </div>
 
   <div class="sidebar">
+
+    <div class="panel-block" id="customerDetailsPanel">
+      <div class="panel-label">Customer Details</div>
+      <div class="field">
+        <label for="customerName">Name</label>
+        <input type="text" id="customerName" autocomplete="name" placeholder="Customer name">
+      </div>
+      <div class="field">
+        <label for="customerEmail">Email</label>
+        <input type="email" id="customerEmail" autocomplete="email" placeholder="customer@example.com"
+          style="font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:6px;background:#fff;width:100%;">
+      </div>
+      <div class="field">
+        <label for="customerPhone">Phone (optional)</label>
+        <input type="tel" id="customerPhone" autocomplete="tel" placeholder="Phone number"
+          style="font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:6px;background:#fff;width:100%;">
+      </div>
+      <div class="field-hint" id="cloudStatus">Design has not been submitted yet.</div>
+    </div>
 
     <div class="panel-block">
       <div class="panel-label">Add To Your Plate</div>
@@ -1307,9 +1328,18 @@ width: 100% !important;
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   "use strict";
+
+  // ---------------- Supabase cloud project ----------------
+  const SUPABASE_URL = 'https://okxzcfwegwiqbeovzvna.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Z7QHkalWYYoAJ3D1CTSlog_I-4U9xWn';
+  const ASSET_BUCKET = 'plate-design-assets';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  let activeCloudDesignId = null;
+  let activeCloudDesignNumber = null;
 
   // ---------------- geometry / style config ----------------
   // North American passenger plate: 12 × 6 in.  The 800 × 400 design
@@ -2702,6 +2732,270 @@ width: 100% !important;
     addTextObject('YOUR TEXT HERE', {yPct: 50, fontSize:30, color: getContrastTextColor(state.color)});
   });
 
+  // ---------------- Supabase customer submission / admin reopen ----------------
+  function setCloudStatus(message, isError){
+    const el = document.getElementById('cloudStatus');
+    if(!el) return;
+    el.textContent = message;
+    el.style.color = isError ? 'var(--red)' : 'var(--steel)';
+  }
+
+  function isDataUrl(value){
+    return typeof value === 'string' && value.startsWith('data:');
+  }
+
+  function isStorageUrl(value){
+    return typeof value === 'string' && value.startsWith('storage://');
+  }
+
+  function dataUrlToBlob(dataUrl){
+    const parts = dataUrl.split(',');
+    const meta = parts[0] || '';
+    const base64 = parts[1] || '';
+    const mimeMatch = meta.match(/^data:([^;]+);base64$/i);
+    if(!mimeMatch) throw new Error('Unsupported embedded image format.');
+    const mime = mimeMatch[1];
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], {type:mime});
+  }
+
+  function blobToDataUrl(blob){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = ()=>resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function extensionForMime(mime){
+    if(mime === 'image/jpeg') return 'jpg';
+    if(mime === 'image/webp') return 'webp';
+    if(mime === 'image/svg+xml') return 'svg';
+    return 'png';
+  }
+
+  async function uploadEmbeddedAsset(designId, dataUrl, label){
+    if(!isDataUrl(dataUrl)) return dataUrl;
+    const blob = dataUrlToBlob(dataUrl);
+    const ext = extensionForMime(blob.type);
+    const safeLabel = String(label || 'asset').replace(/[^a-z0-9_-]+/gi,'-').toLowerCase();
+    const path = `${designId}/${Date.now()}-${crypto.randomUUID()}-${safeLabel}.${ext}`;
+    const {error} = await supabaseClient.storage
+      .from(ASSET_BUCKET)
+      .upload(path, blob, {contentType:blob.type, upsert:false});
+    if(error) throw error;
+    return 'storage://' + path;
+  }
+
+  async function serializeStateForCloud(designId){
+    const cloudState = JSON.parse(JSON.stringify({...state, selectedId:null}));
+    const uploadCache = new Map();
+
+    for(const obj of cloudState.objects){
+      if(obj.type !== 'image') continue;
+      for(const field of ['src','originalSrc','preRecolorSrc']){
+        const value = obj[field];
+        if(!isDataUrl(value)) continue;
+        if(uploadCache.has(value)){
+          obj[field] = uploadCache.get(value);
+          continue;
+        }
+        const stored = await uploadEmbeddedAsset(designId, value, `${obj.id}-${field}`);
+        uploadCache.set(value, stored);
+        obj[field] = stored;
+      }
+    }
+    return cloudState;
+  }
+
+  async function hydrateStateFromCloud(cloudState){
+    const hydrated = JSON.parse(JSON.stringify(cloudState));
+    const downloadCache = new Map();
+
+    for(const obj of hydrated.objects || []){
+      if(obj.type !== 'image') continue;
+      for(const field of ['src','originalSrc','preRecolorSrc']){
+        const value = obj[field];
+        if(!isStorageUrl(value)) continue;
+        const path = value.slice('storage://'.length);
+        if(downloadCache.has(path)){
+          obj[field] = downloadCache.get(path);
+          continue;
+        }
+        const {data,error} = await supabaseClient.storage.from(ASSET_BUCKET).download(path);
+        if(error) throw error;
+        const dataUrl = await blobToDataUrl(data);
+        downloadCache.set(path, dataUrl);
+        obj[field] = dataUrl;
+      }
+    }
+    return hydrated;
+  }
+
+  function renderFullDesignBlob(scale){
+    return new Promise((resolve,reject)=>{
+      try{
+        renderFullDesignToCanvas(scale, (cvs)=>{
+          cvs.toBlob(blob=>{
+            if(blob) resolve(blob);
+            else reject(new Error('Could not create the design preview.'));
+          }, 'image/png');
+        });
+      } catch(err){
+        reject(err);
+      }
+    });
+  }
+
+  async function uploadCloudPreview(designId){
+    const blob = await renderFullDesignBlob(2);
+    const path = `${designId}/${Date.now()}-${crypto.randomUUID()}-preview.png`;
+    const {error} = await supabaseClient.storage.from(ASSET_BUCKET)
+      .upload(path, blob, {contentType:'image/png', upsert:false});
+    if(error) throw error;
+    return path;
+  }
+
+  function validateCustomerDetails(){
+    const name = document.getElementById('customerName').value.trim();
+    const email = document.getElementById('customerEmail').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    if(!name) throw new Error('Enter the customer name before submitting.');
+    if(!email || !email.includes('@')) throw new Error('Enter a valid customer email before submitting.');
+    return {name,email,phone};
+  }
+
+  async function submitDesignToCloud(){
+    const btn = document.getElementById('submitDesignBtn');
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = 'Submitting...';
+    setCloudStatus('Uploading editable design and artwork...');
+
+    try{
+      const customer = validateCustomerDetails();
+      const designId = crypto.randomUUID();
+      const designNumber = 'PD-' + designId.replace(/-/g,'').slice(0,8).toUpperCase();
+      const cloudState = await serializeStateForCloud(designId);
+      const previewPath = await uploadCloudPreview(designId);
+
+      const {error} = await supabaseClient.from('plate_designs').insert({
+        id: designId,
+        design_number: designNumber,
+        customer_name: customer.name,
+        customer_email: customer.email,
+        customer_phone: customer.phone || null,
+        project_state: cloudState,
+        preview_path: previewPath,
+        status: 'submitted',
+        source: 'standalone'
+      });
+      if(error) throw error;
+
+      activeCloudDesignId = designId;
+      activeCloudDesignNumber = designNumber;
+      setCloudStatus(`Submitted successfully - Reference ${designNumber}`);
+      alert(`Design submitted successfully.\n\nReference: ${designNumber}`);
+    } catch(err){
+      console.error(err);
+      setCloudStatus(err.message || 'Unable to submit design.', true);
+      alert(err.message || 'Unable to submit design.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  }
+
+  async function saveCloudChanges(){
+    if(!activeCloudDesignId) return;
+    const btn = document.getElementById('saveCloudChangesBtn');
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = 'Saving...';
+    setCloudStatus(`Saving ${activeCloudDesignNumber || 'design'}...`);
+
+    try{
+      const cloudState = await serializeStateForCloud(activeCloudDesignId);
+      const previewPath = await uploadCloudPreview(activeCloudDesignId);
+      const {error} = await supabaseClient.from('plate_designs')
+        .update({
+          project_state: cloudState,
+          preview_path: previewPath
+        })
+        .eq('id', activeCloudDesignId);
+      if(error) throw error;
+      setCloudStatus(`Saved - ${activeCloudDesignNumber}`);
+    } catch(err){
+      console.error(err);
+      setCloudStatus(err.message || 'Unable to save changes.', true);
+      alert(err.message || 'Unable to save changes.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  }
+
+  async function loadCloudDesignFromQuery(){
+    const params = new URLSearchParams(window.location.search);
+    const designId = params.get('design');
+    if(!designId) return;
+
+    setCloudStatus('Opening submitted design...');
+    const {data,error} = await supabaseClient.from('plate_designs')
+      .select('id,design_number,customer_name,customer_email,customer_phone,project_state,status')
+      .eq('id', designId)
+      .single();
+
+    if(error) throw error;
+
+    const hydrated = await hydrateStateFromCloud(data.project_state || {});
+    const saved = hydrated;
+    state.plateType = saved.plateType || 'cover';
+    state.styleId = saved.styleId || '101';
+    state.color = saved.color || 'black';
+    state.borderColor = saved.borderColor || 'white';
+    state.borderWidth = Number.isFinite(Number(saved.borderWidth)) ? Number(saved.borderWidth) : 4;
+    state.borderInset = Number.isFinite(Number(saved.borderInset)) ? Number(saved.borderInset) : 10;
+    state.borderRadius = Number.isFinite(Number(saved.borderRadius)) ? Number(saved.borderRadius) : 16;
+    state.embossed = !!saved.embossed;
+    state.bottomHoles = !!saved.bottomHoles;
+    state.objects = Array.isArray(saved.objects) ? saved.objects : [];
+    state.selectedId = null;
+
+    let highestId = -1;
+    state.objects.forEach(o=>{
+      const m = String(o.id || '').match(/^obj(\d+)$/);
+      if(m) highestId = Math.max(highestId, Number(m[1]));
+    });
+    uidCounter = highestId + 1;
+
+    document.getElementById('customerName').value = data.customer_name || '';
+    document.getElementById('customerEmail').value = data.customer_email || '';
+    document.getElementById('customerPhone').value = data.customer_phone || '';
+
+    activeCloudDesignId = data.id;
+    activeCloudDesignNumber = data.design_number;
+    document.getElementById('submitDesignBtn').hidden = true;
+    document.getElementById('saveCloudChangesBtn').hidden = false;
+
+    document.getElementById('borderWidthSelect').value = String(state.borderWidth);
+    document.getElementById('borderInsetSelect').value = String(state.borderInset);
+    document.getElementById('borderRadiusSelect').value = String(state.borderRadius);
+    document.getElementById('embossingToggle').checked = !!state.embossed;
+    renderColourRow();
+    renderBorderColourRow();
+    renderStyleRow();
+    redrawFrame();
+    rebuildObjects();
+    setCloudStatus(`Opened ${data.design_number} - ${data.status.replace('_',' ')}`);
+  }
+
+  document.getElementById('submitDesignBtn').addEventListener('click', submitDesignToCloud);
+  document.getElementById('saveCloudChangesBtn').addEventListener('click', saveCloudChanges);
+
   // ---------------- editable project save / open ----------------
   // Project files are self-contained JSON. Uploaded images are already held
   // as data URLs in state.objects, so the logo travels inside the project
@@ -3012,6 +3306,11 @@ width: 100% !important;
     document.getElementById('topDownloadBtn').addEventListener('click', downloadDesign);
 
     window.addEventListener('resize', redrawFrame);
+
+    loadCloudDesignFromQuery().catch(err=>{
+      console.error(err);
+      setCloudStatus('Unable to open this submitted design. Sign in through Submitted Designs first.', true);
+    });
 
     window.addEventListener('beforeunload', (e)=>{
       if(state.objects.length > 0){
