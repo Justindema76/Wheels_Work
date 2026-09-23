@@ -1514,6 +1514,252 @@ body.wheels-preview {
 
   function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
+  // ---------------- shared artwork placement rules ----------------
+  // A licence plate frame is 12 inches wide. We use that physical width to
+  // convert the required 1/8-inch safe inset into virtual canvas units.
+  // Artwork is constrained to actual printable frame bands, not the whole stage.
+  const ARTWORK_SAFE_IN = 1/8;
+  const SAFE_PX = (VW / 12) * ARTWORK_SAFE_IN;
+  const CENTER_SNAP_PCT = 1.5;
+
+  function rectPxToPct(r){
+    return {
+      name:r.name,
+      left:(r.left/VW)*100,
+      right:(r.right/VW)*100,
+      top:(r.top/VH)*100,
+      bottom:(r.bottom/VH)*100,
+      get width(){ return this.right-this.left; },
+      get height(){ return this.bottom-this.top; },
+      get centerX(){ return (this.left+this.right)/2; },
+      get centerY(){ return (this.top+this.bottom)/2; }
+    };
+  }
+
+  function artworkRegionsPct(){
+    const cfg = currentStyle();
+    if(!cfg) return [];
+
+    const regions = [];
+
+    // Top printable band: stay 1/8 in from the outside edge and 1/8 in
+    // away from the inner licence-plate opening.
+    const top = {
+      name:'top',
+      left:SAFE_PX,
+      right:VW-SAFE_PX,
+      top:SAFE_PX,
+      bottom:Math.max(SAFE_PX, cfg.insetT-SAFE_PX)
+    };
+    if(top.bottom-top.top >= 12) regions.push(rectPxToPct(top));
+
+    // Bottom printable band. Style 101 has a dedicated centre tab; the other
+    // styles use the full bottom band.
+    let bottom;
+    if(cfg.tab){
+      bottom = {
+        name:'bottom',
+        left:cfg.tab.x1+SAFE_PX,
+        right:cfg.tab.x2-SAFE_PX,
+        top:cfg.tab.topY+SAFE_PX,
+        bottom:VH-SAFE_PX
+      };
+    } else {
+      bottom = {
+        name:'bottom',
+        left:SAFE_PX,
+        right:VW-SAFE_PX,
+        top:(VH-cfg.insetB)+SAFE_PX,
+        bottom:VH-SAFE_PX
+      };
+    }
+    if(bottom.bottom-bottom.top >= 12) regions.push(rectPxToPct(bottom));
+
+    return regions;
+  }
+
+  function regionByName(name){
+    const regions = artworkRegionsPct();
+    return regions.find(r=>r.name===name) || regions[regions.length-1] || null;
+  }
+
+  function nearestRegionForCenterY(centerY){
+    const regions = artworkRegionsPct();
+    if(!regions.length) return null;
+    return regions.reduce((best,r)=>
+      Math.abs(r.centerY-centerY) < Math.abs(best.centerY-centerY) ? r : best
+    , regions[0]);
+  }
+
+  function currentRegionForObject(obj){
+    if(!obj) return null;
+    const centerY = obj.type==='image' ? obj.yPct+(obj.hPct||0)/2 : obj.yPct;
+    return regionByName(obj.artworkRegion) || nearestRegionForCenterY(centerY);
+  }
+
+  function ensureArtworkGuideLayer(){
+    let layer = document.getElementById('artworkGuideLayer');
+    if(layer) return layer;
+
+    layer = document.createElement('div');
+    layer.id = 'artworkGuideLayer';
+    layer.style.position='absolute';
+    layer.style.inset='0';
+    layer.style.pointerEvents='none';
+    layer.style.zIndex='4';
+
+    const center = document.createElement('div');
+    center.id='artworkCenterGuide';
+    center.style.position='absolute';
+    center.style.width='2px';
+    center.style.background='#25a7ff';
+    center.style.boxShadow='0 0 0 1px rgba(255,255,255,.85)';
+    center.style.display='none';
+    center.style.pointerEvents='none';
+    layer.appendChild(center);
+
+    stage.insertBefore(layer,objLayer);
+    return layer;
+  }
+
+  function renderArtworkGuides(){
+    const layer = ensureArtworkGuideLayer();
+    [...layer.querySelectorAll('.artwork-safe-guide')].forEach(el=>el.remove());
+
+    artworkRegionsPct().forEach(region=>{
+      const box=document.createElement('div');
+      box.className='artwork-safe-guide';
+      box.style.position='absolute';
+      box.style.left=region.left+'%';
+      box.style.top=region.top+'%';
+      box.style.width=region.width+'%';
+      box.style.height=region.height+'%';
+      box.style.border='2px dashed #e31b23';
+      box.style.boxShadow='0 0 0 1px rgba(255,255,255,.72)';
+      box.style.pointerEvents='none';
+
+      const label=document.createElement('span');
+      label.textContent='1/8 in safe';
+      label.style.position='absolute';
+      label.style.left='5px';
+      label.style.top='5px';
+      label.style.padding='2px 5px';
+      label.style.borderRadius='3px';
+      label.style.background='rgba(227,27,35,.92)';
+      label.style.color='#fff';
+      label.style.font='600 9px/1 Inter,sans-serif';
+      label.style.letterSpacing='.03em';
+      label.style.textTransform='uppercase';
+      box.appendChild(label);
+      layer.appendChild(box);
+    });
+  }
+
+  function showCenterGuide(region){
+    const line=document.getElementById('artworkCenterGuide');
+    if(!line || !region) return;
+    line.style.display='block';
+    line.style.left=region.centerX+'%';
+    line.style.top=region.top+'%';
+    line.style.height=region.height+'%';
+  }
+
+  function hideCenterGuide(){
+    const line=document.getElementById('artworkCenterGuide');
+    if(line) line.style.display='none';
+  }
+
+  function fitImageToRegion(naturalW,naturalH,region){
+    const aspect = naturalW/naturalH;
+    const k = (VW/VH)/aspect;
+    const usableW = region.width * 0.82;
+    const usableH = region.height * 0.82;
+    const wPct = Math.max(1, Math.min(usableW, usableH/k));
+    const hPct = wPct*k;
+    return {
+      k,
+      wPct,
+      hPct,
+      xPct:region.centerX-wPct/2,
+      yPct:region.centerY-hPct/2
+    };
+  }
+
+  function centerObjectHorizontally(obj){
+    const region=currentRegionForObject(obj);
+    if(!obj || !region) return;
+    if(obj.type==='image') obj.xPct=region.centerX-(obj.wPct/2);
+    else obj.xPct=region.centerX;
+    rebuildObjects();
+    showCenterGuide(region);
+    setTimeout(hideCenterGuide,450);
+  }
+
+  function constrainImageToRegion(obj, region){
+    if(!region) return;
+    const maxW = Math.min(region.width, region.height/obj.k);
+    if(obj.wPct>maxW){
+      obj.wPct=maxW;
+      obj.hPct=maxW*obj.k;
+    }
+    obj.xPct=clamp(obj.xPct, region.left, region.right-obj.wPct);
+    obj.yPct=clamp(obj.yPct, region.top, region.bottom-obj.hPct);
+    obj.artworkRegion=region.name;
+
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(el){
+      el.style.left=obj.xPct+'%';
+      el.style.top=obj.yPct+'%';
+      el.style.width=obj.wPct+'%';
+      el.style.height=obj.hPct+'%';
+    }
+  }
+
+  function constrainTextToRegion(obj, region){
+    if(!region) return;
+    const el=objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
+    if(!el) return;
+    const stageRect=stage.getBoundingClientRect();
+    const minX=stageRect.left+(region.left/100)*stageRect.width;
+    const maxX=stageRect.left+(region.right/100)*stageRect.width;
+    const minY=stageRect.top+(region.top/100)*stageRect.height;
+    const maxY=stageRect.top+(region.bottom/100)*stageRect.height;
+
+    let r=el.getBoundingClientRect();
+    if(r.width > maxX-minX && r.width>0){
+      obj.stretchX=Math.max(.15,(obj.stretchX||1)*((maxX-minX)/r.width));
+      el.style.transform=`translate(-50%,-50%) scale(${obj.stretchX}, ${obj.stretchY||1})`;
+    }
+    r=el.getBoundingClientRect();
+    if(r.height > maxY-minY && r.height>0){
+      obj.stretchY=Math.max(.15,(obj.stretchY||1)*((maxY-minY)/r.height));
+      el.style.transform=`translate(-50%,-50%) scale(${obj.stretchX||1}, ${obj.stretchY})`;
+    }
+
+    r=el.getBoundingClientRect();
+    let dx=0,dy=0;
+    if(r.left<minX) dx+=(minX-r.left)/stageRect.width*100;
+    if(r.right>maxX) dx-=(r.right-maxX)/stageRect.width*100;
+    if(r.top<minY) dy+=(minY-r.top)/stageRect.height*100;
+    if(r.bottom>maxY) dy-=(r.bottom-maxY)/stageRect.height*100;
+    obj.xPct+=dx;
+    obj.yPct+=dy;
+    obj.artworkRegion=region.name;
+    el.style.left=obj.xPct+'%';
+    el.style.top=obj.yPct+'%';
+  }
+
+  function constrainObjectToArtwork(obj){
+    const region=currentRegionForObject(obj);
+    if(!region) return;
+    if(obj.type==='image') constrainImageToRegion(obj,region);
+    else constrainTextToRegion(obj,region);
+  }
+
+  function constrainAllObjectsToArtwork(){
+    state.objects.forEach(constrainObjectToArtwork);
+  }
+
   // Builds the style/colour/holes suffix used in both the downloaded
   // filename and the on-screen summary, so they always stay in sync.
   function specSuffix(){
@@ -1565,22 +1811,28 @@ body.wheels-preview {
     drawPlate(fctx, state.styleId, state.color, scale, state.bottomHoles);
     refreshSpecSummary();
     refreshFileNamePreview();
+    renderArtworkGuides();
+    requestAnimationFrame(constrainAllObjectsToArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
   // ---------------- object creation ----------------
   function addImageObject(src, naturalW, naturalH){
-    const aspect = naturalW/naturalH;
-    const k = (VW/VH)/aspect;
-    const wPct = 24;
+    const region = regionByName('bottom') || artworkRegionsPct()[0];
+    if(!region) return;
+    const fitted = fitImageToRegion(naturalW,naturalH,region);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, bgRemoved:false,
       recolored:false, preRecolorSrc: null, recolorColor:'#c9171f',
-      xPct: 8, yPct: 66, wPct, hPct: wPct*k, k
+      artworkRegion:region.name,
+      xPct:fitted.xPct, yPct:fitted.yPct,
+      wPct:fitted.wPct, hPct:fitted.hPct, k:fitted.k
     };
     state.objects.push(obj);
-    selectObject(obj.id);
+    state.selectedId=obj.id;
     rebuildObjects();
+    showCenterGuide(region);
+    setTimeout(hideCenterGuide,450);
   }
 
   function removeWhiteBackground(src){
@@ -1646,7 +1898,7 @@ body.wheels-preview {
     opts = opts || {};
     const obj = Object.assign({
       id:'obj'+(uidCounter++), type:'text', text: text,
-      xPct:50, yPct:12, fontFamily:'Oswald', fontSize:34,
+      xPct:50, yPct:12, artworkRegion:'top', fontFamily:'Oswald', fontSize:34,
       color:'#ffffff', bold:true, italic:false, caps:false,
       align:'center', stretchX:1, stretchY:1
     }, opts);
@@ -1728,6 +1980,7 @@ body.wheels-preview {
     });
     renderLayersList();
     renderObjPanel();
+    requestAnimationFrame(constrainAllObjectsToArtwork);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
   }
 
@@ -1751,19 +2004,45 @@ body.wheels-preview {
     const dxPct = (e.clientX-startClientX)/rect.width*100;
     const dyPct = (e.clientY-startClientY)/rect.height*100;
     let nx = startXPct+dxPct, ny = startYPct+dyPct;
+
     if(obj.type==='image'){
-      nx = clamp(nx, -obj.wPct*0.4, 100-obj.wPct*0.6);
-      ny = clamp(ny, -obj.hPct*0.4, 100-obj.hPct*0.6);
+      const proposedCenterY = ny + obj.hPct/2;
+      const region = nearestRegionForCenterY(proposedCenterY);
+      if(!region) return;
+      obj.artworkRegion=region.name;
+      nx=clamp(nx,region.left,region.right-obj.wPct);
+      ny=clamp(ny,region.top,region.bottom-obj.hPct);
+
+      const objectCenterX=nx+obj.wPct/2;
+      if(Math.abs(objectCenterX-region.centerX)<=CENTER_SNAP_PCT){
+        nx=region.centerX-obj.wPct/2;
+        showCenterGuide(region);
+      } else {
+        hideCenterGuide();
+      }
     } else {
-      nx = clamp(nx, 2, 98);
-      ny = clamp(ny, 2, 98);
+      const region=nearestRegionForCenterY(ny);
+      if(!region) return;
+      obj.artworkRegion=region.name;
+      nx=clamp(nx,region.left,region.right);
+      ny=clamp(ny,region.top,region.bottom);
+      if(Math.abs(nx-region.centerX)<=CENTER_SNAP_PCT){
+        nx=region.centerX;
+        showCenterGuide(region);
+      } else {
+        hideCenterGuide();
+      }
     }
+
     obj.xPct = nx; obj.yPct = ny;
     const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
     if(el){ el.style.left = nx+'%'; el.style.top = ny+'%'; }
+    if(obj.type==='text') requestAnimationFrame(()=>constrainObjectToArtwork(obj));
   }
   function onDragEnd(){
+    if(dragState) constrainObjectToArtwork(dragState.obj);
     dragState=null;
+    hideCenterGuide();
     window.removeEventListener('pointermove', onDragMove);
     window.removeEventListener('pointerup', onDragEnd);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
@@ -1796,17 +2075,25 @@ body.wheels-preview {
       obj.stretchY = clamp(resizeState.startStretchY*(1+dy/resizeState.textHeight), 0.25, 5);
       const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
       if(el) el.style.transform = `translate(-50%,-50%) scale(${obj.stretchX}, ${obj.stretchY})`;
+      requestAnimationFrame(()=>constrainObjectToArtwork(obj));
       return;
     }
     const dxPct = (e.clientX-startClientX)/rect.width*100;
-    let nw = clamp(startWPct+dxPct, 4, 92);
+    const region=currentRegionForObject(obj);
+    if(!region) return;
+    const maxWByX=region.right-obj.xPct;
+    const maxWByY=(region.bottom-obj.yPct)/obj.k;
+    const maxAllowed=Math.max(1,Math.min(maxWByX,maxWByY,region.width,region.height/obj.k));
+    let nw = clamp(startWPct+dxPct, 1, maxAllowed);
     obj.wPct = nw;
     obj.hPct = nw*obj.k;
     const el = objLayer.querySelector(`.obj[data-id="${obj.id}"]`);
     if(el){ el.style.width = nw+'%'; el.style.height = obj.hPct+'%'; }
   }
   function onResizeEnd(){
+    if(resizeState) constrainObjectToArtwork(resizeState.obj);
     resizeState=null;
+    hideCenterGuide();
     window.removeEventListener('pointermove', onResizeMove);
     window.removeEventListener('pointerup', onResizeEnd);
     if(typeof updatePreviewWindow==='function') updatePreviewWindow();
@@ -1889,6 +2176,18 @@ body.wheels-preview {
     delBtn.addEventListener('click', ()=> deleteObject(obj.id));
     title.appendChild(delBtn);
     panel.appendChild(title);
+
+    const positionField=document.createElement('div');
+    positionField.className='field';
+    positionField.innerHTML='<label>Position</label>';
+    const centerBtn=document.createElement('button');
+    centerBtn.type='button';
+    centerBtn.className='btn';
+    centerBtn.style.width='100%';
+    centerBtn.textContent='Center Horizontally';
+    centerBtn.addEventListener('click',()=>centerObjectHorizontally(obj));
+    positionField.appendChild(centerBtn);
+    panel.appendChild(positionField);
 
     if(obj.type==='text'){
       const fText = document.createElement('div');
