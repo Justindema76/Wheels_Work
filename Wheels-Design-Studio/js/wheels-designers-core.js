@@ -3113,6 +3113,15 @@
       xPct:fitted.xPct, yPct:fitted.yPct,
       wPct:fitted.wPct, hPct:fitted.hPct, k:fitted.k, aspect:fitted.aspect
     };
+
+    const forcedInk=selectedSingleScreenInk();
+    if(forcedInk){
+      obj.preRecolorSrc=src;
+      obj.src=await recolorToSolid(src,forcedInk);
+      obj.recolored=true;
+      obj.recolorColor=forcedInk;
+    }
+
     state.objects.push(obj);
     state.selectedId=obj.id;
     clearBoundaryValidationFeedback();
@@ -3186,8 +3195,57 @@
     });
   }
 
+  function selectedSingleScreenInk(){
+    if(state.printMethod!=='screen') return null;
+    const selection=window.WheelsScreenPrintSelection;
+    if(!selection || Number(selection.count)!==1) return null;
+    const colours=selection.colours;
+    if(!Array.isArray(colours) || colours.length!==1) return null;
+    const hex=String(colours[0].hex||'').toUpperCase();
+    return /^#[0-9A-F]{6}$/.test(hex) ? hex : null;
+  }
+
+  async function applySingleScreenInk(hex){
+    if(state.printMethod!=='screen' || !/^#[0-9A-F]{6}$/.test(hex||'')) return;
+
+    for(const obj of state.objects){
+      if(obj.type==='text'){
+        obj.color=hex;
+        continue;
+      }
+
+      if(obj.type==='image'){
+        // Preserve the current clean/base artwork (including any background
+        // removal already performed), then derive the one-colour proof from it.
+        const base=obj.preRecolorSrc || obj.src || obj.originalSrc;
+        if(!base) continue;
+        if(!obj.preRecolorSrc) obj.preRecolorSrc=base;
+        try{
+          obj.src=await recolorToSolid(obj.preRecolorSrc,hex);
+          obj.recolored=true;
+          obj.recolorColor=hex;
+        }catch(err){
+          console.error('Could not apply selected screen-print ink',err);
+        }
+      }
+    }
+
+    rebuildObjects();
+    if(typeof updatePreviewWindow==='function') updatePreviewWindow();
+  }
+
+  window.addEventListener('wheels:screenprintselection',(event)=>{
+    const detail=event.detail||{};
+    if(state.printMethod!=='screen') return;
+    if(Number(detail.count)!==1 || !Array.isArray(detail.colours) || detail.colours.length!==1) return;
+    const hex=String(detail.colours[0].hex||'').toUpperCase();
+    if(/^#[0-9A-F]{6}$/.test(hex)) applySingleScreenInk(hex);
+  });
+
   function addTextObject(text, opts){
     opts = opts || {};
+    const forcedInk=selectedSingleScreenInk();
+    if(forcedInk) opts.color=forcedInk;
     const obj = Object.assign({
       id:'obj'+(uidCounter++), type:'text', text: text,
       xPct:50, yPct:12, fontFamily:'Oswald', fontSize:34,
@@ -3630,13 +3688,26 @@
         bgBtn.disabled = true;
         bgBtn.textContent = 'Working...';
         try{
+          let baseSrc;
           if(obj.bgRemoved){
-            obj.src = obj.originalSrc;
+            baseSrc = obj.originalSrc;
             obj.bgRemoved = false;
           } else {
-            obj.src = await removeWhiteBackground(obj.originalSrc);
+            baseSrc = await removeWhiteBackground(obj.originalSrc);
             obj.bgRemoved = true;
           }
+
+          const forcedInk=selectedSingleScreenInk();
+          if(forcedInk){
+            obj.preRecolorSrc=baseSrc;
+            obj.src=await recolorToSolid(baseSrc,forcedInk);
+            obj.recolored=true;
+            obj.recolorColor=forcedInk;
+          }else{
+            obj.src=baseSrc;
+            if(obj.recolored) obj.preRecolorSrc=baseSrc;
+          }
+
           const imgEl = objLayer.querySelector(`.obj[data-id="${obj.id}"] img`);
           if(imgEl) imgEl.src = obj.src;
         } catch(err){
@@ -3701,8 +3772,9 @@
       const rcBtn = document.createElement('button');
       rcBtn.className='btn';
       rcBtn.style.width='100%';
-      rcBtn.disabled = !obj.recolored;
+      rcBtn.disabled = !obj.recolored || !!selectedSingleScreenInk();
       rcBtn.textContent = 'Restore Original Colours';
+      if(selectedSingleScreenInk()) rcBtn.title='Disabled while 1 Colour screen print is selected';
       rcBtn.addEventListener('click', ()=>{
         if(!obj.recolored) return;
         obj.src = obj.preRecolorSrc;
@@ -4031,7 +4103,13 @@
     const select = document.getElementById('printMethodSelect');
     const hint = document.getElementById('printMethodHint');
     if(!select) return;
-    select.value = state.printMethod;
+
+    // The dedicated screen-print page ships with value="screen".
+    // Respect that existing page value instead of overwriting it with the
+    // core's default "digital" before the page-specific script can run.
+    if(select.value === 'screen') state.printMethod = 'screen';
+    else select.value = state.printMethod;
+
     const refresh = ()=>{
       state.printMethod = select.value === 'screen' ? 'screen' : 'digital';
       if(hint) hint.textContent = state.printMethod === 'screen'
