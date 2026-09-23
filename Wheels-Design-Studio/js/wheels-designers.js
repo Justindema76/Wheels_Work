@@ -12,7 +12,7 @@
   }
 
   try{
-    const response=await fetch('js/wheels-designers-core.js?v=tangent-zones-1',{cache:'no-store'});
+    const response=await fetch('js/wheels-designers-core.js?v=guide-reset-20260923-1912',{cache:'no-store'});
     if(!response.ok) throw new Error('Could not load designer core: '+response.status);
 
     let source=await response.text();
