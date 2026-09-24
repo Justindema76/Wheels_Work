@@ -2643,13 +2643,10 @@
   function deriveFrameSnapZonesFromMask(mask){
     if(!mask) return [];
 
-    const xProbe=Math.round(VW/2);
-    const verticalRuns=maskRunVertical(mask,xProbe,0,VH-1);
-    if(!verticalRuns.length) return [];
-
     const zones=[];
 
     const makeFullHorizontalZone=(name,run)=>{
+      const xProbe=Math.round(VW/2);
       const centerY=Math.round((run.start+run.end)/2);
       const horizontal=maskRunHorizontal(mask,centerY,xProbe);
       if(!horizontal) return null;
@@ -2662,100 +2659,69 @@
       });
     };
 
-    const collectRunsByPredicate=(predicate)=>{
-      const runs=[];
-      let runStart=-1;
-      for(let x=0;x<VW;x++){
-        const on=!!predicate(x);
-        if(on && runStart<0) runStart=x;
-        if((!on || x===VW-1) && runStart>=0){
-          const runEnd=on && x===VW-1 ? x : x-1;
-          if(runEnd-runStart>=4) runs.push({left:runStart,right:runEnd});
-          runStart=-1;
-        }
-      }
-      return runs;
-    };
-
-    // TOP: derive the three rectangular snap boxes from the SAFE CONTOUR,
-    // exactly like a mechanical drawing.
+    // ================================================================
+    // TOP FRAME SNAP GEOMETRY — FIXED MECHANICAL ZONES
+    // ================================================================
+    // These three rectangles come from the actual LPF production geometry
+    // at the 800 x 400 design coordinate system after the 1 mm safe offset.
     //
-    // A column belongs to a top snap box only when:
-    //   1) the entire straight top band is printable material, AND
-    //   2) immediately below that band is the licence-plate opening.
+    // IMPORTANT:
+    // - They are deliberately NOT auto-detected from the mask.
+    // - They stop at the straight-line tangent boundaries BEFORE the
+    //   outer corner radii and mounting-boss radii begin.
+    // - The top geometry is common to LPF101–LPF104.
+    // - Left and right are exact mirrors.
     //
-    // That automatically stops each box at the tangent where an outer/inner
-    // radius or mounting boss begins. No guessed radii or arbitrary widths.
-    const topRun=verticalRuns[0];
-    const belowTopY=Math.min(
-      VH-1,
-      topRun.end + Math.max(2,Math.ceil(FRAME_SAFE_RADIUS_PX)+1)
-    );
+    // Production-safe rectangles:
+    //
+    //   TOP LEFT     x 25 → 142    y 2 → 27
+    //   TOP CENTRE   x 202 → 596   y 2 → 39
+    //   TOP RIGHT    x 657 → 774   y 2 → 27
+    //
+    // This is the three-box layout shown in the approved blue sketch.
+    const topLeft=finishSnapZone({
+      name:'top-left',
+      left:25,
+      right:142,
+      top:2,
+      bottom:27
+    });
 
-    const topRectRuns=collectRunsByPredicate((x)=>{
-      for(let y=topRun.start;y<=topRun.end;y++){
-        if(!mask[y*VW+x]) return false;
-      }
-      return !mask[belowTopY*VW+x];
-    }).filter(r=>r.right-r.left>=8);
+    const topCenter=finishSnapZone({
+      name:'top-center',
+      left:202,
+      right:596,
+      top:2,
+      bottom:39
+    });
 
-    if(topRectRuns.length>=3){
-      // Use the three mechanical rectangles from left to right.
-      const sorted=topRectRuns.slice().sort((a,b)=>a.left-b.left);
-      const leftRun=sorted[0];
-      const centerRun=sorted[Math.floor(sorted.length/2)];
+    const topRight=finishSnapZone({
+      name:'top-right',
+      left:(VW-1)-topLeft.right,
+      right:(VW-1)-topLeft.left,
+      top:topLeft.top,
+      bottom:topLeft.bottom
+    });
 
-      // Left box comes directly from the contour.
-      const topLeft=finishSnapZone({
-        name:'top-left',
-        left:leftRun.left,
-        right:leftRun.right,
-        top:topRun.start,
-        bottom:topRun.end
-      });
+    zones.push(topLeft,topCenter,topRight);
 
-      // Centre box is made perfectly symmetric about the frame centre.
-      const frameCenter=(VW-1)/2;
-      const half=Math.floor(Math.min(
-        frameCenter-centerRun.left,
-        centerRun.right-frameCenter
-      ));
-      const topCenter=finishSnapZone({
-        name:'top-center',
-        left:Math.ceil(frameCenter-half),
-        right:Math.floor(frameCenter+half),
-        top:topRun.start,
-        bottom:topRun.end
-      });
+    // ================================================================
+    // EXISTING BOTTOM / SIDE GEOMETRY
+    // ================================================================
+    // Leave the already-working lower/side logic alone. Only the top three
+    // zones above are fixed/hard-coded.
+    const xProbe=Math.round(VW/2);
+    const verticalRuns=maskRunVertical(mask,xProbe,0,VH-1);
 
-      // Right box is the exact mirror of the left box.
-      const topRight=finishSnapZone({
-        name:'top-right',
-        left:(VW-1)-topLeft.right,
-        right:(VW-1)-topLeft.left,
-        top:topLeft.top,
-        bottom:topLeft.bottom
-      });
-
-      zones.push(topLeft,topCenter,topRight);
-    } else {
-      // Fallback only if an SVG fails to rasterize as expected.
-      // Keep one mechanically valid centre box rather than inventing geometry.
-      const fallback=makeFullHorizontalZone('top-center',topRun);
-      if(fallback) zones.push(fallback);
-    }
-
-    // BOTTOM main box stays style-specific.
     let bottomZone=null;
     if(verticalRuns.length>1){
       bottomZone=makeFullHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
       if(bottomZone) zones.push(bottomZone);
     }
 
-    // LEFT / RIGHT vertical rails. They remain exact mirrors and stop before
-    // the top/bottom snap boxes so guide lines never bleed into another zone.
     const sideProbeY=Math.round(VH/2);
     const sideRuns=maskRunsHorizontal(mask,sideProbeY);
+
     if(sideRuns.length>=2){
       const leftRun=sideRuns[0];
       const leftCenterX=Math.round((leftRun.left+leftRun.right)/2);
@@ -2763,7 +2729,8 @@
       const containing=leftVerticalRuns.find(r=>sideProbeY>=r.start && sideProbeY<=r.end);
 
       if(containing){
-        const topLimit=topRun.end+Math.ceil(FRAME_SAFE_RADIUS_PX);
+        // Side rails begin below the shallow top-left/top-right boxes.
+        const topLimit=topLeft.bottom+Math.ceil(FRAME_SAFE_RADIUS_PX);
         const bottomLimit=bottomZone
           ? bottomZone.top-Math.ceil(FRAME_SAFE_RADIUS_PX)
           : containing.end;
