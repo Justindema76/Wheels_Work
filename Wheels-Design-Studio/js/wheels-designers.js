@@ -12,7 +12,7 @@
   }
 
   try{
-    const response=await fetch('js/wheels-designers-core.js?v=top-3-mechanical-zones-20260923-2004',{cache:'no-store'});
+    const response=await fetch('js/wheels-designers-core.js?v=preview-match-live-20260923-2147',{cache:'no-store'});
     if(!response.ok) throw new Error('Could not load designer core: '+response.status);
 
     let source=await response.text();
