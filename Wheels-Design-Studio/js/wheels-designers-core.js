@@ -2714,9 +2714,66 @@
     const verticalRuns=maskRunVertical(mask,xProbe,0,VH-1);
 
     let bottomZone=null;
-    if(verticalRuns.length>1){
-      bottomZone=makeFullHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
-      if(bottomZone) zones.push(bottomZone);
+
+    if(state.styleId==='104'){
+      // Style 104 bottom is the exact vertical mirror of the approved
+      // three top mechanical zones.
+      const bottomLeft=finishSnapZone({
+        name:'bottom-left',
+        left:topLeft.left,
+        right:topLeft.right,
+        top:(VH-1)-topLeft.bottom,
+        bottom:(VH-1)-topLeft.top
+      });
+
+      const bottomCenter=finishSnapZone({
+        name:'bottom-center',
+        left:topCenter.left,
+        right:topCenter.right,
+        top:(VH-1)-topCenter.bottom,
+        bottom:(VH-1)-topCenter.top
+      });
+
+      const bottomRight=finishSnapZone({
+        name:'bottom-right',
+        left:topRight.left,
+        right:topRight.right,
+        top:bottomLeft.top,
+        bottom:bottomLeft.bottom
+      });
+
+      zones.push(bottomLeft,bottomCenter,bottomRight);
+      bottomZone=bottomCenter;
+    } else {
+      // Existing bottom-center logic stays untouched for Style 101 and
+      // all other styles.
+      if(verticalRuns.length>1){
+        bottomZone=makeFullHorizontalZone('bottom',verticalRuns[verticalRuns.length-1]);
+        if(bottomZone) zones.push(bottomZone);
+      }
+
+      if(state.styleId==='101'){
+        // Style 101 already has its working large bottom-center zone.
+        // Add ONLY the two missing side boxes, mirrored from the approved
+        // top-left / top-right mechanical zones.
+        const bottomLeft=finishSnapZone({
+          name:'bottom-left',
+          left:topLeft.left,
+          right:topLeft.right,
+          top:(VH-1)-topLeft.bottom,
+          bottom:(VH-1)-topLeft.top
+        });
+
+        const bottomRight=finishSnapZone({
+          name:'bottom-right',
+          left:topRight.left,
+          right:topRight.right,
+          top:bottomLeft.top,
+          bottom:bottomLeft.bottom
+        });
+
+        zones.push(bottomLeft,bottomRight);
+      }
     }
 
     const sideProbeY=Math.round(VH/2);
