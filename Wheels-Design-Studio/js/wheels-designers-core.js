@@ -3944,48 +3944,108 @@
   // canvas at the given scale and hands it to callback(canvas). Shared by
   // the download button and the live preview window so they never drift
   // out of sync with each other.
+  // Render the proof/export with the SAME geometry used by the live designer.
+  // The frame is still the actual imported LPF production SVG. Artwork is
+  // rendered from the same x/y/size state, and text uses the exact live CSS
+  // font-size and line-height math instead of a second 85%-scaled version.
   function renderFullDesignToCanvas(scale, callback){
-    const cvs = document.createElement('canvas');
-    cvs.width = VW*scale; cvs.height = VH*scale;
-    const ctx = cvs.getContext('2d');
-    drawPlate(ctx, state.styleId, state.color, scale, state.bottomHoles);
+    (async()=>{
+      const cvs=document.createElement('canvas');
+      cvs.width=VW*scale;
+      cvs.height=VH*scale;
+      const ctx=cvs.getContext('2d');
 
-    let pending = state.objects.filter(o=>o.type==='image').length;
-    const finish = ()=>{
-      state.objects.forEach(obj=>{
-        if(obj.type!=='text') return;
+      // The licence-frame renderer uses an asynchronously loaded production
+      // SVG. Make sure that exact asset is ready before drawing any artwork,
+      // otherwise its late paint can clear artwork that was already drawn.
+      if(state.plateType==='frame'){
+        const frameImg=loadProductionFrame(state.styleId,state.color);
+        await waitForImage(frameImg);
+      }
+
+      drawPlate(ctx,state.styleId,state.color,scale,state.bottomHoles);
+
+      // Uploaded artwork uses the same percentage box as the live DOM layer.
+      for(const obj of state.objects){
+        if(obj.type!=='image') continue;
+
+        await new Promise((resolve)=>{
+          const img=new Image();
+          img.onload=()=>{
+            const x=obj.xPct/100*VW*scale;
+            const y=obj.yPct/100*VH*scale;
+            const w=obj.wPct/100*VW*scale;
+            const h=obj.hPct/100*VH*scale;
+            ctx.drawImage(img,x,y,w,h);
+            resolve();
+          };
+          img.onerror=()=>{
+            console.error('Could not render artwork in preview/export:',obj.originalFileName||obj.id);
+            resolve();
+          };
+          img.src=obj.src;
+        });
+      }
+
+      // Live CSS uses: font-size = obj.fontSize * 0.125cqw.
+      // At the 800-unit design width, that is exactly obj.fontSize logical px.
+      // It also uses line-height:1.05. Match those values here exactly.
+      for(const obj of state.objects){
+        if(obj.type!=='text') continue;
+
+        const fontPx=obj.fontSize*scale;
+        const fontStyle=obj.italic ? 'italic' : 'normal';
+        const fontWeight=obj.bold ? '700' : '400';
+        const fontSpec=`${fontStyle} ${fontWeight} ${fontPx}px '${obj.fontFamily}', sans-serif`;
+
+        try{
+          if(document.fonts && document.fonts.load){
+            await document.fonts.load(fontSpec);
+          }
+        }catch(_){}
+
         ctx.save();
-        const fontStyle = obj.italic ? 'italic' : 'normal';
-        ctx.font = `${fontStyle} ${obj.bold?'700':'400'} ${obj.fontSize*scale*0.85}px '${obj.fontFamily}', sans-serif`;
-        ctx.fillStyle = obj.color;
-        ctx.textAlign = obj.align;
-        ctx.textBaseline = 'middle';
-        const x = obj.xPct/100*VW*scale;
-        const y = obj.yPct/100*VH*scale;
-        const displayText = obj.caps ? (obj.text||'').toUpperCase() : obj.text;
-        const lines = displayText.split('\n');
-        const lh = obj.fontSize*scale*0.85*1.15;
-        const startY = y - (lh*(lines.length-1))/2;
-        ctx.translate(x, y);
-        ctx.scale(1, 1);
-        ctx.translate(-x, -y);
-        lines.forEach((line,i)=> ctx.fillText(line, x, startY+i*lh));
+        ctx.font=fontSpec;
+        ctx.fillStyle=obj.color;
+        ctx.textBaseline='middle';
+
+        const x=obj.xPct/100*VW*scale;
+        const y=obj.yPct/100*VH*scale;
+        const displayText=obj.caps ? (obj.text||'').toUpperCase() : (obj.text||'');
+        const lines=displayText.split('\n');
+        const lineHeight=fontPx*1.05;
+
+        // The live .obj wrapper is translate(-50%,-50%), so its intrinsic
+        // text block is centred on x/y. Reproduce that block geometry here.
+        const widths=lines.map(line=>ctx.measureText(line).width);
+        const blockWidth=Math.max(0,...widths);
+        const blockHeight=Math.max(lineHeight,lineHeight*lines.length);
+        const left=x-blockWidth/2;
+        const top=y-blockHeight/2;
+
+        lines.forEach((line,index)=>{
+          let lineX=x;
+          if(obj.align==='left'){
+            ctx.textAlign='left';
+            lineX=left;
+          }else if(obj.align==='right'){
+            ctx.textAlign='right';
+            lineX=left+blockWidth;
+          }else{
+            ctx.textAlign='center';
+            lineX=x;
+          }
+
+          const lineY=top+(index+.5)*lineHeight;
+          ctx.fillText(line,lineX,lineY);
+        });
+
         ctx.restore();
-      });
+      }
+
       callback(cvs);
-    };
-    if(pending===0){ finish(); return; }
-    state.objects.forEach(obj=>{
-      if(obj.type!=='image') return;
-      const img = new Image();
-      img.onload = ()=>{
-        const x = obj.xPct/100*VW*scale, y = obj.yPct/100*VH*scale;
-        const w = obj.wPct/100*VW*scale, h = obj.hPct/100*VH*scale;
-        ctx.drawImage(img, x, y, w, h);
-        pending--;
-        if(pending===0) finish();
-      };
-      img.src = obj.src;
+    })().catch(err=>{
+      console.error('Could not render design preview/export:',err);
     });
   }
 
