@@ -2456,6 +2456,18 @@
     });
   }
 
+  // The screen-print Lexan Styles 101–104 use the exact same physical
+  // geometry as Licence Plate Frame Styles 101–104. Reuse the existing
+  // 1 mm production-safe contour and local snap zones for those four only.
+  // Digital Lexan and Lexan Styles 105–108 remain unchanged.
+  function usesFrameBoundaryGeometry(){
+    return state.plateType==='frame' || (
+      state.plateType==='cover' &&
+      state.printMethod==='screen' &&
+      ['101','102','103','104'].includes(state.styleId)
+    );
+  }
+
   function erodeMaterialMask(material,w,h,radius){
     const safe=new Uint8Array(w*h);
     const r=Math.ceil(radius);
@@ -2484,7 +2496,7 @@
   }
 
   async function getFrameSafeMask(){
-    if(state.plateType!=='frame') return null;
+    if(!usesFrameBoundaryGeometry()) return null;
     const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
     if(frameSafeMaskCache.has(key)) return frameSafeMaskCache.get(key);
 
@@ -2543,12 +2555,12 @@
     const cvs=ensureFrameContourCanvas();
     const cx=cvs.getContext('2d');
     cx.clearRect(0,0,VW,VH);
-    cvs.style.display=state.plateType==='frame' ? 'block' : 'none';
-    if(state.plateType!=='frame') return;
+    cvs.style.display=usesFrameBoundaryGeometry() ? 'block' : 'none';
+    if(!usesFrameBoundaryGeometry()) return;
 
     const safe=await getFrameSafeMask();
     // State may have changed while the SVG was loading.
-    if(state.plateType!=='frame') return;
+    if(!usesFrameBoundaryGeometry()) return;
 
     const zoneKey=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
     frameSnapZoneCache.set(zoneKey,deriveFrameSnapZonesFromMask(safe));
@@ -2818,7 +2830,7 @@
   }
 
   async function ensureFrameSnapZones(){
-    if(state.plateType!=='frame') return [];
+    if(!usesFrameBoundaryGeometry()) return [];
     const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
     if(frameSnapZoneCache.has(key)) return frameSnapZoneCache.get(key);
 
@@ -2829,7 +2841,7 @@
   }
 
   function frameSnapZones(){
-    if(state.plateType!=='frame') return [];
+    if(!usesFrameBoundaryGeometry()) return [];
     const key=state.styleId+'|'+(state.bottomHoles?'holes':'noholes');
     return frameSnapZoneCache.get(key) || [];
   }
@@ -2921,7 +2933,7 @@
     const aspect=naturalW/naturalH;
     const k=(VW/VH)/aspect;
 
-    if(state.plateType==='frame'){
+    if(usesFrameBoundaryGeometry()){
       const zones=frameSnapZones();
       const zone=zones.find(z=>z.name==='bottom') || zones[0];
       if(zone){
@@ -3035,7 +3047,7 @@
 
   async function validateArtworkBeforeProduction(){
     clearBoundaryValidationFeedback();
-    if(state.plateType!=='frame' || state.objects.length===0) return true;
+    if(!usesFrameBoundaryGeometry() || state.objects.length===0) return true;
 
     const safeMask=await getFrameSafeMask();
     const invalid=[];
@@ -3129,7 +3141,7 @@
 
   // ---------------- object creation ----------------
   async function addImageObject(src, naturalW, naturalH, originalFile){
-    if(state.plateType==='frame') await ensureFrameSnapZones();
+    if(usesFrameBoundaryGeometry()) await ensureFrameSnapZones();
     const fitted=fitImageForInitialPlacement(naturalW,naturalH);
     const obj = {
       id:'obj'+(uidCounter++), type:'image', src, originalSrc: src, originalFileName: originalFile?.name || 'uploaded-logo', originalFileType: originalFile?.type || '', originalFileData: src, bgRemoved:false,
@@ -3151,7 +3163,7 @@
     clearBoundaryValidationFeedback();
     rebuildObjects();
 
-    if(state.plateType==='frame'){
+    if(usesFrameBoundaryGeometry()){
       const zone=nearestLocalZoneForObject(obj);
       if(zone){
         showLocalSnapGuides(zone,true,true);
@@ -3396,7 +3408,7 @@
     const centerX=obj.type==='image' ? nx+obj.wPct/2 : nx;
     const centerY=obj.type==='image' ? ny+obj.hPct/2 : ny;
     const threshold=Math.max(FRAME_SNAP_THRESHOLD_PCT,10/rect.width*100);
-    const zone=state.plateType==='frame' ? snapZoneForPoint(centerX,centerY,threshold) : null;
+    const zone=usesFrameBoundaryGeometry() ? snapZoneForPoint(centerX,centerY,threshold) : null;
 
     let snapX=false, snapY=false;
     if(zone){
