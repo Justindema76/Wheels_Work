@@ -358,3 +358,193 @@ body.designer-frame #plate-frame-designer .workspace-kicker{
     background:#fff;
   }
 }
+
+
+/* =========================================================
+   WORKSPACE FIT + COMPACT CONTROLS
+   Keep the full frame visible on shorter desktop screens.
+   ========================================================= */
+
+/* Frame colour is a simple 3-choice material selector; do not waste
+   a large product-card row on it. */
+body.designer-frame #plate-frame-designer #colourDock .swatch-row{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:8px !important;
+  width:100% !important;
+}
+
+body.designer-frame #plate-frame-designer #colourDock .swatch{
+  min-height:40px !important;
+  padding:6px 10px !important;
+  flex-direction:row !important;
+  justify-content:center !important;
+  gap:8px !important;
+  font-size:11px !important;
+}
+
+body.designer-frame #plate-frame-designer #colourDock .swatch-dot{
+  width:18px !important;
+  height:18px !important;
+  flex:0 0 18px !important;
+}
+
+/* Give white/silver frames enough contrast to read without changing
+   the production artwork itself. This is editor background only. */
+body.designer-frame #plate-frame-designer .stage-wrap{
+  background-color:#dde2e8 !important;
+  background-image:
+    linear-gradient(45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(-45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#cfd5dd 75%),
+    linear-gradient(-45deg,transparent 75%,#cfd5dd 75%) !important;
+  background-size:28px 28px !important;
+  background-position:0 0,0 14px,14px -14px,-14px 0 !important;
+}
+
+/* Desktop canvas is constrained by BOTH centre-column width and
+   usable viewport height. 800:400 = 2:1, so available height × 2
+   gives the largest width that can fit vertically. */
+@media (min-width:961px){
+  body.designer-frame #plate-frame-designer #stage{
+    width:min(
+      980px,
+      100%,
+      calc((100vh - 320px) * 2)
+    ) !important;
+    min-width:420px;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row{
+    padding:12px 20px 9px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row h1{
+    font-size:21px !important;
+    line-height:1.05 !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row p{
+    margin-top:2px !important;
+    font-size:11px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .workspace-kicker{
+    margin-bottom:2px !important;
+    font-size:9.5px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock{
+    padding:8px 20px 9px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock .panel-block{
+    gap:6px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-wrap{
+    padding:14px 18px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .hint{
+    padding:4px 20px 8px !important;
+    font-size:9.5px !important;
+    line-height:1.2 !important;
+  }
+}
+
+/* On short laptop/secondary-display viewports, compact the chrome
+   further instead of forcing page scroll or cropping the frame. */
+@media (min-width:961px) and (max-height:820px){
+  body.designer-frame #plate-frame-designer.frame-workspace-app{
+    grid-template-rows:52px minmax(0,1fr) !important;
+  }
+
+  body.designer-frame #plate-frame-designer .studio-toolbar{
+    min-height:52px !important;
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row{
+    padding:8px 18px 6px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row h1{
+    font-size:19px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-col .brand-row p{
+    display:none !important;
+  }
+
+  body.designer-frame #plate-frame-designer .workspace-kicker{
+    font-size:8.5px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock{
+    padding:6px 18px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock .panel-label{
+    font-size:10px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock .swatch{
+    min-height:34px !important;
+    padding:4px 8px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #colourDock .swatch-dot{
+    width:15px !important;
+    height:15px !important;
+    flex-basis:15px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .stage-wrap{
+    padding:10px 16px !important;
+  }
+
+  body.designer-frame #plate-frame-designer #stage{
+    width:min(
+      940px,
+      100%,
+      calc((100vh - 255px) * 2)
+    ) !important;
+  }
+
+  body.designer-frame #plate-frame-designer .hint{
+    display:none !important;
+  }
+
+  body.designer-frame #plate-frame-designer .frame-tools{
+    padding-top:12px !important;
+    padding-bottom:12px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .frame-tools .panel-block{
+    padding:9px 0 !important;
+    gap:6px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .frame-tools .style-btn{
+    padding:4px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .inspector-top{
+    padding:10px 12px 0 !important;
+  }
+
+  body.designer-frame #plate-frame-designer .inspector-title{
+    margin-bottom:6px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .inspector-tab{
+    min-height:32px !important;
+    padding:5px 4px !important;
+  }
+
+  body.designer-frame #plate-frame-designer .inspector-pane{
+    padding:12px !important;
+  }
+}
