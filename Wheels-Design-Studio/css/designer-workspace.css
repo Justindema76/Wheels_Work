@@ -1,0 +1,671 @@
+/* =========================================================
+   WHEELS DESIGN STUDIO — GLOBAL BUILDER WORKSPACE
+   One layout for Frame, Lexan, Plate Sign and Motorcycle.
+   Product drawing/production logic remains in wheels-designers-core.js.
+   ========================================================= */
+
+:root{
+  --workspace-toolbar:54px;
+  --workspace-left:280px;
+  --workspace-right:320px;
+  --workspace-line:#dedfe3;
+  --workspace-bg:#eef0f3;
+  --workspace-panel:#fff;
+  --workspace-muted:#77808d;
+  --workspace-red:#c9171f;
+}
+
+html,body{height:100%;}
+
+body[data-designer]{
+  margin:0;
+  overflow:hidden;
+  background:var(--workspace-bg);
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace{
+  display:grid !important;
+  grid-template-columns:var(--workspace-left) minmax(0,1fr) var(--workspace-right) !important;
+  grid-template-rows:var(--workspace-toolbar) minmax(0,1fr) !important;
+  width:100% !important;
+  max-width:none !important;
+  height:100vh !important;
+  min-height:100vh !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  background:var(--workspace-bg) !important;
+}
+
+/* ---------- GLOBAL TOP BAR ---------- */
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-toolbar{
+  grid-column:1 / -1 !important;
+  grid-row:1 !important;
+  min-height:var(--workspace-toolbar) !important;
+  height:var(--workspace-toolbar) !important;
+  padding:7px 14px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  background:#111216 !important;
+  border-bottom:1px solid #292c34 !important;
+  color:#fff !important;
+  z-index:50;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-brand{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  color:#fff !important;
+  text-decoration:none !important;
+  font:800 14px 'Inter',sans-serif !important;
+  white-space:nowrap;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-mark{
+  width:28px !important;
+  height:28px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:8px !important;
+  background:#df242b !important;
+  color:#fff !important;
+  font-weight:900 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-actions{
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  min-width:0;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-actions .btn{
+  min-height:34px !important;
+  padding:7px 11px !important;
+  font-size:12px !important;
+  white-space:nowrap;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .studio-actions #openPreviewBtn,
+body[data-designer] #plate-frame-designer.builder-workspace .studio-actions #topPreviewBtn{
+  color:#17181c !important;
+  background:#fff !important;
+  border-color:#d9d9d9 !important;
+}
+
+/* ---------- LEFT TOOL RAIL ---------- */
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools{
+  grid-column:1 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:16px 18px 24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:0 !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain;
+  background:var(--workspace-panel) !important;
+  border:0 !important;
+  border-right:1px solid var(--workspace-line) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools > .panel-block{
+  margin:0 !important;
+  padding:12px 0 !important;
+  gap:7px !important;
+  border:0 !important;
+  border-bottom:1px solid #ececef !important;
+  background:transparent !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools > .panel-block:first-child{
+  padding-top:0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools > .panel-block:last-child{
+  border-bottom:0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .panel-label{
+  font-size:11px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .field{
+  gap:4px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .field label,
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .field-hint{
+  font-size:10px !important;
+  line-height:1.35 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools select,
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools input[type="text"],
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools input[type="number"]{
+  min-height:34px !important;
+  padding:6px 9px !important;
+  font-size:12px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .btn-row{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .btn-row .btn{
+  width:100% !important;
+  min-height:42px !important;
+  padding:8px !important;
+  font-size:12px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .bottom-hole-option{
+  min-width:0 !important;
+  width:100% !important;
+  padding:9px 10px !important;
+  font-size:11px !important;
+}
+
+/* Product/style selectors live in the same left rail on every builder. */
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .style-row{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .style-btn{
+  min-width:0 !important;
+  padding:5px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .style-btn canvas{
+  width:100% !important;
+  height:auto !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-tools .style-btn span{
+  margin-top:2px !important;
+  font-size:9px !important;
+}
+
+/* ---------- CENTER WORKSPACE ---------- */
+
+body[data-designer] #plate-frame-designer.builder-workspace .stage-col{
+  grid-column:2 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  gap:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  background:#f2f4f7 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row{
+  flex:0 0 auto !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:9px 16px 7px !important;
+  background:#fff !important;
+  border-bottom:1px solid var(--workspace-line) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .workspace-kicker{
+  display:block !important;
+  margin:0 0 1px !important;
+  color:#747c89 !important;
+  font-size:8px !important;
+  font-weight:700 !important;
+  letter-spacing:.07em !important;
+  text-transform:uppercase !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row h1{
+  margin:0 !important;
+  font-family:'Oswald',sans-serif !important;
+  font-size:19px !important;
+  font-weight:600 !important;
+  line-height:1.05 !important;
+  letter-spacing:.01em !important;
+  text-transform:uppercase !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row h1 span{
+  color:var(--workspace-red) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row p{
+  margin:2px 0 0 !important;
+  color:#8a929f !important;
+  font-size:10px !important;
+  line-height:1.25 !important;
+}
+
+/* Colour controls use the same compact dock on every builder. */
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock{
+  flex:0 0 auto !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:7px 16px !important;
+  background:#fff !important;
+  border-bottom:1px solid var(--workspace-line) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock > .panel-block,
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .below-stage-controls > .panel-block{
+  margin:0 !important;
+  padding:0 !important;
+  gap:5px !important;
+  border:0 !important;
+  background:transparent !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .panel-label{
+  font-size:10px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .swatch-row{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:7px !important;
+  width:100% !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .swatch{
+  min-height:32px !important;
+  padding:4px 8px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  font-size:10px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .swatch-dot{
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 14px !important;
+}
+
+/* Lexan/plate colour palettes are horizontal, not tall multi-row blocks. */
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .swatch-grid{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:5px !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:2px 2px 4px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  scrollbar-width:thin;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .swatch-chip{
+  width:26px !important;
+  height:26px !important;
+  flex:0 0 26px !important;
+  min-height:0 !important;
+  aspect-ratio:auto !important;
+  border-radius:5px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #colourDock .below-stage-controls{
+  width:100% !important;
+  max-width:none !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:14px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+}
+
+/* Main design surface */
+body[data-designer] #plate-frame-designer.builder-workspace .stage-wrap{
+  position:relative !important;
+  top:auto !important;
+  flex:1 1 auto !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:12px 16px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  border-radius:0 !important;
+  background-color:#dde2e8 !important;
+  background-image:
+    linear-gradient(45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(-45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#cfd5dd 75%),
+    linear-gradient(-45deg,transparent 75%,#cfd5dd 75%) !important;
+  background-size:24px 24px !important;
+  background-position:0 0,0 12px,12px -12px,-12px 0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #stage{
+  position:relative !important;
+  width:min(940px,100%) !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  height:auto !important;
+  filter:drop-shadow(0 12px 24px rgba(0,0,0,.20)) !important;
+}
+
+/* Fit by height as well as width. Ratios match each current engine. */
+body.designer-frame #plate-frame-designer.builder-workspace #stage,
+body.designer-lexan #plate-frame-designer.builder-workspace #stage,
+body.designer-plate-cover #plate-frame-designer.builder-workspace #stage{
+  width:min(940px,100%,calc((100vh - 235px) * 1.98)) !important;
+}
+
+body.designer-motorcycle #plate-frame-designer.builder-workspace #stage{
+  width:min(900px,100%,calc((100vh - 235px) * 1.75)) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .hint{
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:4px 16px 7px !important;
+  color:#818997 !important;
+  font-size:9px !important;
+  line-height:1.2 !important;
+}
+
+/* ---------- RIGHT INSPECTOR ---------- */
+
+body[data-designer] #plate-frame-designer.builder-workspace .builder-inspector{
+  grid-column:3 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  background:#fff !important;
+  border-left:1px solid var(--workspace-line) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-top{
+  flex:0 0 auto !important;
+  padding:10px 10px 0 !important;
+  background:#fff !important;
+  border-bottom:1px solid var(--workspace-line) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-title{
+  margin:0 0 6px !important;
+  font:600 11px 'Oswald',sans-serif !important;
+  letter-spacing:.08em !important;
+  text-transform:uppercase !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-tabs{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:4px !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-tab{
+  min-height:32px !important;
+  padding:5px 4px !important;
+  border:1px solid #e4e4e4 !important;
+  border-bottom:3px solid transparent !important;
+  border-radius:7px 7px 0 0 !important;
+  background:#fff !important;
+  color:#6f7783 !important;
+  font:600 11px 'Inter',sans-serif !important;
+  cursor:pointer;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-tab.active{
+  color:#17181c !important;
+  border-bottom-color:var(--workspace-red) !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-body{
+  position:relative !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane{
+  display:none !important;
+  position:absolute !important;
+  inset:0 !important;
+  padding:12px !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane.active{
+  display:block !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #objPanelHost{
+  display:block !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #objPanelHost .obj-panel{
+  margin:0 !important;
+  padding:12px !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:#e5e4e0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .object-empty{
+  padding:22px 12px !important;
+  border:1px dashed #cfd3da !important;
+  border-radius:9px !important;
+  background:#fafbfc !important;
+  color:#7e8794 !important;
+  font-size:11px !important;
+  line-height:1.45 !important;
+  text-align:center !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace #objPanelHost:not(:empty) + .object-empty{
+  display:none !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane .panel-block{
+  margin:0 0 14px !important;
+  padding:0 0 14px !important;
+  gap:7px !important;
+  border:0 !important;
+  border-bottom:1px solid #ececef !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane .panel-block:last-child{
+  margin-bottom:0 !important;
+  border-bottom:0 !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane hr.div{
+  display:none !important;
+}
+
+body[data-designer] #plate-frame-designer.builder-workspace .layers-list{
+  max-height:none !important;
+}
+
+/* ---------- SHORT DESKTOPS ---------- */
+
+@media (min-width:961px) and (max-height:760px){
+  :root{--workspace-toolbar:50px;}
+
+  body[data-designer] #plate-frame-designer.builder-workspace .studio-toolbar{
+    padding-top:5px !important;
+    padding-bottom:5px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row{
+    padding:6px 14px 5px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row h1{
+    font-size:17px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row p{
+    display:none !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace #colourDock{
+    padding:5px 14px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-wrap{
+    padding:8px 12px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .hint{
+    display:none !important;
+  }
+
+  body.designer-frame #plate-frame-designer.builder-workspace #stage,
+  body.designer-lexan #plate-frame-designer.builder-workspace #stage,
+  body.designer-plate-cover #plate-frame-designer.builder-workspace #stage{
+    width:min(900px,100%,calc((100vh - 190px) * 1.98)) !important;
+  }
+
+  body.designer-motorcycle #plate-frame-designer.builder-workspace #stage{
+    width:min(860px,100%,calc((100vh - 190px) * 1.75)) !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .builder-tools{
+    padding:10px 14px 18px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .builder-tools > .panel-block{
+    padding:8px 0 !important;
+  }
+}
+
+/* ---------- NARROW DESKTOP ---------- */
+
+@media (min-width:961px) and (max-width:1180px){
+  :root{
+    --workspace-left:245px;
+    --workspace-right:285px;
+  }
+}
+
+/* ---------- TABLET / MOBILE ---------- */
+
+@media (max-width:960px){
+  body[data-designer]{
+    overflow:auto !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace{
+    display:flex !important;
+    flex-direction:column !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:100vh !important;
+    overflow:visible !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .studio-toolbar{
+    position:sticky !important;
+    top:0 !important;
+    width:100% !important;
+    order:0 !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-col{
+    order:1 !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:0 !important;
+    overflow:visible !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .builder-tools{
+    order:2 !important;
+    width:100% !important;
+    height:auto !important;
+    max-width:none !important;
+    overflow:visible !important;
+    border-right:0 !important;
+    border-top:1px solid var(--workspace-line) !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .builder-inspector{
+    order:3 !important;
+    width:100% !important;
+    min-height:380px !important;
+    border-left:0 !important;
+    border-top:1px solid var(--workspace-line) !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .inspector-body{
+    min-height:340px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .inspector-pane{
+    position:relative !important;
+    min-height:340px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-wrap{
+    min-height:260px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace #stage{
+    width:min(760px,100%) !important;
+  }
+}
+
+@media (max-width:640px){
+  body[data-designer] #plate-frame-designer.builder-workspace .studio-actions .btn{
+    display:none !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .studio-actions #openPreviewBtn,
+  body[data-designer] #plate-frame-designer.builder-workspace .studio-actions #topPreviewBtn{
+    display:inline-flex !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-col .brand-row{
+    padding:10px 12px 8px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace #colourDock{
+    padding:7px 12px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace #colourDock .below-stage-controls{
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .stage-wrap{
+    padding:12px !important;
+  }
+
+  body[data-designer] #plate-frame-designer.builder-workspace .builder-tools{
+    padding:12px !important;
+  }
+}
