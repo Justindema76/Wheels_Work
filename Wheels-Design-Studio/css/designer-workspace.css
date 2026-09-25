@@ -669,3 +669,35 @@ body[data-designer] #plate-frame-designer.builder-workspace .layers-list{
     padding:12px !important;
   }
 }
+
+
+/* ---------- PLATE + MOTORCYCLE COLOUR PALETTES ---------- */
+/* These products have full background/border colour charts. Keep each
+   chart inside its own column and wrap the chips into visible rows. */
+body.designer-plate-cover #plate-frame-designer.builder-workspace #colourDock .swatch-grid,
+body.designer-motorcycle #plate-frame-designer.builder-workspace #colourDock .swatch-grid{
+  display:grid !important;
+  grid-template-columns:repeat(auto-fill,26px) !important;
+  justify-content:start !important;
+  align-content:start !important;
+  gap:5px !important;
+  width:100% !important;
+  max-width:100% !important;
+  margin:0 !important;
+  padding:2px 0 !important;
+  overflow:visible !important;
+}
+
+body.designer-plate-cover #plate-frame-designer.builder-workspace #colourDock .below-stage-controls > .panel-block,
+body.designer-motorcycle #plate-frame-designer.builder-workspace #colourDock .below-stage-controls > .panel-block{
+  min-width:0 !important;
+}
+
+body.designer-plate-cover #plate-frame-designer.builder-workspace #colourDock .swatch-chip,
+body.designer-motorcycle #plate-frame-designer.builder-workspace #colourDock .swatch-chip{
+  width:26px !important;
+  height:26px !important;
+  min-width:26px !important;
+  min-height:26px !important;
+  margin:0 !important;
+}
