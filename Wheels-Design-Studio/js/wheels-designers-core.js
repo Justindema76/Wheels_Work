@@ -1980,14 +1980,16 @@
   };
 
   // The eight Lexan layouts shown in the approved style selector.
-  const LEXAN_PRODUCT_CFG = (window.WHEELS_DESIGNER_PRODUCTS && window.WHEELS_DESIGNER_PRODUCTS.lexan) || {};
-  const LEXAN_STYLE_CFG = LEXAN_PRODUCT_CFG.styles || {
-    '105': { radius:32, holes:'top2', insetT:49, insetB:44, bandLayout:'frame101', label:'Style 105' },
-    '106': { radius:30, holes:'top2', insetT:48, insetB:91, bandLayout:'frame102', label:'Style 106' },
-    '107': { radius:30, holes:'top2', insetT:49, insetB:109, bandLayout:'frame103', label:'Style 107' },
-    '108': { radius:24, holes:'four', insetT:42, insetB:40, bandLayout:'frame104', label:'Style 108' }
+  const LEXAN_STYLE_CFG = {
+    '101': { radius:32, holes:'top2', insetT:49, insetB:44, frameStyle:'101', label:'Style 101' },
+    '102': { radius:30, holes:'top2', insetT:48, insetB:91, frameStyle:'102', label:'Style 102' },
+    '103': { radius:30, holes:'top2', insetT:49, insetB:109, frameStyle:'103', label:'Style 103' },
+    '104': { radius:24, holes:'four', insetT:42, insetB:40, frameStyle:'104', label:'Style 104' },
+    '105': { radius:32, holes:'top2', insetT:49, insetB:44, label:'Style 105' },
+    '106': { radius:30, holes:'top2', insetT:48, insetB:91, label:'Style 106' },
+    '107': { radius:30, holes:'top2', insetT:49, insetB:109, label:'Style 107' },
+    '108': { radius:24, holes:'four', insetT:42, insetB:40, label:'Style 108' }
   };
-  const DEFAULT_LEXAN_STYLE = LEXAN_PRODUCT_CFG.defaultStyle || Object.keys(LEXAN_STYLE_CFG)[0] || '106';
 
   function roundedRectPath(x,y,w,h,r){
     const p = new Path2D();
@@ -2400,7 +2402,7 @@
   let uidCounter = 0;
   const state = {
     plateType: IS_LEXAN ? 'cover' : 'frame',
-    styleId: IS_LEXAN ? DEFAULT_LEXAN_STYLE : '101',
+    styleId: '101',
     color: 'black',
     bottomHoles: false,
     printMethod: 'digital',
@@ -3974,7 +3976,7 @@
   function clearDesigner(){
     hideSnapGuides();
     state.plateType = IS_LEXAN ? 'cover' : 'frame';
-    state.styleId = IS_LEXAN ? DEFAULT_LEXAN_STYLE : '101';
+    state.styleId = '101';
     state.color = 'black';
     state.bottomHoles = false;
     state.objects = [];
