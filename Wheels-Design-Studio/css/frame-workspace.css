@@ -548,3 +548,397 @@ body.designer-frame #plate-frame-designer .stage-wrap{
     padding:12px !important;
   }
 }
+
+
+/* =========================================================
+   SHARED PRODUCT WORKSPACE
+   Plate Sign + Motorcycle Plate Cover use the same shell as Frame.
+   Product geometry remains controlled by each designer's existing JS.
+   ========================================================= */
+body.designer-plate-cover,
+body.designer-motorcycle{
+  background:#eef0f3;
+  overflow:hidden;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer.frame-workspace-app{
+  width:100%;
+  max-width:none;
+  height:100vh;
+  min-height:100vh;
+  margin:0;
+  background:#eef0f3 !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools,
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-inspector{
+  background:#fff;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools{
+  padding:18px;
+  border-right:1px solid var(--line);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools .panel-block{
+  padding:12px 0;
+  margin:0;
+  border-bottom:1px solid #eceae4;
+  gap:8px;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools .panel-block:first-child{
+  padding-top:0;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools .panel-block:last-child{
+  border-bottom:0;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col{
+  min-width:0;
+  background:#f2f4f7 !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row{
+  flex:0 0 auto;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock{
+  flex:0 0 auto;
+  width:100%;
+  padding:10px 20px !important;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock .below-stage-controls{
+  width:100% !important;
+  max-width:none !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:14px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock .below-stage-controls .panel-block{
+  gap:6px !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock .swatch-grid{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap:6px !important;
+  margin:0 !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock .swatch-chip{
+  width:28px !important;
+  height:28px !important;
+  flex:0 0 28px !important;
+  aspect-ratio:auto !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-wrap{
+  flex:1 1 auto;
+  min-height:0;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:18px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background-color:#dde2e8 !important;
+  background-image:
+    linear-gradient(45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(-45deg,#cfd5dd 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#cfd5dd 75%),
+    linear-gradient(-45deg,transparent 75%,#cfd5dd 75%) !important;
+  background-size:28px 28px !important;
+  background-position:0 0,0 14px,14px -14px,-14px 0 !important;
+  border-radius:0 !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #stage{
+  width:min(900px,100%) !important;
+  max-width:100% !important;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-inspector{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  border-left:1px solid var(--line);
+  overflow:hidden;
+  background:#fff;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-top{
+  flex:0 0 auto;
+  padding:16px 16px 0;
+  border-bottom:1px solid var(--line);
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-title{
+  margin:0 0 12px;
+  font-family:'Oswald',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-tab{
+  min-height:38px;
+  padding:8px 6px;
+  border:0;
+  border-bottom:3px solid transparent;
+  background:transparent;
+  color:#737b88;
+  font:600 12px 'Inter',sans-serif;
+  cursor:pointer;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-tab.active{
+  color:var(--ink);
+  border-bottom-color:var(--red);
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-body{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane{
+  display:none;
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:18px;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane.active{
+  display:block;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #objPanelHost .obj-panel{
+  margin:0;
+  border:0;
+  border-radius:0;
+  padding:0;
+  background:#fff;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .object-empty{
+  padding:22px 14px;
+  border:1px dashed #cfd3da;
+  border-radius:10px;
+  color:#7f8794;
+  font-size:12px;
+  line-height:1.5;
+  text-align:center;
+  background:#fafbfc;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #objPanelHost:not(:empty) + .object-empty{
+  display:none;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane .panel-block{
+  padding:0 0 18px;
+  margin:0 0 18px;
+  border-bottom:1px solid #eceae4;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane .panel-block:last-child{
+  margin-bottom:0;
+  border-bottom:0;
+}
+
+body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .workspace-kicker{
+  display:inline-flex;
+  margin-bottom:2px;
+  color:#6f7784;
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+@media (min-width:961px){
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer.frame-workspace-app{
+    display:grid !important;
+    grid-template-columns:290px minmax(500px,1fr) 330px !important;
+    grid-template-rows:58px minmax(0,1fr) !important;
+    overflow:hidden !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .studio-toolbar{
+    grid-column:1 / -1;
+    grid-row:1;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools{
+    grid-column:1;
+    grid-row:2;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:auto !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col{
+    grid-column:2;
+    grid-row:2;
+    height:auto !important;
+    padding:0 !important;
+    gap:0 !important;
+    overflow:hidden !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-inspector{
+    grid-column:3;
+    grid-row:2;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row{
+    width:100% !important;
+    margin:0 !important;
+    padding:12px 20px 9px !important;
+    background:#fff !important;
+    border-bottom:1px solid var(--line) !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row h1{
+    margin:0 !important;
+    font-size:21px !important;
+    line-height:1.05 !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row p{
+    margin:2px 0 0 !important;
+    font-size:11px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .hint{
+    flex:0 0 auto;
+    margin:0;
+    padding:4px 20px 8px !important;
+    font-size:9.5px !important;
+  }
+}
+
+@media (min-width:961px) and (max-height:820px){
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer.frame-workspace-app{
+    grid-template-rows:52px minmax(0,1fr) !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .studio-toolbar{
+    min-height:52px !important;
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row{
+    padding:8px 18px 6px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row h1{
+    font-size:19px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col .brand-row p,
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .hint{
+    display:none !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock{
+    padding:6px 16px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-wrap{
+    padding:10px 14px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools{
+    padding:12px 14px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools .panel-block{
+    padding:8px 0 !important;
+    gap:5px !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-top{
+    padding:10px 12px 0 !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane{
+    padding:12px !important;
+  }
+}
+
+@media (max-width:960px){
+  body.designer-plate-cover,
+  body.designer-motorcycle{
+    overflow:auto;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer.frame-workspace-app{
+    display:flex !important;
+    flex-direction:column !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:100vh !important;
+    overflow:visible !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .stage-col{
+    order:1 !important;
+    width:100% !important;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-tools{
+    order:2 !important;
+    width:100% !important;
+    max-width:none !important;
+    height:auto !important;
+    overflow:visible !important;
+    border-right:0;
+    border-top:1px solid var(--line);
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .frame-inspector{
+    order:3 !important;
+    width:100%;
+    min-height:420px;
+    border-left:0;
+    border-top:1px solid var(--line);
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-body{
+    min-height:360px;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer .inspector-pane{
+    position:relative;
+    min-height:360px;
+  }
+
+  body:is(.designer-plate-cover,.designer-motorcycle) #plate-frame-designer #colourDock .below-stage-controls{
+    grid-template-columns:1fr !important;
+  }
+}
