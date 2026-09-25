@@ -3,279 +3,154 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
   <title>Wheels Design Studio</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap"
     rel="stylesheet"
   >
-
-  <link rel="stylesheet" href="css/studio-home.css">
+  <link rel="stylesheet" href="css/studio-home.css?v=compact-launcher-1">
 </head>
 
 <body>
+  <div class="studio-shell">
 
-  <main class="studio-home">
-
-    <!-- =========================
-         HERO
-    ========================== -->
-
-    <header class="studio-home__hero">
-
-      <p class="studio-home__eyebrow">
-        Wheels Automotive
-      </p>
-
-      <h1>
-        Wheels Design Studio
-      </h1>
-
-      <p>
-        Choose a product and production method to open its dedicated designer.
-      </p>
-
+    <header class="studio-topbar">
+      <div class="studio-brand">
+        <span class="studio-mark">W</span>
+        <div>
+          <strong>Wheels Design Studio</strong>
+          <span>Prototype</span>
+        </div>
+      </div>
     </header>
 
+    <main class="studio-home">
+      <header class="studio-home__hero">
+        <div>
+          <p class="studio-home__eyebrow">Wheels Automotive</p>
+          <h1>Choose a product</h1>
+          <p>Select the product and print method you want to design.</p>
+        </div>
+      </header>
 
-    <!-- =========================
-         DESIGNER GRID
-    ========================== -->
+      <section class="product-grid" aria-label="Design tools">
 
-    <section
-      class="designer-grid"
-      aria-label="Design tools"
-    >
+        <article class="product-card">
+          <div class="product-card__head">
+            <span class="product-card__number">01</span>
+            <div>
+              <span class="product-card__type">Licence Plate</span>
+              <h2>Licence Plate Frame</h2>
+            </div>
+          </div>
 
-
-      <!-- =========================
-           DIGITAL FRAME
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="frame-digital.html"
-      >
-
-        <div
-          class="designer-card__preview"
-          data-preview="frame-digital"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Digital Print
-          </span>
-
-          <h2>
-            Licence Plate Frame
-          </h2>
-
-          <p>
-            Full-colour artwork with unrestricted logo and text colours.
+          <p class="product-card__description">
+            Build custom dealership frames using text, logos, frame styles and production-safe artwork placement.
           </p>
 
-          <span class="designer-card__button">
-            Open Designer
-          </span>
+          <div class="product-card__actions">
+            <a class="launch-button launch-button--primary" href="frame-digital.html">
+              <span>
+                <strong>Digital Print</strong>
+                <small>Full colour artwork</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
 
-        </div>
+            <a class="launch-button" href="frame-screen-print.html">
+              <span>
+                <strong>Screen Print</strong>
+                <small>1–3 production inks</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
+          </div>
+        </article>
 
-      </a>
+        <article class="product-card">
+          <div class="product-card__head">
+            <span class="product-card__number">02</span>
+            <div>
+              <span class="product-card__type">Plate Cover</span>
+              <h2>Lexan Plate Cover</h2>
+            </div>
+          </div>
 
-
-      <!-- =========================
-           SCREEN PRINT FRAME
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="frame-screen-print.html"
-      >
-
-        <div
-          class="designer-card__preview designer-card__preview--blank"
-          data-preview="frame-screen-print"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Screen Print
-          </span>
-
-          <h2>
-            Licence Plate Frame
-          </h2>
-
-          <p>
-            Choose 1, 2 or 3 approved production inks before designing.
+          <p class="product-card__description">
+            Create custom Lexan plate covers with product-specific artwork and production options.
           </p>
 
-          <span class="designer-card__button">
-            Open Designer
-          </span>
+          <div class="product-card__actions">
+            <a class="launch-button launch-button--primary" href="lexan-digital.html">
+              <span>
+                <strong>Digital Print</strong>
+                <small>Full colour artwork</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
 
-        </div>
+            <a class="launch-button" href="lexan-screen-print.html">
+              <span>
+                <strong>Screen Print</strong>
+                <small>1–3 production inks</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
+          </div>
+        </article>
 
-      </a>
+        <article class="product-card">
+          <div class="product-card__head">
+            <span class="product-card__number">03</span>
+            <div>
+              <span class="product-card__type">Plate Product</span>
+              <h2>Plate Sign</h2>
+            </div>
+          </div>
 
-
-      <!-- =========================
-           DIGITAL LEXAN
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="lexan-digital.html"
-      >
-
-        <div
-          class="designer-card__preview"
-          data-preview="lexan-digital"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Digital Print
-          </span>
-
-          <h2>
-            Lexan Plate Cover
-          </h2>
-
-          <p>
-            Full-colour Lexan artwork with unrestricted logo and text colours.
+          <p class="product-card__description">
+            Create custom plate signs with logos, text, backgrounds and borders.
           </p>
 
-          <span class="designer-card__button">
-            Open Designer
-          </span>
+          <div class="product-card__actions">
+            <a class="launch-button launch-button--primary" href="plate-sign.html">
+              <span>
+                <strong>Open Designer</strong>
+                <small>Plate sign builder</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
+          </div>
+        </article>
 
-        </div>
+        <article class="product-card">
+          <div class="product-card__head">
+            <span class="product-card__number">04</span>
+            <div>
+              <span class="product-card__type">Motorcycle</span>
+              <h2>Motorcycle Plate Cover</h2>
+            </div>
+          </div>
 
-      </a>
-
-
-      <!-- =========================
-           SCREEN PRINT LEXAN
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="lexan-screen-print.html"
-      >
-
-        <div
-          class="designer-card__preview designer-card__preview--blank"
-          data-preview="lexan-screen-print"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Screen Print
-          </span>
-
-          <h2>
-            Lexan Plate Cover
-          </h2>
-
-          <p>
-            Choose 1, 2 or 3 approved production inks before designing.
+          <p class="product-card__description">
+            Design a motorcycle plate cover using the product-specific size and options.
           </p>
 
-          <span class="designer-card__button">
-            Open Designer
-          </span>
+          <div class="product-card__actions">
+            <a class="launch-button launch-button--primary" href="motorcycle-cover.html">
+              <span>
+                <strong>Open Designer</strong>
+                <small>Motorcycle cover builder</small>
+              </span>
+              <span class="launch-arrow">→</span>
+            </a>
+          </div>
+        </article>
 
-        </div>
-
-      </a>
-
-
-      <!-- =========================
-           PLATE SIGN
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="plate-sign.html"
-      >
-
-        <div
-          class="designer-card__preview"
-          data-preview="plate-sign"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Plate Product
-          </span>
-
-          <h2>
-            Plate Sign
-          </h2>
-
-          <p>
-            Build custom plate signs with logos, text, backgrounds and borders.
-          </p>
-
-          <span class="designer-card__button">
-            Open Designer
-          </span>
-
-        </div>
-
-      </a>
-
-
-      <!-- =========================
-           MOTORCYCLE COVER
-      ========================== -->
-
-      <a
-        class="designer-card"
-        href="motorcycle-cover.html"
-      >
-
-        <div
-          class="designer-card__preview"
-          data-preview="motorcycle-cover"
-        ></div>
-
-        <div class="designer-card__body">
-
-          <span class="designer-card__method">
-            Plate Product
-          </span>
-
-          <h2>
-            Motorcycle Plate Cover
-          </h2>
-
-          <p>
-            Create a motorcycle plate cover with product-specific sizing and options.
-          </p>
-
-          <span class="designer-card__button">
-            Open Designer
-          </span>
-
-        </div>
-
-      </a>
-
-
-    </section>
-
-  </main>
-
+      </section>
+    </main>
+  </div>
 </body>
 </html>
