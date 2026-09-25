@@ -2375,15 +2375,29 @@
 
   // Single entry point used everywhere instead of calling drawFrame/drawCover
   // directly, so every call site automatically renders the right plate type.
+  function usesProductionFrameImageForLexan(styleId, plateType){
+    return (plateType||state.plateType)==='cover' &&
+      state.printMethod==='screen' &&
+      ['101','102','103','104'].includes(String(styleId));
+  }
+
   function drawPlate(ctx, styleId, color, scale, addBottomHoles, plateType){
     if((plateType||state.plateType)==='cover'){
       const lexanStyle = LEXAN_STYLE_CFG[styleId];
-      // Do not redraw an approximation: these four are deliberately the
-      // same plate/frame designs, including the real screw-hole positions.
+
       if(lexanStyle && lexanStyle.frameStyle){
-        drawFrame(ctx, lexanStyle.frameStyle, color, scale, addBottomHoles, true);
+        // Screen Print Lexan 101–104 are the SAME production styles as the
+        // licence plate frame. Use the actual imported LPF SVG asset, not
+        // the old canvas approximation. Digital Lexan keeps its current
+        // renderer, and Lexan 105–108 remain Lexan-specific.
+        if(usesProductionFrameImageForLexan(styleId,plateType)){
+          drawFrame(ctx, lexanStyle.frameStyle, color, scale, addBottomHoles, false);
+        }else{
+          drawFrame(ctx, lexanStyle.frameStyle, color, scale, addBottomHoles, true);
+        }
         return;
       }
+
       drawCover(ctx, styleId, color, scale, addBottomHoles);
     } else {
       drawFrame(ctx, styleId, color, scale, addBottomHoles);
@@ -4027,8 +4041,14 @@
       // The licence-frame renderer uses an asynchronously loaded production
       // SVG. Make sure that exact asset is ready before drawing any artwork,
       // otherwise its late paint can clear artwork that was already drawn.
-      if(state.plateType==='frame'){
-        const frameImg=loadProductionFrame(state.styleId,state.color);
+      if(
+        state.plateType==='frame' ||
+        usesProductionFrameImageForLexan(state.styleId,state.plateType)
+      ){
+        const sourceStyle = state.plateType==='cover'
+          ? (LEXAN_STYLE_CFG[state.styleId] && LEXAN_STYLE_CFG[state.styleId].frameStyle)
+          : state.styleId;
+        const frameImg=loadProductionFrame(sourceStyle,state.color);
         await waitForImage(frameImg);
       }
 
