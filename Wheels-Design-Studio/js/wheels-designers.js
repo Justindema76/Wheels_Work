@@ -12,7 +12,7 @@
   }
 
   try{
-    const response=await fetch('js/wheels-designers-core.js?v=screen-lexan-boundary-20260924-2236',{cache:'no-store'});
+    const response=await fetch('js/wheels-designers-core.js?v=screen-lexan-production-svg-20260924-2315',{cache:'no-store'});
     if(!response.ok) throw new Error('Could not load designer core: '+response.status);
 
     let source=await response.text();
