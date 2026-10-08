@@ -1,0 +1,71 @@
+<script>
+(function(){
+
+    function startProductAutoSlider(){
+
+        var sliders = document.querySelectorAll('.product-items.widget-product-grid');
+
+        sliders.forEach(function(slider){
+
+            if(slider.classList.contains('auto-slider-active')) return;
+
+            var items = slider.querySelectorAll(':scope > .product-item');
+
+            if(items.length < 2) return;
+
+            slider.classList.add('auto-slider-active');
+
+            items.forEach(function(item){
+                var clone = item.cloneNode(true);
+                clone.classList.add('auto-slider-clone');
+                slider.appendChild(clone);
+            });
+
+            var paused = false;
+
+            // SPEED: pixels per frame. Lower = slower. (was 1.0 / 0.8)
+            var speed = window.innerWidth <= 768 ? 0.4 : 0.3;
+
+            // CHANGE: keep the exact position ourselves so slow speeds don't get rounded to 0
+            var pos = slider.scrollLeft;
+
+            slider.addEventListener('mouseenter', function(){
+                paused = true;
+            });
+
+            slider.addEventListener('mouseleave', function(){
+                paused = false;
+                pos = slider.scrollLeft; // CHANGE: pick up where the user left it
+            });
+
+            function move(){
+
+                var loopPoint = slider.scrollWidth / 2;
+
+                if(!paused && loopPoint > slider.clientWidth){
+                    pos += speed;                 // CHANGE: was slider.scrollLeft += speed
+
+                    if(pos >= loopPoint){
+                        pos = 0;
+                    }
+
+                    slider.scrollLeft = pos;
+                }
+
+                requestAnimationFrame(move);
+            }
+
+            move();
+
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', startProductAutoSlider);
+    window.addEventListener('load', startProductAutoSlider);
+
+    setTimeout(startProductAutoSlider, 500);
+    setTimeout(startProductAutoSlider, 1500);
+    setTimeout(startProductAutoSlider, 3000);
+
+})();
+</script>

@@ -1,0 +1,98 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap');
+
+/* =====================================================
+   HERO — Code Studio slider (left 70%) + 2 products (right 30%)
+   SAFARI-SAFE VERSION: no display:contents, no :has(),
+   no stretch tricks on phones — plain CSS only.
+   PAGE BUILDER SETUP:
+     Columns → Advanced → CSS Classes: whero
+       Left column  → HTML Code with your Code Studio banner
+       Right column → Products (Product Grid, by Category, 2 products)
+===================================================== */
+.whero{--r:#d9161e;--rd:#b30f16;--ink:#141414;font-family:Barlow,system-ui,sans-serif}
+.whero *,.whero *::before,.whero *::after{box-sizing:border-box}
+
+/* the Code Studio banner: rounded corners, no gap under it */
+.whero .csx-banner-root{border-radius:14px !important;overflow:hidden !important;margin:0 !important}
+
+/* ---------- 2 products ---------- */
+.whero [data-content-type="products"],.whero .block-products-list,.whero .block-content,.whero .products-grid{margin:0 !important;padding:0 !important}
+.whero .product-items.widget-product-grid{display:block !important;margin:0 !important;padding:0 !important;overflow:visible !important;list-style:none !important}
+.whero .product-items.widget-product-grid > .product-item{display:block !important;list-style:none !important;float:none !important;flex:none !important;width:auto !important;max-width:none !important;margin:0 0 20px !important;padding:0 !important}
+.whero .product-items.widget-product-grid > .product-item:last-child{margin-bottom:0 !important}
+/* only the first 2 products, never the slider-script copies */
+.whero .product-items.widget-product-grid > .product-item:nth-child(n+3),
+.whero .product-items.widget-product-grid > .auto-slider-clone{display:none !important}
+
+/* card: text left, photo right */
+.whero .product-item-info{position:relative !important;width:100% !important;height:235px !important;margin:0 !important;padding:0 !important;background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:14px !important;overflow:hidden !important;box-shadow:none !important;transform:none !important}
+.whero .product-item:nth-child(2) .product-item-info{background:var(--ink) !important;border-color:var(--ink) !important}
+.whero .product-item-info:hover{transform:none !important;box-shadow:none !important}
+.whero .product-card{display:block !important;width:58% !important;height:100% !important;padding:22px 20px !important;position:static !important}
+.whero .info-section,.whero .cart-section,.whero .price-section{display:block !important;margin:0 !important;padding:0 !important}
+
+/* red tag (badge) */
+.whero .offer-tag{position:static !important;margin:0 0 4px !important}
+.whero .lable-tag{display:inline-block !important;background:none !important;padding:0 !important;color:var(--r) !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:22px !important;line-height:1 !important;text-transform:uppercase !important}
+
+/* product name */
+.whero .product-item-name{min-height:0 !important;max-height:none !important;margin:0 0 8px !important;padding:0 !important;overflow:hidden !important}
+.whero .product-item-name a{display:block !important;max-height:2.1em;overflow:hidden !important;color:var(--ink) !important;text-decoration:none !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:21px !important;line-height:1.05 !important;text-transform:uppercase !important}
+.whero .product-item:nth-child(2) .product-item-name a{color:#fff !important}
+.whero .product-item-name a::after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;z-index:3}
+
+/* price */
+.whero .price-box{display:block !important;margin:0 !important;line-height:1.2 !important}
+.whero .price-label{font-size:12px !important;color:#777 !important;margin-right:4px !important}
+.whero .special-price .price-label,.whero .old-price .price-label{display:none !important}
+.whero .price{color:#555 !important;font-family:Barlow,system-ui,sans-serif !important;font-weight:700 !important;font-size:14px !important}
+.whero .product-item:nth-child(2) .price,.whero .product-item:nth-child(2) .price-label{color:#bbb !important}
+.whero .special-price .price{color:var(--r) !important}
+.whero .old-price .price{color:#999 !important;font-weight:500 !important;font-size:12px !important;text-decoration:line-through !important}
+.whero .price-suffix{font-size:12px !important;color:#888 !important}
+
+/* "Shop now" */
+.whero .cart-section::after{content:"Shop now";display:inline-block;margin-top:12px;padding-bottom:2px;border-bottom:2px solid var(--r);font-weight:700;font-size:14px;color:var(--ink)}
+.whero .product-item:nth-child(2) .cart-section::after{color:#fff}
+
+/* photo on the right */
+.whero .image-section{position:absolute !important;top:0 !important;right:0 !important;bottom:0 !important;width:42% !important;height:auto !important;margin:0 !important;padding:0 !important;background:#fff !important;border-radius:0 !important;z-index:1;overflow:hidden !important}
+.whero .image-section a,.whero .product-image-container{display:block !important;width:100% !important;height:100% !important}
+.whero .image-section img{display:block !important;width:100% !important;max-width:100% !important;height:100% !important;object-fit:cover !important}
+
+/* hide what the card doesn't need */
+.whero .product-sku,.whero .short-description,.whero .short-discription,
+.whero .product-reviews-summary,.whero .product-reviews-main,
+.whero .button-section,.whero .product-setup{display:none !important}
+
+/* =====================================================
+   DESKTOP ONLY: 70 / 30 side by side
+===================================================== */
+@media (min-width:1101px){
+  .whero .pagebuilder-column-line{display:flex !important;flex-wrap:nowrap !important;gap:20px !important;width:100% !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column{margin:0 !important;padding:0 !important;border:0 !important;min-width:0 !important;align-self:flex-start !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column:first-child{flex:0 0 calc(70% - 10px) !important;width:calc(70% - 10px) !important;max-width:calc(70% - 10px) !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column:last-child{flex:0 0 calc(30% - 10px) !important;width:calc(30% - 10px) !important;max-width:calc(30% - 10px) !important}
+  /* banner is 490px tall → 2 cards of 235px + 20px gap = 490px */
+}
+
+/* =====================================================
+   TABLET + PHONE: plain stacked blocks
+===================================================== */
+@media (max-width:1100px){
+  .whero .pagebuilder-column-line{display:block !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column{display:block !important;width:100% !important;max-width:100% !important;margin:0 0 12px !important;padding:0 !important}
+  /* 2 products side by side, photo on top */
+  .whero .product-items.widget-product-grid{overflow:hidden !important}
+  .whero .product-items.widget-product-grid > .product-item{float:left !important;width:calc(50% - 6px) !important;margin:0 !important}
+  .whero .product-items.widget-product-grid > .product-item:first-child{margin-right:12px !important}
+  .whero .product-item-info{height:auto !important}
+  .whero .product-card{display:flex !important;flex-direction:column !important;width:100% !important;height:auto !important;padding:0 12px 14px !important}
+  .whero .image-section{-webkit-box-ordinal-group:0;order:-1 !important}
+  .whero .image-section{position:static !important;width:auto !important;height:150px !important;margin:0 -12px 10px !important}
+  .whero .lable-tag{font-size:16px !important}
+  .whero .product-item-name a{font-size:16px !important}
+  .whero .cart-section::after{font-size:13px;margin-top:8px}
+}
+</style>

@@ -1,0 +1,553 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hero preview frame</title>
+<style>body{margin:0;font-family:Barlow,system-ui,sans-serif;background:#fff}.pv{max-width:1320px;margin:0 auto;padding:24px}</style>
+<style>
+
+/* ===================================
+   PRODUCT ROW
+=================================== */
+
+.product-items.widget-product-grid{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    gap:12px !important;
+    padding-bottom:12px !important;
+    -webkit-overflow-scrolling:touch;
+}
+
+.product-items.widget-product-grid .product-item{
+    flex:0 0 220px !important;
+    width:220px !important;
+    max-width:220px !important;
+}
+
+/* scrollbar */
+.product-items.widget-product-grid::-webkit-scrollbar{
+    height:8px;
+}
+
+.product-items.widget-product-grid::-webkit-scrollbar-thumb{
+    background:#cfcfcf;
+    border-radius:20px;
+}
+
+/* ===================================
+   CARD
+=================================== */
+
+.product-item-info{
+    background:#fff !important;
+    border:1px solid #e5e5e5 !important;
+
+    border-radius:10px !important;
+    padding:10px !important;
+    height:100% !important;
+    width:100% !important;
+margin: 5px;
+
+}
+.product-item-info{
+    background:#fff !important;
+    border:1px solid #e5e5e5 !important;
+    border-radius:10px !important;
+    padding:10px !important;
+    height:100% !important;
+    width:100% !important;
+
+    transition:all .25s ease !important;
+}
+
+.product-item-info:hover{
+    transform:translateY(-4px) !important;
+    box-shadow:0 8px 20px rgba(0,0,0,.10) !important;
+}
+/* ===================================
+   SKU
+=================================== */
+
+.product-sku{
+    font-size:11px !important;
+    color:#888 !important;
+    text-transform:uppercase !important;
+    margin-bottom:0px !important;
+}
+
+/* ===================================
+   TITLE
+=================================== */
+.product-item-name{
+    font-size:12px !important;
+    line-height:1.1 !important;
+
+    min-height:68px !important;
+    max-height:68px !important;
+
+    overflow:hidden !important;
+    margin-bottom:12px !important;
+}
+
+.product-item-name a{
+    color:#222 !important;
+    text-decoration:none !important;
+}
+
+/* ===================================
+   IMAGE
+=================================== */
+
+.image-section{
+margin-top: 12px;
+    background:#f8f8f8 !important;
+    border-radius:8px !important;
+    padding:8px !important;
+    margin-bottom:8px !important;
+}
+
+.image-section img{
+    width:100% !important;
+    height:auto !important;
+    object-fit:contain !important;
+}
+
+/* ===================================
+   PRICE
+=================================== */
+
+.price-box{
+    margin-top:6px !important;
+    margin-bottom:6px !important;
+}
+
+.price{
+    font-size:14px !important;
+    font-weight:700 !important;
+    line-height:1.2 !important;
+}
+
+.old-price .price{
+    font-size:11px !important;
+}
+
+.special-price{
+    font-size:12px !important;
+    white-space:nowrap !important;
+    line-height:1.1 !important;
+}
+
+.special-price .price{
+    color:#d71920 !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+}
+
+/* ===================================
+   BUTTON
+=================================== */
+.action.tocart{
+    width:100% !important;
+    min-height:40px !important;
+
+    background:#d71920 !important;
+    border:1px solid #d71920 !important;
+    color:#fff !important;
+
+    border-radius:6px !important;
+
+    font-size:13px !important;
+    font-weight:700 !important;
+}
+
+
+
+/* ===================================
+   HIDE STUFF
+=================================== */
+.product-reviews-summary,
+.product-reviews-main,
+.short-description,
+.towishlist,
+.tocompare{
+    display:none !important;
+
+}
+
+/* ===================================
+   MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+    .product-items.widget-product-grid .product-item{
+        flex:0 0 260px !important;
+        width:260px !important;
+        max-width:260px !important;
+    }
+
+    .product-item-name{
+        font-size:13px !important;
+    }
+
+    .price{
+        font-size:15px !important;
+    }
+}
+.pagebuilder-button-primary{
+    background:#E41E26 !important;
+    border:1px solid #E41E26 !important;
+    border-radius:8px !important;
+    color:#fff !important;
+}
+.product-items.widget-product-grid{
+    scroll-behavior:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    touch-action:pan-x !important;
+}
+
+.product-items.widget-product-grid .auto-slider-clone{
+    pointer-events:auto !important;
+}
+</style>
+<style>
+.product-items.widget-product-grid{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scroll-behavior:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    touch-action:pan-x !important;
+}
+
+.product-items.widget-product-grid > .product-item{
+    flex:0 0 220px !important;
+}
+
+@media (max-width:768px){
+    .product-items.widget-product-grid{
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        overflow-x:auto !important;
+    }
+
+    .product-items.widget-product-grid > .product-item{
+        flex:0 0 260px !important;
+        width:260px !important;
+        max-width:260px !important;
+    }
+}
+</style>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap');
+
+/* =====================================================
+   HERO — Code Studio slider (left 70%) + 2 products (right 30%)
+   SAFARI-SAFE VERSION: no display:contents, no :has(),
+   no stretch tricks on phones — plain CSS only.
+   PAGE BUILDER SETUP:
+     Columns → Advanced → CSS Classes: whero
+       Left column  → HTML Code with your Code Studio banner
+       Right column → Products (Product Grid, by Category, 2 products)
+===================================================== */
+.whero{--r:#d9161e;--rd:#b30f16;--ink:#141414;font-family:Barlow,system-ui,sans-serif}
+.whero *,.whero *::before,.whero *::after{box-sizing:border-box}
+
+/* the Code Studio banner: rounded corners, no gap under it */
+.whero .csx-banner-root{border-radius:14px !important;overflow:hidden !important;margin:0 !important}
+
+/* ---------- 2 products ---------- */
+.whero [data-content-type="products"],.whero .block-products-list,.whero .block-content,.whero .products-grid{margin:0 !important;padding:0 !important}
+.whero .product-items.widget-product-grid{display:block !important;margin:0 !important;padding:0 !important;overflow:visible !important;list-style:none !important}
+.whero .product-items.widget-product-grid > .product-item{display:block !important;list-style:none !important;float:none !important;flex:none !important;width:auto !important;max-width:none !important;margin:0 0 20px !important;padding:0 !important}
+.whero .product-items.widget-product-grid > .product-item:last-child{margin-bottom:0 !important}
+/* only the first 2 products, never the slider-script copies */
+.whero .product-items.widget-product-grid > .product-item:nth-child(n+3),
+.whero .product-items.widget-product-grid > .auto-slider-clone{display:none !important}
+
+/* card: text left, photo right */
+.whero .product-item-info{position:relative !important;width:100% !important;height:235px !important;margin:0 !important;padding:0 !important;background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:14px !important;overflow:hidden !important;box-shadow:none !important;transform:none !important}
+.whero .product-item:nth-child(2) .product-item-info{background:var(--ink) !important;border-color:var(--ink) !important}
+.whero .product-item-info:hover{transform:none !important;box-shadow:none !important}
+.whero .product-card{display:block !important;width:58% !important;height:100% !important;padding:22px 20px !important;position:static !important}
+.whero .info-section,.whero .cart-section,.whero .price-section{display:block !important;margin:0 !important;padding:0 !important}
+
+/* red tag (badge) */
+.whero .offer-tag{position:static !important;margin:0 0 4px !important}
+.whero .lable-tag{display:inline-block !important;background:none !important;padding:0 !important;color:var(--r) !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:22px !important;line-height:1 !important;text-transform:uppercase !important}
+
+/* product name */
+.whero .product-item-name{min-height:0 !important;max-height:none !important;margin:0 0 8px !important;padding:0 !important;overflow:hidden !important}
+.whero .product-item-name a{display:block !important;max-height:2.1em;overflow:hidden !important;color:var(--ink) !important;text-decoration:none !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:21px !important;line-height:1.05 !important;text-transform:uppercase !important}
+.whero .product-item:nth-child(2) .product-item-name a{color:#fff !important}
+.whero .product-item-name a::after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;z-index:3}
+
+/* price */
+.whero .price-box{display:block !important;margin:0 !important;line-height:1.2 !important}
+.whero .price-label{font-size:12px !important;color:#777 !important;margin-right:4px !important}
+.whero .special-price .price-label,.whero .old-price .price-label{display:none !important}
+.whero .price{color:#555 !important;font-family:Barlow,system-ui,sans-serif !important;font-weight:700 !important;font-size:14px !important}
+.whero .product-item:nth-child(2) .price,.whero .product-item:nth-child(2) .price-label{color:#bbb !important}
+.whero .special-price .price{color:var(--r) !important}
+.whero .old-price .price{color:#999 !important;font-weight:500 !important;font-size:12px !important;text-decoration:line-through !important}
+.whero .price-suffix{font-size:12px !important;color:#888 !important}
+
+/* "Shop now" */
+.whero .cart-section::after{content:"Shop now";display:inline-block;margin-top:12px;padding-bottom:2px;border-bottom:2px solid var(--r);font-weight:700;font-size:14px;color:var(--ink)}
+.whero .product-item:nth-child(2) .cart-section::after{color:#fff}
+
+/* photo on the right */
+.whero .image-section{position:absolute !important;top:0 !important;right:0 !important;bottom:0 !important;width:42% !important;height:auto !important;margin:0 !important;padding:0 !important;background:#fff !important;border-radius:0 !important;z-index:1;overflow:hidden !important}
+.whero .image-section a,.whero .product-image-container{display:block !important;width:100% !important;height:100% !important}
+.whero .image-section img{display:block !important;width:100% !important;max-width:100% !important;height:100% !important;object-fit:cover !important}
+
+/* hide what the card doesn't need */
+.whero .product-sku,.whero .short-description,.whero .short-discription,
+.whero .product-reviews-summary,.whero .product-reviews-main,
+.whero .button-section,.whero .product-setup{display:none !important}
+
+/* =====================================================
+   DESKTOP ONLY: 70 / 30 side by side
+===================================================== */
+@media (min-width:1101px){
+  .whero .pagebuilder-column-line{display:flex !important;flex-wrap:nowrap !important;gap:20px !important;width:100% !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column{margin:0 !important;padding:0 !important;border:0 !important;min-width:0 !important;align-self:flex-start !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column:first-child{flex:0 0 calc(70% - 10px) !important;width:calc(70% - 10px) !important;max-width:calc(70% - 10px) !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column:last-child{flex:0 0 calc(30% - 10px) !important;width:calc(30% - 10px) !important;max-width:calc(30% - 10px) !important}
+  /* banner is 490px tall → 2 cards of 235px + 20px gap = 490px */
+}
+
+/* =====================================================
+   TABLET + PHONE: plain stacked blocks
+===================================================== */
+@media (max-width:1100px){
+  .whero .pagebuilder-column-line{display:block !important}
+  .whero .pagebuilder-column-line > .pagebuilder-column{display:block !important;width:100% !important;max-width:100% !important;margin:0 0 12px !important;padding:0 !important}
+  /* 2 products side by side, photo on top */
+  .whero .product-items.widget-product-grid{overflow:hidden !important}
+  .whero .product-items.widget-product-grid > .product-item{float:left !important;width:calc(50% - 6px) !important;margin:0 !important}
+  .whero .product-items.widget-product-grid > .product-item:first-child{margin-right:12px !important}
+  .whero .product-item-info{height:auto !important}
+  .whero .product-card{display:flex !important;flex-direction:column !important;width:100% !important;height:auto !important;padding:0 12px 14px !important}
+  .whero .image-section{-webkit-box-ordinal-group:0;order:-1 !important}
+  .whero .image-section{position:static !important;width:auto !important;height:150px !important;margin:0 -12px 10px !important}
+  .whero .lable-tag{font-size:16px !important}
+  .whero .product-item-name a{font-size:16px !important}
+  .whero .cart-section::after{font-size:13px;margin-top:8px}
+}
+</style>
+
+<style>section{margin-bottom:16px}.whero .pagebuilder-column:nth-child(2){align-self:center}</style>
+</head><body><div class="pv">
+<div class="pagebuilder-column-group whero" data-content-type="column-group" data-grid-size="12"><div class="pagebuilder-column-line" data-content-type="column-line" style="display:flex">
+ <div class="pagebuilder-column" data-content-type="column" style="width:50%">
+  <div data-content-type="html" data-appearance="default" data-element="main"><!-- Built with Justinnovate Code Studio — self-contained, paste anywhere -->
+<!-- JCS-PROJECT-DATA-BEGIN
+[{"eyebrow":"10% OFF","heading":"Vehicle Display Podiums","subheading":"*Offer Valid While Quantities Last*","buttonText":"SHOP NOW","buttonUrl":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","buttonNewTab":false,"altText":"High Quality Vehicle Display Podiums in Canada - Wheel's Auto","desktopImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png","mobileImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png","desktopBgLink":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","mobileBgLink":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","desktopBgNewTab":false,"mobileBgNewTab":false,"showContent":true,"mobileShowContent":true,"bgColor":"#ffffff","overlayType":"none","overlayColor":"#000000","overlayOpacity":30,"overlayBlendMode":"normal","overlayImage":"","desktopFit":"contain","desktopAttachment":"scroll","contentSide":"left","mobileContentSide":"center","desktopX":85,"desktopY":50,"desktopZoom":115,"mobileX":50,"mobileY":7,"mobileWidth":80,"gradient":{"type":"linear","angle":94,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.6},{"pos":60,"color":"#000000","opacity":0.15},{"pos":78,"color":"#000000","opacity":0}]},"mobileGradient":{"type":"linear","angle":357,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.5},{"pos":60,"color":"#000000","opacity":0},{"pos":78,"color":"#000000","opacity":0},{"pos":0,"color":"#000000","opacity":0.71}]},"headingColor":"#ffffff","subColor":"#ffffff","eyebrowBg":"#D70015","eyebrowColor":"#ffffff","eyebrowBgEnabled":true,"eyebrowOpacity":100,"eyebrowPadX":12,"eyebrowPadY":5,"buttonBg":"#D70015","buttonColor":"#ffffff","buttonBgEnabled":true,"buttonOpacity":100,"buttonPadX":30,"buttonHeight":48,"arrowBg":"#000000","arrowBgOpacity":45,"arrowIconColor":"#ffffff","arrowBorderColor":"#ffffff","arrowBorderOpacity":35,"dashColor":"#D70015","headingFont":"Oswald","bodyFont":"Inter","eyebrowFont":"Oswald","buttonFont":"Oswald","headingWeight":700,"bodyWeight":400,"eyebrowWeight":600,"buttonWeight":700,"eyebrowSize":25,"headingSize":46,"subSize":17,"buttonFontSize":20,"contentWidth":480,"mobileEyebrowSize":16,"mobileHeadingSize":34,"mobileSubSize":12,"mobileButtonFontSize":15,"mobileContentWidth":560,"textAlign":"left","mobileTextAlign":"center","eyebrowLetterSpacing":2.2,"headingLetterSpacing":0,"subLetterSpacing":0,"buttonLetterSpacing":0.6,"mobileEyebrowLetterSpacing":2.2,"mobileHeadingLetterSpacing":0,"mobileSubLetterSpacing":0,"mobileButtonLetterSpacing":0.6,"eyebrowShiftX":0,"eyebrowShiftY":0,"headingShiftX":0,"headingShiftY":0,"subShiftX":0,"subShiftY":0,"buttonShiftX":0,"buttonShiftY":0,"buttonWidth":0,"mobileEyebrowShiftX":0,"mobileEyebrowShiftY":170,"mobileHeadingShiftX":0,"mobileHeadingShiftY":159,"mobileSubShiftX":0,"mobileSubShiftY":150,"mobileButtonShiftX":0,"mobileButtonShiftY":131,"mobileButtonWidth":0,"headingLineHeight":1.1,"subLineHeight":1.55,"eyebrowRadius":2,"buttonRadius":2,"buttonHoverEnabled":false,"buttonHoverBg":"#1a1a1a","buttonHoverColor":"#ffffff","eyebrowShadowEnabled":false,"eyebrowShadowColor":"#000000","eyebrowShadowOpacity":25,"eyebrowShadowBlur":8,"eyebrowShadowY":2,"buttonShadowEnabled":false,"buttonShadowColor":"#000000","buttonShadowOpacity":25,"buttonShadowBlur":12,"buttonShadowY":4,"contentAlign":"center","contentPadding":64,"contentShiftX":0,"contentShiftY":0,"mobileContentAlign":"center","mobileContentPadding":64,"mobileContentShiftX":0,"mobileContentShiftY":0,"gapEyebrow":20,"gapHeading":16,"gapSub":28,"mobileGapEyebrow":20,"mobileGapHeading":16,"mobileGapSub":28,"contentBgEnabled":false,"contentBgColor":"#ffffff","contentBgOpacity":100,"contentBgPadding":24,"contentBgRadius":8,"mobileContentBgEnabled":false,"mobileContentBgColor":"#ffffff","mobileContentBgOpacity":100,"mobileContentBgPadding":24,"mobileContentBgRadius":8,"contentBgShadowEnabled":false,"contentBgShadowColor":"#000000","contentBgShadowOpacity":20,"contentBgShadowBlur":24,"contentBgShadowY":10,"mobileContentBgShadowEnabled":false,"mobileContentBgShadowColor":"#000000","mobileContentBgShadowOpacity":20,"mobileContentBgShadowBlur":24,"mobileContentBgShadowY":10,"desktopHeight":490,"mobileHeight":550,"autoplay":5200,"pauseHover":true},{"eyebrow":"CATALOGUE 2026","heading":"DISCOVER NEW PRODUCTS, FRESH IDEAS & TRUSTED DEALERSHIP ESSENTIALS","subheading":"","buttonText":"DOWNLOAD","buttonUrl":"https://heyzine.com/flip-book/78661a3df5.html","buttonNewTab":true,"altText":"","desktopImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_-_desktop.jpg","mobileImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_-_MOBILE.jpg","desktopBgLink":"https://heyzine.com/flip-book/78661a3df5.html","mobileBgLink":"https://heyzine.com/flip-book/78661a3df5.html","desktopBgNewTab":true,"mobileBgNewTab":true,"showContent":true,"mobileShowContent":true,"bgColor":"#000000","overlayType":"none","overlayColor":"#000000","overlayOpacity":30,"overlayBlendMode":"normal","overlayImage":"","desktopFit":"width","desktopAttachment":"scroll","contentSide":"right","mobileContentSide":"left","desktopX":50,"desktopY":50,"desktopZoom":100,"mobileX":50,"mobileY":23,"mobileWidth":100,"gradient":{"type":"off","angle":90,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.82},{"pos":32,"color":"#000000","opacity":0.6},{"pos":60,"color":"#000000","opacity":0.15},{"pos":78,"color":"#000000","opacity":0}]},"mobileGradient":{"type":"off","angle":90,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.82},{"pos":32,"color":"#000000","opacity":0.6},{"pos":60,"color":"#000000","opacity":0.15},{"pos":78,"color":"#000000","opacity":0}]},"headingColor":"#ffffff","subColor":"#ffffff","eyebrowBg":"#D70015","eyebrowColor":"#ffffff","eyebrowBgEnabled":true,"eyebrowOpacity":100,"eyebrowPadX":12,"eyebrowPadY":5,"buttonBg":"#D70015","buttonColor":"#ffffff","buttonBgEnabled":true,"buttonOpacity":100,"buttonPadX":30,"buttonHeight":48,"arrowBg":"#000000","arrowBgOpacity":45,"arrowIconColor":"#ffffff","arrowBorderColor":"#ffffff","arrowBorderOpacity":35,"dashColor":"#D70015","headingFont":"Oswald","bodyFont":"Inter","eyebrowFont":"Oswald","buttonFont":"Oswald","headingWeight":700,"bodyWeight":400,"eyebrowWeight":600,"buttonWeight":700,"eyebrowSize":40,"headingSize":34,"subSize":16,"buttonFontSize":22,"contentWidth":420,"mobileEyebrowSize":12,"mobileHeadingSize":21,"mobileSubSize":16,"mobileButtonFontSize":14,"mobileContentWidth":480,"textAlign":"center","mobileTextAlign":"center","eyebrowLetterSpacing":2.2,"headingLetterSpacing":0,"subLetterSpacing":0,"buttonLetterSpacing":0.6,"mobileEyebrowLetterSpacing":2.2,"mobileHeadingLetterSpacing":0,"mobileSubLetterSpacing":0,"mobileButtonLetterSpacing":0.6,"eyebrowShiftX":0,"eyebrowShiftY":0,"headingShiftX":0,"headingShiftY":0,"subShiftX":0,"subShiftY":0,"buttonShiftX":0,"buttonShiftY":0,"buttonWidth":0,"mobileEyebrowShiftX":0,"mobileEyebrowShiftY":191,"mobileHeadingShiftX":0,"mobileHeadingShiftY":181,"mobileSubShiftX":0,"mobileSubShiftY":0,"mobileButtonShiftX":0,"mobileButtonShiftY":165,"mobileButtonWidth":0,"headingLineHeight":1.1,"subLineHeight":1.55,"eyebrowRadius":2,"buttonRadius":2,"buttonHoverEnabled":false,"buttonHoverBg":"#1a1a1a","buttonHoverColor":"#ffffff","eyebrowShadowEnabled":false,"eyebrowShadowColor":"#000000","eyebrowShadowOpacity":25,"eyebrowShadowBlur":8,"eyebrowShadowY":2,"buttonShadowEnabled":false,"buttonShadowColor":"#000000","buttonShadowOpacity":25,"buttonShadowBlur":12,"buttonShadowY":4,"contentAlign":"center","contentPadding":48,"contentShiftX":0,"contentShiftY":0,"mobileContentAlign":"center","mobileContentPadding":64,"mobileContentShiftX":0,"mobileContentShiftY":0,"gapEyebrow":20,"gapHeading":16,"gapSub":28,"mobileGapEyebrow":20,"mobileGapHeading":16,"mobileGapSub":28,"contentBgEnabled":false,"contentBgColor":"#ffffff","contentBgOpacity":100,"contentBgPadding":24,"contentBgRadius":8,"mobileContentBgEnabled":false,"mobileContentBgColor":"#ffffff","mobileContentBgOpacity":100,"mobileContentBgPadding":24,"mobileContentBgRadius":8,"contentBgShadowEnabled":false,"contentBgShadowColor":"#000000","contentBgShadowOpacity":20,"contentBgShadowBlur":24,"contentBgShadowY":10,"mobileContentBgShadowEnabled":false,"mobileContentBgShadowColor":"#000000","mobileContentBgShadowOpacity":20,"mobileContentBgShadowBlur":24,"mobileContentBgShadowY":10,"desktopHeight":490,"mobileHeight":550,"autoplay":5200,"pauseHover":true}]
+JCS-PROJECT-DATA-END -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<section class="csx-banner-root" id="jcs3651" style="--jcs-desktop-height:490px;--jcs-mobile-height:550px;" aria-roledescription="carousel" aria-label="Featured">
+  <div class="csx-track">
+    <article class="csx-slide jcs3651-slide is-active" data-slide="0" style="background-color:#ffffff;">
+      <div class="csx-bg" data-attachment="scroll" style="background-image:url('https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png');background-size:contain;background-position:85% 50%;background-attachment:scroll;background-repeat:no-repeat;--jcs-mobile-bg:url('https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png');--jcs-mobile-bg-size:80% auto;--jcs-mobile-bg-pos:50% 7%;"></div>
+      <a class="csx-bg-link csx-bg-link-desktop" href="https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html" aria-label="High Quality Vehicle Display Podiums in Canada - Wheel's Auto"></a>
+      <a class="csx-bg-link csx-bg-link-mobile" href="https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html" aria-label="High Quality Vehicle Display Podiums in Canada - Wheel's Auto"></a>
+      <div class="csx-overlay" style=""></div>
+      <div class="csx-scrim" style="--jcs-scrim-d:linear-gradient(94deg, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.60) 32%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.00) 78%);--jcs-scrim-m:linear-gradient(357deg, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.71) 0%, rgba(0,0,0,0.50) 32%, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.00) 78%);background:var(--jcs-scrim-d);"></div>
+      <div class="csx-inner" style="justify-content:flex-start;align-items:center;padding-left:64px;padding-right:64px;--jcs-m-justify:center;--jcs-m-align:center;--jcs-m-pad:64px;">
+        <div class="csx-content" style="display:block;--jcs-mobile-display:block;width:min(480px,98%);text-align:left;transform:translate(0px,0px);background:transparent;padding:0px;border-radius:0px;box-shadow:none;--jcs-m-text-align:center;--jcs-m-shiftx:0px;--jcs-m-shifty:0px;--jcs-m-width:560px;--jcs-m-content-bg:transparent;--jcs-m-content-pad:0px;--jcs-m-content-radius:0px;--jcs-m-content-shadow:none;">
+          <span class="csx-eyebrow" style="background:rgba(215,0,21,1)!important;color:#ffffff!important;padding:5px 12px!important;font-family:Oswald,sans-serif!important;font-weight:600!important;font-size:25px;line-height:1.05!important;letter-spacing:2.2px;transform:translate(0px,0px);--jcs-m-size:16px;--jcs-m-letter:2.2px;--jcs-m-shiftx:0px;--jcs-m-shifty:170px;border-radius:2px;box-shadow:none;margin-bottom:20px;--jcs-m-gap:20px;">10% OFF</span>
+          <div role="heading" aria-level="2" class="csx-heading" style="color:#ffffff!important;font-family:Oswald,sans-serif!important;font-weight:700!important;font-size:46px;letter-spacing:0px;transform:translate(0px,0px);--jcs-m-letter:0px;--jcs-m-shiftx:0px;--jcs-m-shifty:159px;line-height:1.1;margin-bottom:16px;--jcs-m-gap:16px;--jcs-m-size:34px;">Vehicle Display Podiums</div>
+          <div class="csx-sub" style="color:#ffffff!important;font-family:Inter,sans-serif!important;font-weight:400!important;font-size:17px;letter-spacing:0px;transform:translate(0px,0px);--jcs-m-letter:0px;--jcs-m-shiftx:0px;--jcs-m-shifty:150px;line-height:1.55;margin-bottom:28px;--jcs-m-gap:28px;--jcs-m-size:12px;">*Offer Valid While Quantities Last*</div>
+          <a href="https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html" class="csx-button" style="background:rgba(215,0,21,1)!important;color:#ffffff!important;padding:0 30px!important;font-family:Oswald,sans-serif!important;font-weight:700!important;font-size:20px;line-height:1!important;letter-spacing:0.6px;transform:translate(0px,0px);width:auto;--jcs-m-size:15px;--jcs-m-letter:0.6px;--jcs-m-shiftx:0px;--jcs-m-shifty:131px;--jcs-m-width:auto;min-height:48px;border-radius:2px;box-shadow:none;transition:background .15s ease, color .15s ease;">SHOP NOW</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="csx-slide jcs3651-slide" data-slide="1" style="background-color:#000000;">
+      <div class="csx-bg" data-attachment="scroll" style="background-image:url('https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_-_desktop.jpg');background-size:100% auto;background-position:50% 50%;background-attachment:scroll;background-repeat:no-repeat;--jcs-mobile-bg:url('https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_-_MOBILE.jpg');--jcs-mobile-bg-size:100% auto;--jcs-mobile-bg-pos:50% 23%;"></div>
+      <a class="csx-bg-link csx-bg-link-desktop" href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener noreferrer" aria-label="Open banner link"></a>
+      <a class="csx-bg-link csx-bg-link-mobile" href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener noreferrer" aria-label="Open banner link"></a>
+      <div class="csx-overlay" style=""></div>
+      <div class="csx-scrim" style="--jcs-scrim-d:transparent;--jcs-scrim-m:transparent;background:var(--jcs-scrim-d);"></div>
+      <div class="csx-inner" style="justify-content:flex-end;align-items:center;padding-left:48px;padding-right:48px;--jcs-m-justify:flex-start;--jcs-m-align:center;--jcs-m-pad:64px;">
+        <div class="csx-content" style="display:block;--jcs-mobile-display:block;width:min(420px,98%);text-align:center;transform:translate(0px,0px);background:transparent;padding:0px;border-radius:0px;box-shadow:none;--jcs-m-text-align:center;--jcs-m-shiftx:0px;--jcs-m-shifty:0px;--jcs-m-width:480px;--jcs-m-content-bg:transparent;--jcs-m-content-pad:0px;--jcs-m-content-radius:0px;--jcs-m-content-shadow:none;">
+          <span class="csx-eyebrow" style="background:rgba(215,0,21,1)!important;color:#ffffff!important;padding:5px 12px!important;font-family:Oswald,sans-serif!important;font-weight:600!important;font-size:40px;line-height:1.05!important;letter-spacing:2.2px;transform:translate(0px,0px);--jcs-m-size:12px;--jcs-m-letter:2.2px;--jcs-m-shiftx:0px;--jcs-m-shifty:191px;border-radius:2px;box-shadow:none;margin-bottom:20px;--jcs-m-gap:20px;">CATALOGUE 2026</span>
+          <div role="heading" aria-level="2" class="csx-heading" style="color:#ffffff!important;font-family:Oswald,sans-serif!important;font-weight:700!important;font-size:34px;letter-spacing:0px;transform:translate(0px,0px);--jcs-m-letter:0px;--jcs-m-shiftx:0px;--jcs-m-shifty:181px;line-height:1.1;margin-bottom:16px;--jcs-m-gap:16px;--jcs-m-size:21px;">DISCOVER NEW PRODUCTS, FRESH IDEAS &amp; TRUSTED DEALERSHIP ESSENTIALS</div>
+          <div class="csx-sub" style="color:#ffffff!important;font-family:Inter,sans-serif!important;font-weight:400!important;font-size:16px;letter-spacing:0px;transform:translate(0px,0px);--jcs-m-letter:0px;--jcs-m-shiftx:0px;--jcs-m-shifty:0px;line-height:1.55;margin-bottom:28px;--jcs-m-gap:28px;--jcs-m-size:16px;"></div>
+          <a href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener noreferrer" class="csx-button" style="background:rgba(215,0,21,1)!important;color:#ffffff!important;padding:0 30px!important;font-family:Oswald,sans-serif!important;font-weight:700!important;font-size:22px;line-height:1!important;letter-spacing:0.6px;transform:translate(0px,0px);width:auto;--jcs-m-size:14px;--jcs-m-letter:0.6px;--jcs-m-shiftx:0px;--jcs-m-shifty:165px;--jcs-m-width:auto;min-height:48px;border-radius:2px;box-shadow:none;transition:background .15s ease, color .15s ease;">DOWNLOAD</a>
+        </div>
+      </div>
+    </article>
+  </div>
+  <button type="button" class="jcsx-nav jcsx-nav-prev" aria-label="Previous slide" style="position:absolute!important;display:flex!important;align-items:center!important;justify-content:center!important;top:50%!important;left:20px!important;right:auto!important;transform:translateY(-50%)!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;margin:0!important;padding:0!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;border-radius:9999px!important;background:rgba(0,0,0,0.45)!important;border:1px solid rgba(255,255,255,0.35)!important;color:#ffffff!important;font:400 28px/1 Arial,sans-serif!important;text-indent:0!important;text-transform:none!important;appearance:none!important;-webkit-appearance:none!important;cursor:pointer!important;">&#8249;</button>
+  <button type="button" class="jcsx-nav jcsx-nav-next" aria-label="Next slide" style="position:absolute!important;display:flex!important;align-items:center!important;justify-content:center!important;top:50%!important;right:20px!important;left:auto!important;transform:translateY(-50%)!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;margin:0!important;padding:0!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;border-radius:9999px!important;background:rgba(0,0,0,0.45)!important;border:1px solid rgba(255,255,255,0.35)!important;color:#ffffff!important;font:400 28px/1 Arial,sans-serif!important;text-indent:0!important;text-transform:none!important;appearance:none!important;-webkit-appearance:none!important;cursor:pointer!important;">&#8250;</button>
+  <div class="csx-dash-track"></div>
+</section>
+
+<style>
+#jcs3651{position:relative;width:100%;height:var(--jcs-desktop-height,490px);min-height:0!important;overflow:hidden;background:#000;font-family:Inter,sans-serif;isolation:isolate;box-sizing:border-box}
+#jcs3651 *,#jcs3651 *::before,#jcs3651 *::after{box-sizing:border-box!important}
+#jcs3651 .csx-heading,#jcs3651 .csx-sub,#jcs3651 .csx-eyebrow,#jcs3651 .csx-button{font-style:normal!important;text-indent:0!important;text-transform:none!important;text-decoration:none!important;max-width:none!important;float:none!important;position:relative!important;white-space:normal!important;vertical-align:baseline!important}
+#jcs3651 .csx-heading,#jcs3651 .csx-sub{padding:0!important;border:0!important;background:transparent!important}
+#jcs3651 .csx-eyebrow{line-height:1.05!important}
+#jcs3651 .csx-button{line-height:1!important}
+#jcs3651 .jcsx-nav{display:flex!important;position:absolute!important;top:50%!important;transform:translateY(-50%)!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:2147483000!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;min-width:44px!important;max-width:44px!important;width:44px!important;min-height:44px!important;max-height:44px!important;height:44px!important;aspect-ratio:1/1!important;border-style:solid!important;border-width:1px!important;border-radius:9999px!important;font-family:Arial,sans-serif!important;font-weight:400!important;font-size:28px!important;line-height:1!important;letter-spacing:0!important;white-space:nowrap!important;overflow:hidden!important;appearance:none!important;-webkit-appearance:none!important}
+#jcs3651 .jcsx-nav::before,#jcs3651 .jcsx-nav::after{content:none!important;display:none!important}
+#jcs3651 .csx-bg-link{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;text-decoration:none!important;z-index:3!important;cursor:pointer!important}
+#jcs3651 .csx-bg-link::before,#jcs3651 .csx-bg-link::after{content:none!important;display:none!important}
+#jcs3651 .csx-track{position:relative;width:100%;height:100%!important;min-height:0!important}
+#jcs3651 .csx-slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease}
+#jcs3651 .csx-slide.is-active{opacity:1;visibility:visible;pointer-events:auto}
+#jcs3651 .csx-bg{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:100%!important;overflow:hidden;background-color:transparent}
+#jcs3651 .csx-bg-link{position:absolute;inset:0;z-index:1;display:block}
+#jcs3651 .csx-bg-link-mobile{display:none}
+#jcs3651 .csx-scrim{position:absolute;inset:0;z-index:1;pointer-events:none}
+#jcs3651 .csx-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;display:none}
+#jcs3651 .csx-inner{position:relative;z-index:4;display:flex;align-items:center;height:100%;max-width:1360px;margin:auto;padding:0 64px}
+#jcs3651 .csx-content{color:#fff}
+#jcs3651 .csx-eyebrow{display:inline-block;margin-bottom:20px;padding:5px 12px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+#jcs3651 .csx-heading{margin:0 0 16px!important;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+#jcs3651 .csx-sub{margin:0 0 28px!important}
+#jcs3651 .csx-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 30px;border-radius:2px;font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+#jcs3651 .jcsx-nav{position:absolute!important;top:50%!important;z-index:2147483000!important;width:44px!important;height:44px!important;border-radius:50%!important;font-size:28px!important;line-height:1!important;cursor:pointer!important;transform:translateY(-50%)!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+#jcs3651 .jcsx-nav-prev{left:20px!important;right:auto!important}#jcs3651 .jcsx-nav-next{right:20px!important;left:auto!important}
+#jcs3651 .csx-dash-track{position:absolute;left:64px;bottom:24px;z-index:6;display:flex;gap:6px}
+#jcs3651 .csx-dash{width:34px;height:3px;background:rgba(255,255,255,.3);border-radius:2px;overflow:hidden;cursor:pointer}
+#jcs3651 .csx-dash span{display:block;width:100%;height:100%;background:#D70015;transform:scaleX(0);transform-origin:left}
+#jcs3651 .csx-dash.is-active span{transform:scaleX(1)}
+#jcs3651 .csx-dash.is-active.is-animating span{transition:transform 5200ms linear}
+#jcs3651 .csx-dash.is-filled span{transform:scaleX(1);transition:none}
+@media(max-width:900px){
+  #jcs3651 .csx-track{height:100%!important}
+  #jcs3651{height:var(--jcs-mobile-height,620px)!important}
+  #jcs3651 .csx-bg{background-image:var(--jcs-mobile-bg)!important;background-size:var(--jcs-mobile-bg-size,100% auto)!important;background-position:var(--jcs-mobile-bg-pos,50% 23%)!important;background-attachment:scroll!important;background-repeat:no-repeat!important}
+  #jcs3651 .csx-bg-link-desktop{display:none!important}
+  #jcs3651 .csx-bg-link-mobile{display:block!important}
+  #jcs3651 .csx-scrim{background:var(--jcs-scrim-m)!important}
+  #jcs3651 .csx-inner{justify-content:var(--jcs-m-justify,flex-start)!important;align-items:var(--jcs-m-align,flex-end)!important;padding-left:var(--jcs-m-pad,26px)!important;padding-right:var(--jcs-m-pad,26px)!important;padding-bottom:60px!important}
+  #jcs3651 .csx-content{display:var(--jcs-mobile-display,block)!important;width:min(var(--jcs-m-width,480px),96%)!important;max-width:none!important;text-align:var(--jcs-m-text-align,left)!important;transform:translate(var(--jcs-m-shiftx,0px),var(--jcs-m-shifty,0px))!important;background:var(--jcs-m-content-bg,transparent)!important;padding:var(--jcs-m-content-pad,0px)!important;border-radius:var(--jcs-m-content-radius,0px)!important;box-shadow:var(--jcs-m-content-shadow,none)!important}
+  #jcs3651 .csx-eyebrow{margin-bottom:var(--jcs-m-gap)!important;font-size:var(--jcs-m-size)!important;letter-spacing:var(--jcs-m-letter)!important;transform:translate(var(--jcs-m-shiftx),var(--jcs-m-shifty))!important}
+  #jcs3651 .csx-heading{margin-bottom:var(--jcs-m-gap)!important;font-size:var(--jcs-m-size)!important;letter-spacing:var(--jcs-m-letter)!important;transform:translate(var(--jcs-m-shiftx),var(--jcs-m-shifty))!important}
+  #jcs3651 .csx-sub{margin-bottom:var(--jcs-m-gap)!important;font-size:var(--jcs-m-size)!important;letter-spacing:var(--jcs-m-letter)!important;transform:translate(var(--jcs-m-shiftx),var(--jcs-m-shifty))!important}
+  #jcs3651 .csx-button{font-size:var(--jcs-m-size)!important;letter-spacing:var(--jcs-m-letter)!important;transform:translate(var(--jcs-m-shiftx),var(--jcs-m-shifty))!important;width:var(--jcs-m-width)!important}
+  #jcs3651 .csx-dash-track{left:26px;bottom:24px}
+  #jcs3651 .jcsx-nav{top:auto!important;bottom:18px!important;transform:none!important}
+  #jcs3651 .jcsx-nav-prev{left:auto!important;right:82px!important}#jcs3651 .jcsx-nav-next{right:26px!important;left:auto!important}
+}
+#jcs3651.csx-single-slide .jcsx-nav,#jcs3651.csx-single-slide .csx-dash-track{display:none!important}
+</style>
+
+<script>
+(function(){
+  var root=document.getElementById("jcs3651");
+  if(!root||root.dataset.jcsInit)return; root.dataset.jcsInit="1";
+  var hostMain=root.closest?root.closest("main#maincontent.page-main-full-width"):null;if(hostMain){hostMain.style.setProperty("padding-top","0","important");hostMain.style.setProperty("padding-bottom","0","important");}
+  var track=root.querySelector(".csx-track");
+  var slides=[].slice.call(track.querySelectorAll(".csx-slide"));
+  var prev=root.querySelector(".jcsx-nav-prev"), next=root.querySelector(".jcsx-nav-next"), dashTrack=root.querySelector(".csx-dash-track");
+  var current=0,timer=null,AUTOPLAY=5200;
+  slides.forEach(function(_,i){ var d=document.createElement("div"); d.className="csx-dash"; d.innerHTML="<span></span>"; d.onclick=function(){go(i,true)}; dashTrack.appendChild(d); });
+  var dashes=[].slice.call(dashTrack.querySelectorAll(".csx-dash"));
+  function render(){
+    slides.forEach(function(s,i){s.classList.toggle("is-active",i===current)});
+    dashes.forEach(function(d,i){
+      d.classList.remove("is-active","is-filled","is-animating");
+      if(i<current)d.classList.add("is-filled");
+      else if(i===current){d.classList.add("is-active");void d.offsetWidth;if(slides.length>1)d.classList.add("is-animating")}
+    });
+  }
+  function go(i,user){current=(i+slides.length)%slides.length;render();if(user)restart()}
+  function restart(){clearInterval(timer);if(slides.length>1)timer=setInterval(function(){go(current+1,false)},AUTOPLAY)}
+  if(next)next.onclick=function(){go(current+1,true)};
+  if(prev)prev.onclick=function(){go(current-1,true)};
+  [prev,next].forEach(function(a){if(a)a.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();a.click()}}});
+  root.addEventListener("mouseenter",function(){clearInterval(timer)});root.addEventListener("mouseleave",restart);
+  var sx=0;
+  track.addEventListener("touchstart",function(e){sx=e.touches[0].clientX},{passive:true});
+  track.addEventListener("touchend",function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)go(dx<0?current+1:current-1,true)},{passive:true});
+  render();restart();
+})();
+</script>
+</div>
+ </div>
+ <div class="pagebuilder-column" data-content-type="column" style="width:50%">
+  <div data-content-type="products" data-appearance="grid"><div class="block widget block-products-list grid"><div class="block-content"><div class="products-grid grid"><ol class="product-items widget-product-grid"><li class="product-item"><div class="product-item-info"><div class="product-card"><div class="info-section"><div class="product-sku">SKU <span>700315</span></div><div class="product-item-name"><a class="product-item-link" href="#">Rondo Display Podium Stand</a></div><div class="short-discription"></div><div class="product-reviews-main">reviews</div></div><div class="image-section"><a class="product-item-photo" href="#"><span class="product-image-container"><img class="product-image-photo" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/7/0/700315_1.jpg" alt=""></span></a></div><div class="cart-section"><div class="price-section"><div class="price-box price-final_price"><span class="special-price"><span class="price-container"><span class="price-label">Special Price</span><span class="price-wrapper"><span class="price">CAD$ 206.91</span></span></span></span><span class="old-price"><span class="price-container"><span class="price-label">Regular Price</span><span class="price-wrapper"><span class="price">CAD$ 229.90</span></span></span></span></div></div><div class="button-section"><button class="action tocart primary"><span>Add to Cart</span></button></div></div></div></div></li><li class="product-item"><div class="product-item-info"><div class="product-card"><div class="info-section"><div class="product-sku">SKU <span>SQKT</span></div><div class="product-item-name"><a class="product-item-link" href="#">Soft Clear Plastic Key Tags with Paper Insert</a></div><div class="short-discription"></div><div class="product-reviews-main">reviews</div></div><div class="image-section"><a class="product-item-photo" href="#"><span class="product-image-container"><img class="product-image-photo" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/q/sqkt-images-keys.png" alt=""></span></a></div><div class="cart-section"><div class="price-section"><div class="price-box price-final_price"><span class="normal-price"><span class="price-container"><span class="price-label">Starting at</span><span class="price-wrapper"><span class="price">CAD$ 20.00</span></span></span></span></div></div><div class="button-section"><button class="action tocart primary"><span>Add to Cart</span></button></div></div></div></div></li><li class="product-item"><div class="product-item-info"><div class="product-card"><div class="info-section"><div class="offer-tag"><span class="lable-tag save">Save 10% on 10</span></div><div class="product-sku">SKU <span>30208</span></div><div class="product-item-name"><a class="product-item-link" href="#">Canada Clip-On Window Flag</a></div><div class="short-discription"></div><div class="product-reviews-main">reviews</div></div><div class="image-section"><a class="product-item-photo" href="#"><span class="product-image-container"><img class="product-image-photo" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/3/0/30208-canada-window-flag.png" alt=""></span></a></div><div class="cart-section"><div class="price-section"><div class="price-box price-final_price"><span class="normal-price"><span class="price-container"><span class="price-wrapper"><span class="price">CAD$ 7.95</span></span></span></span><span class="price-suffix">each</span></div></div><div class="button-section"><button class="action tocart primary"><span>Add to Cart</span></button></div></div></div></div></li></ol></div></div></div></div>
+ </div>
+</div></div>
+</div>
+<script>
+(function(){
+
+    function startProductAutoSlider(){
+
+        var sliders = document.querySelectorAll('.product-items.widget-product-grid');
+
+        sliders.forEach(function(slider){
+
+            if(slider.classList.contains('auto-slider-active')) return;
+
+            var items = slider.querySelectorAll(':scope > .product-item');
+
+            if(items.length < 2) return;
+
+            slider.classList.add('auto-slider-active');
+
+            items.forEach(function(item){
+                var clone = item.cloneNode(true);
+                clone.classList.add('auto-slider-clone');
+                slider.appendChild(clone);
+            });
+
+            var paused = false;
+
+            // SPEED: pixels per frame. Lower = slower. (was 1.0 / 0.8)
+            var speed = window.innerWidth <= 768 ? 0.4 : 0.3;
+
+            // CHANGE: keep the exact position ourselves so slow speeds don't get rounded to 0
+            var pos = slider.scrollLeft;
+
+            slider.addEventListener('mouseenter', function(){
+                paused = true;
+            });
+
+            slider.addEventListener('mouseleave', function(){
+                paused = false;
+                pos = slider.scrollLeft; // CHANGE: pick up where the user left it
+            });
+
+            function move(){
+
+                var loopPoint = slider.scrollWidth / 2;
+
+                if(!paused && loopPoint > slider.clientWidth){
+                    pos += speed;                 // CHANGE: was slider.scrollLeft += speed
+
+                    if(pos >= loopPoint){
+                        pos = 0;
+                    }
+
+                    slider.scrollLeft = pos;
+                }
+
+                requestAnimationFrame(move);
+            }
+
+            move();
+
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', startProductAutoSlider);
+    window.addEventListener('load', startProductAutoSlider);
+
+    setTimeout(startProductAutoSlider, 500);
+    setTimeout(startProductAutoSlider, 1500);
+    setTimeout(startProductAutoSlider, 3000);
+
+})();
+</script>
+
+</body></html>

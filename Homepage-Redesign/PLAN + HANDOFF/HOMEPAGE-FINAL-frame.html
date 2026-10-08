@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Homepage — Final Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Barlow,system-ui,sans-serif;color:#141414;background:#fff}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.w{max-width:1320px;margin:0 auto;padding:0 24px}.sec{padding:28px 0}.c{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.01em}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 14px}.sh h2{margin:0;font-size:34px;line-height:1}.sh a{color:#d9161e;font-weight:700;font-size:14.5px;white-space:nowrap}
+/* plan labels */
+.plan-tag{display:inline-flex;gap:6px;align-items:center;font:600 11.5px system-ui;padding:4px 9px;border-radius:5px;margin:0 0 10px;background:#eef6ee;color:#245c2a}.plan-tag b{letter-spacing:.06em}
+.plan-tag.keep{background:#eef2fb;color:#23407a}.plan-tag.new{background:#fff3cf;color:#7a5600}.plan-tag.done{background:#e8f6ea;color:#1f6a2c}.plan-tag.header{background:#f1f1f1;color:#555}
+body.nolabels .plan-tag{display:none}
+/* header mock (your current header, unchanged) */
+.hm-top{background:#141414;color:#ddd;font-size:12.5px;text-align:center;padding:8px}
+.hm-main .w{display:flex;align-items:center;gap:24px;height:74px}.hm-main img{height:40px}.hm-search{flex:1;height:44px;border:1px solid #ccc;border-radius:6px;display:flex;align-items:center;padding:0 14px;color:#999;font-size:14px}.hm-acts{font-size:13px;font-weight:600;color:#444;white-space:nowrap}
+.hm-nav{background:#2b2b2b;color:#eee}.hm-nav .w{display:flex;gap:22px;height:46px;align-items:center;font-size:13.5px;font-weight:600;overflow:hidden;white-space:nowrap}
+/* hero (your Code Studio banner) */
+.hero{position:relative;height:420px;border-radius:0;overflow:hidden;background:linear-gradient(90deg,#3a3a3a 0%,#8d8d8d 55%,#d8d8d8 100%)}
+.hero .bg{position:absolute;right:0;top:0;bottom:0;width:55%;background:url("https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png") right center/contain no-repeat}
+.hero .t{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:70px 24px;color:#fff}.hero .tg{display:inline-block;background:#d9161e;font-weight:800;font-size:24px;padding:4px 12px;border-radius:3px;font-family:"Barlow Condensed"}
+.hero h1{margin:14px 0 8px;font-size:58px;line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.35)}.hero p{margin:0 0 22px;font-size:16px}.btn{display:inline-block;background:#d9161e;color:#fff;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;font-size:18px;padding:12px 26px;border-radius:4px}
+.hero .dots{position:absolute;left:24px;bottom:18px;display:flex;gap:6px}.hero .dots i{width:34px;height:3px;background:rgba(255,255,255,.5)}.hero .dots i:first-child{background:#d9161e}
+/* compact product cards */
+.prow{display:flex;gap:10px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}.prow::-webkit-scrollbar{display:none}
+.pc{flex:0 0 160px;border:1px solid #e6e6e6;border-radius:10px;overflow:hidden;background:#fff;display:flex;flex-direction:column}.pc:hover{border-color:#141414}
+.pc-im{position:relative;padding:8px;border-bottom:1px solid #f0f0f0}.pc-im img{width:100%;aspect-ratio:1;object-fit:contain}.pc-b{position:absolute;top:6px;left:6px;background:#d9161e;color:#fff;font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.pc-t{padding:7px 9px 9px;display:flex;flex-direction:column;flex:1}.pc-s{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.03em}.pc-n{font-size:12.5px;line-height:1.25;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em;margin:1px 0 6px}
+.pc-p{margin-top:auto;position:relative;padding-right:22px;line-height:1.1}.pc-l{display:block;font-size:10.5px;color:#777;margin-bottom:2px}.pc-p s{display:block;font-size:10.5px;color:#999}.pc-p strong{font-size:15px}.pc-p strong.sale{color:#d9161e}.pc-p small{font-size:10.5px;color:#777}.pc-p i{position:absolute;right:0;bottom:0;color:#d9161e;font-style:normal;font-weight:700}
+/* mid banner (your Code Studio banner) */
+.mid{position:relative;height:300px;overflow:hidden;border-radius:12px;background:linear-gradient(90deg,#333 0%,#8a8a8a 50%,#cfcfcf 100%)}.mid .bg{position:absolute;right:20px;top:10px;bottom:10px;width:48%;background:url("https://wheelsauto.com/media/wysiwyg/Banner-Images/PLATE-FRAMES.png") center/contain no-repeat}
+.mid .t{position:relative;padding:48px 40px;color:#fff;max-width:560px}.mid .tg{display:inline-block;background:#d9161e;font:800 13px "Barlow Condensed";letter-spacing:.12em;text-transform:uppercase;padding:4px 10px}.mid h2{font-size:46px;line-height:.95;margin:12px 0 10px}.mid p{margin:0 0 18px;font-size:15px}
+/* NEW deal tiles */
+.dt4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.dt{position:relative;background:#141414;color:#fff;border-radius:10px;overflow:hidden;min-height:170px;display:grid;grid-template-columns:1fr 42%;align-items:center}.dt:hover{outline:2px solid #d9161e}
+.dt .tt{padding:18px}.dt small{display:block;color:#d9161e;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase}.dt h3{margin:4px 0 6px;font-size:26px;line-height:.95}.dt span{font-size:13px;color:#bbb}.dt .im{height:100%;background:#fff;display:grid;place-items:center;padding:10px}.dt .im img{max-height:140px;object-fit:contain}
+.dt .im svg{width:56px;height:56px;stroke:#d9161e;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* NEW catalogue + contact */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{border-radius:12px;padding:28px}.box h3{margin:0 0 8px;font-size:30px;line-height:1}.box p{margin:0 0 16px;color:#666}.box.dark{background:#141414;color:#fff}.box.dark p{color:#bbb}.box.light{background:#f5f5f4}.ph{font:800 30px "Barlow Condensed";color:#d9161e;display:block;margin-bottom:10px}
+.btn.w{background:#fff;color:#141414}.btn.o{background:transparent;border:2px solid #141414;color:#141414}
+footer{background:#141414;color:#aaa;margin-top:30px;padding:30px 0;font-size:13px}
+/* phones */
+@media(max-width:760px){
+ .w{padding:0 16px}.sec{padding:22px 0}.sh h2{font-size:28px}
+ .hm-main .w{flex-wrap:wrap;height:auto;padding:12px 16px;gap:10px}.hm-search{order:3;flex-basis:100%}.hm-nav .w{gap:16px}
+ .hero{height:auto;background:linear-gradient(180deg,#3a3a3a,#8d8d8d)}.hero .bg{position:relative;width:100%;height:200px;background-position:center}.hero .t{padding:26px 16px 40px}.hero h1{font-size:40px}
+ .pc{flex-basis:146px}
+ .mid{height:auto}.mid .bg{position:relative;width:auto;height:170px;right:auto;margin:0 16px}.mid .t{padding:24px 18px}.mid h2{font-size:34px}
+ .dt4{grid-template-columns:1fr 1fr;gap:10px}.dt{grid-template-columns:1fr;min-height:0}.dt .im{order:-1;height:120px}.dt .im img{max-height:100px}.dt h3{font-size:21px}.dt .tt{padding:12px}
+ .duo{grid-template-columns:1fr}
+}
+</style></head><body>
+
+<!-- 0 · HEADER -->
+<div class="plan-tag header"><b>HEADER</b> Your current header & menu — not part of this plan</div>
+<div class="hm-top">Welcome to our new website! Save 10% with code WELCOME10</div>
+<div class="hm-main"><div class="w"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheels"><div class="hm-search">Search by keywords or SKU…</div><div class="hm-acts">CA / EN · Login · Cart</div></div></div>
+<div class="hm-nav"><div class="w"><span>Dealership Marketing</span><span>Vehicle Advertising &amp; Display</span><span>Flags &amp; Banners</span><span>License &amp; Name Plates</span><span>Showroom</span><span>Outdoor</span><span>Mirror Tags</span><span>Service &amp; Lot</span><span>OEM Programs</span></div></div>
+
+<!-- 1 · HERO -->
+<div class="w" style="padding-top:16px"><div class="plan-tag keep"><b>KEEP</b> 1 · Hero — your Code Studio slider (podiums / catalogue). Keep, just make it a bit shorter (420px)</div></div>
+<section class="hero"><div class="bg"></div><div class="t"><span class="tg">10% OFF</span><h1 class="c">Vehicle Display<br>Podiums</h1><p>*Offer Valid While Quantities Last*</p><a class="btn" href="#">Shop Now</a></div><div class="dots"><i></i><i></i></div></section>
+
+<!-- 2 · SHOP BY CATEGORY -->
+<section class="sec"><div class="w"><div class="plan-tag done"><b>DONE</b> 2 · Shop by Category — live</div>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.wcat{--r:#d9161e;font-family:Barlow,system-ui,sans-serif;color:#141414}
+.wcat *{box-sizing:border-box;margin:0;padding:0}
+/* beat the theme rule that makes all headings black / adds margins */
+.wcat h1,.wcat h2,.wcat h3,.wcat p{color:inherit;font-weight:inherit;letter-spacing:inherit;margin:0}
+.wcat a,.wcat a:visited,.wcat a:hover{color:inherit;text-decoration:none}
+
+.wcat-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}
+.wcat .wcat-head h2{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;text-transform:uppercase;font-size:34px;line-height:1;letter-spacing:.01em}
+.wcat-head a{font-weight:700;font-size:14.5px;color:var(--r) !important;white-space:nowrap}
+
+.wcat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.wcat-card{background:#f5f5f4;border:1px solid #ececea;border-radius:10px;padding:18px;min-height:132px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;transition:border-color .15s,transform .15s,box-shadow .15s}
+.wcat-card:hover{border-color:#141414;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.06)}
+.wcat-card svg{width:38px;height:38px;stroke:var(--r);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wcat .wcat-card h3{font-size:15.5px;font-weight:700;line-height:1.2;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.wcat-card h3::after{content:"→";color:var(--r);opacity:0;transform:translateX(-4px);transition:.15s}
+.wcat-card:hover h3::after{opacity:1;transform:none}
+.wcat-card.all{background:#141414;border-color:#141414;color:#fff}
+.wcat-card.all:hover{border-color:var(--r)}
+.wcat .wcat-card.all h3{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;text-transform:uppercase;font-size:24px;line-height:1}
+.wcat-card.all h3::after{opacity:1;transform:none}
+.wcat-card.all span{font-size:13px;color:#bbb}
+
+@media(max-width:1000px){.wcat-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){
+  .wcat .wcat-head h2{font-size:28px}
+  .wcat-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .wcat-card{min-height:112px;padding:14px;gap:14px}
+  .wcat-card svg{width:32px;height:32px}
+  .wcat .wcat-card h3{font-size:14.5px}
+  .wcat-card.all{grid-column:1/-1;min-height:0}
+}
+</style>
+
+<div class="wcat">
+  <div class="wcat-head">
+    <h2>Shop by Category</h2>
+    <a href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener">View catalogue →</a>
+  </div>
+  <div class="wcat-grid">
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/promotional-giveaways.html"><svg viewBox="0 0 24 24"><path d="M3 10v4h3l7 5V5L6 10z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg><h3>Dealership Marketing</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/vehicle-advertising-display.html"><svg viewBox="0 0 24 24"><path d="M3 16v-3l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v3"/><path d="M3 16h18v2H3z"/><path d="M6 12h12"/></svg><h3>Vehicle Advertising &amp; Display</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/flags-more.html"><svg viewBox="0 0 24 24"><path d="M5 22V3"/><path d="M5 4h12l-2 4 2 4H5"/></svg><h3>Flags &amp; Banners</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/license-name-plates.html"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h3M6 14h6M15 10h3v4h-3z"/></svg><h3>License &amp; Nameplates</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/indoor-showroom-displays.html"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="7" rx="1"/><path d="M12 10v9M8 21h8"/></svg><h3>Showroom Marketing &amp; Displays</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/indoor-outdoor-displays.html"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16l-1 2h2zM12 18c0 2-2 2-2 4"/></svg><h3>Outdoor Display Solutions</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/mirror-tags-hangers.html"><svg viewBox="0 0 24 24"><path d="M9 2h6v3l-3 2-3-2z"/><rect x="5" y="7" width="14" height="15" rx="2"/><path d="M9 13h6M9 17h4"/></svg><h3>Mirror Tags &amp; Hanger Signs</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/service-lot-solutions.html"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5.3 5.3L3 18l3 3 6.2-6.2a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><h3>Service &amp; Lot Solutions</h3></a>
+    <a class="wcat-card" href="https://wheelsauto.com/ca-en/oem-products.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg><h3>OEM Programs</h3></a>
+    <a class="wcat-card all" href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener"><span>Can't find it?</span><h3>Browse the full catalogue</h3></a>
+  </div>
+</div>
+
+</div></section>
+
+<!-- 3 · POPULAR PRODUCTS -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag keep"><b>KEEP</b> 3 · Popular Products — keep (smaller cards = popular-products-cards-CSS.html)</div>
+<div class="sh"><h2 class="c">Popular Products</h2></div><div class="prow"><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Save 10% on 10</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/h/chatgpt_image_sep_13_2026_11_00_28_pm.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 10900-11311</small><b class="pc-n">EZ Windshield Fluorescent Number Decals</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 8.95</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Save 10% on 10</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/w/s/wsaa-wswn-tag-car.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU WSAA-WSWN</small><b class="pc-n">Paper Rearview Mirror Tag | Red &amp; Green</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 16.95</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Save 10% on 10</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/3/0/30208-canada-window-flag.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 30208</small><b class="pc-n">Canada Clip-On Window Flag</b><div class="pc-p"><strong>CAD$ 7.95</strong> <small>each</small><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/d/p/dpp.webp" alt=""></div><div class="pc-t"><small class="pc-s">SKU DPP</small><b class="pc-n">Dealer Plate Pouch – Deluxe Vinyl</b><div class="pc-p"><strong>CAD$ 10.95</strong> <small>each</small><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Save 10% on 10</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/2/0/200bl-200ye-base.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 200BL-200YE</small><b class="pc-n">Genuine Versa-Tag | Key Tags</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 49.95</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/q/sqkt-images-keys.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU SQKT</small><b class="pc-n">Soft Clear Plastic Key Tags with Paper Insert</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 20.00</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/l/p/lpc-lexan-printed_1.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU LPC</small><b class="pc-n">Screen Printed Lexan License Plate Covers</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 4.85</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Save 10% on 10</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/c/scb250-scy250-base.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU SCB250</small><b class="pc-n">Plastic Windshield Stock Cards</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 42.95</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/l/p/lpf-ford-escape.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU LPF</small><b class="pc-n">Custom Screen Printed License Plate Frames</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 1.55</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/4/0/400bl-400ye-base2.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 400BL-400YE</small><b class="pc-n">Versa-Tag Stock Stickers</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 16.95</strong><i>→</i></div></div></a></div></div></section>
+
+<!-- 4 · STACK YOUR SAVINGS -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag done"><b>DONE</b> 4 · Stack Your Savings — live</div>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.wob{--r:#d9161e;--rd:#b30f16;--y:#ffc21a;--o:#ff7a00;font-family:Barlow,system-ui,sans-serif;border:1px solid #e3e3e3;border-radius:8px;overflow:hidden;color:#141414}
+.wob *{box-sizing:border-box;margin:0;padding:0}
+.wob a{color:inherit;text-decoration:none}
+/* beat the theme rule that makes all headings black */
+.wob h1,.wob h2,.wob h3,.wob h4,.wob p{color:inherit;letter-spacing:inherit;font-weight:inherit}
+.wob .c{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.01em}
+
+/* black top bar */
+.wob-top{position:relative;background:#000;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 26px;overflow:hidden}
+.wob-top::after{content:"";position:absolute;right:0;top:0;bottom:0;width:40%;background:conic-gradient(#1c1c1c 25%,transparent 0 50%,#1c1c1c 0 75%,transparent 0) 0 0/16px 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 75%);mask-image:linear-gradient(90deg,transparent,#000 75%);pointer-events:none}
+.wob-hl{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.wob-stripes{display:flex;gap:4px}
+.wob-stripes i{display:block;width:10px;height:38px;transform:skewX(-24deg)}
+.wob-stripes i:nth-child(1){background:var(--r)}.wob-stripes i:nth-child(2){background:var(--o)}.wob-stripes i:nth-child(3){background:var(--y)}
+.wob-hl h2{font-size:44px;line-height:1}
+.wob-hl h2 em{font-style:normal;color:var(--r)}
+.wob-hl h2 sup{font-size:.5em;color:#fff}
+.wob-code{position:relative;z-index:1;border:2px dashed var(--r);border-radius:6px;padding:6px 14px;text-align:right;white-space:nowrap;background:#000}
+.wob-code span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb}
+.wob-code b{font-family:"Barlow Condensed";font-weight:800;font-size:24px;letter-spacing:.03em}
+
+/* grey bottom */
+.wob-bot{background:#f3f3f3;padding:16px 26px 18px}
+.wob-sub{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.wob-sub b{display:block;color:var(--r);font-family:"Barlow Condensed";font-weight:800;font-size:22px;line-height:1;text-transform:uppercase}
+.wob-sub span{font-family:"Barlow Condensed";font-weight:800;font-size:36px;line-height:1;text-transform:uppercase}
+.wob-sub span em{font-style:normal;color:var(--r)}
+
+/* the joined offers */
+.wob-join{display:grid;grid-template-columns:repeat(4,1fr) 1.05fr;border:2px solid #000;border-radius:5px;overflow:visible;background:var(--r)}
+.wob .wob-o{color:#fff}
+.wob-o{position:relative;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 22px;color:#fff;transition:background .15s}
+.wob-o:hover{background:var(--rd)}
+.wob-o+.wob-o{border-left:1px solid rgba(0,0,0,.35)}
+.wob-o+.wob-o::before{content:"+";position:absolute;left:-14px;top:50%;transform:translateY(-50%);z-index:2;width:26px;height:26px;border-radius:50%;background:#000;color:#fff;font:800 17px/26px Barlow,sans-serif;text-align:center;border:2px solid #f3f3f3}
+.wob-ic{flex:none;width:42px;height:42px;display:grid;place-items:center}
+.wob-ic svg{width:42px;height:42px;display:block}
+.wob-o b{display:block;font-family:"Barlow Condensed";font-weight:800;font-size:30px;line-height:.95;text-transform:uppercase}
+.wob-o small{display:block;font-size:12.5px;font-weight:700;margin-top:3px;color:#ffe0e0}
+/* rush = add-on, not a discount */
+.wob-o.rush{background:#141414;border-radius:0 3px 3px 0}
+.wob-o.rush:hover{background:#000}
+.wob-o.rush::before{content:"&";font-size:14px}
+.wob-o.rush b{font-size:26px}
+.wob-o.rush b em{font-style:normal;color:var(--y)}
+.wob-o.rush small{color:#bbb}
+.wob-fine{margin-top:10px;font-size:12px;color:#777}
+.wob-fine a{color:var(--r);font-weight:700}
+.wob-foot{height:4px;background:linear-gradient(90deg,var(--r) 0 40%,var(--o) 40% 70%,var(--y) 70%)}
+
+@media(max-width:1100px){
+  .wob-join{grid-template-columns:1fr 1fr}
+  .wob-o,.wob-o+.wob-o{border-left:0;border-top:1px solid rgba(0,0,0,.35)}
+  .wob-o:nth-child(-n+2){border-top:0}
+  .wob-o:nth-child(2n){border-left:1px solid rgba(0,0,0,.35)}
+  .wob-o+.wob-o::before{display:none}
+  .wob-o:nth-child(2n)::before{display:block}
+  .wob-o.rush{grid-column:1/-1;border-radius:0 0 3px 3px}
+  .wob-o.rush::before{display:block;left:50%;top:-14px;transform:translateX(-50%)}
+}
+@media(max-width:640px){
+  .wob-top{flex-direction:column;align-items:flex-start;padding:14px 16px}
+  .wob-top::after{width:100%}
+  .wob-hl h2{font-size:32px}
+  .wob-code{text-align:left}
+  .wob-bot{padding:14px 16px}
+  .wob-sub span{font-size:26px}
+  .wob-join{grid-template-columns:1fr}
+  .wob-o,.wob-o+.wob-o,.wob-o:nth-child(2n){border-left:0;border-top:1px solid rgba(0,0,0,.35)}
+  .wob-o:first-child{border-top:0}
+  .wob-o+.wob-o::before,.wob-o:nth-child(2n)::before{display:block;left:50%;top:-14px;transform:translateX(-50%)}
+  .wob-o b{font-size:26px}
+}
+</style>
+
+<div class="wob">
+  <div class="wob-top">
+    <div class="wob-hl">
+      <div class="wob-stripes"><i></i><i></i><i></i></div>
+      <h2 class="c">Stack your <em>savings</em><sup>*</sup></h2>
+    </div>
+    <a class="wob-code" href="#"><span>New customer? Extra 10% off</span><b>CODE: WELCOME10</b></a>
+  </div>
+
+  <div class="wob-bot">
+    <div class="wob-sub">
+      <div><b>Our dealer discounts work together</b><span>Combine them <em>on every order</em></span></div>
+    </div>
+
+    <div class="wob-join">
+      <a class="wob-o" href="#">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><rect x="2" y="8" width="18" height="18" rx="4" fill="#2f6bff" stroke="#000" stroke-width="1.5" transform="rotate(-10 11 17)"/><rect x="18" y="3" width="18" height="18" rx="4" fill="#fff" stroke="#000" stroke-width="1.5" transform="rotate(8 27 12)"/><rect x="14" y="20" width="18" height="18" rx="4" fill="#ffc21a" stroke="#000" stroke-width="1.5" transform="rotate(-4 23 29)"/></svg></span>
+        <span><b>Mix &amp; Match</b><small>Bulk discount eligible</small></span>
+      </a>
+      <a class="wob-o" href="#">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><g transform="skewX(-20)"><rect x="12" y="8" width="6" height="26" fill="#000"/><rect x="21" y="8" width="6" height="26" fill="#ff7a00"/><rect x="30" y="8" width="6" height="26" fill="#ffc21a"/></g></svg></span>
+        <span><b>Save 10%</b><small>When you buy 10+</small></span>
+      </a>
+      <a class="wob-o" href="#">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><defs><pattern id="wobk" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#111"/><rect x="3" y="3" width="3" height="3" fill="#111"/></pattern></defs><rect x="2" y="8" width="38" height="26" rx="4" fill="#ffc21a" stroke="#000" stroke-width="1.5"/><rect x="2" y="13" width="38" height="6" fill="url(#wobk)"/><rect x="7" y="24" width="14" height="3" rx="1.5" fill="#111" opacity=".6"/></svg></span>
+        <span><b>Save 3%</b><small>Pay by credit card</small></span>
+      </a>
+      <a class="wob-o" href="#">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="18" fill="#000"/><path d="M27 9 15 33" stroke="#ffc21a" stroke-width="3.5"/><text x="21" y="27" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="17" fill="#fff">$</text></svg></span>
+        <span><b>Save $250</b><small>When you spend $2,500+</small></span>
+      </a>
+      <a class="wob-o rush" href="#">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><defs><linearGradient id="wobf" x1="0" x2="1"><stop offset="0" stop-color="#ffc21a"/><stop offset=".55" stop-color="#ff7a00"/><stop offset="1" stop-color="#d9161e"/></linearGradient></defs><path d="M6 32a15 15 0 0 1 30 0" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/><path d="M6 32a15 15 0 0 1 30 0" fill="none" stroke="url(#wobf)" stroke-width="5" stroke-linecap="round" stroke-dasharray="47.1" stroke-dashoffset="6"/><path d="M21 32 31 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="21" cy="32" r="3" fill="#fff"/></svg></span>
+        <span><b>Rush <em>Service</em></b><small>Need it fast? Just ask</small></span>
+      </a>
+    </div>
+
+    <p class="wob-fine">*Discounts combine on eligible products. <a href="#">See how our discounts work</a></p>
+  </div>
+  <div class="wob-foot"></div>
+</div>
+
+</div></section>
+
+<!-- 5 · ON SALE NOW -->
+<section class="sec"><div class="w"><div class="plan-tag keep"><b>KEEP</b> 5 · On Sale Now — keep (same smaller cards)</div>
+<div class="sh"><h2 class="c">On Sale Now</h2><a href="#">Shop all deals →</a></div><div class="prow"><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111048_2.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111041</small><b class="pc-n">Showroom Pedestal Display with Snap Frames</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 169.00</s><strong class=sale>CAD$ 152.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111052_1.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111052</small><b class="pc-n">Tamper-Proof Anti-Theft iPad Kiosk</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 229.00</s><strong class=sale>CAD$ 206.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111047-1.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111047</small><b class="pc-n">42&quot; Tall White Showroom Information Display</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 229.00</s><strong class=sale>CAD$ 206.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111048-display-stand.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111048</small><b class="pc-n">42&quot; Tall Black Showroom Information Display</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 229.00</s><strong class=sale>CAD$ 206.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/7/0/700315_1.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU 700315</small><b class="pc-n">Rondo Display Podium Stand</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 229.90</s><strong class=sale>CAD$ 206.91</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111044_1.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111044</small><b class="pc-n">Acrylic Info Display Stand</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 249.00</s><strong class=sale>CAD$ 224.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111046.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111046</small><b class="pc-n">44.75&quot; Tall Showroom Information Display</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 249.00</s><strong class=sale>CAD$ 224.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/1/1/111042.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 111042</small><b class="pc-n">Acrylic Info Display Stand with Pocket</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 269.00</s><strong class=sale>CAD$ 242.10</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Sale</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/7/0/700303.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU 700303</small><b class="pc-n">Elite Display Podium Stand</b><div class="pc-p"><span class="pc-l"></span><s>CAD$ 279.90</s><strong class=sale>CAD$ 251.91</strong><i>→</i></div></div></a></div></div></section>
+
+<!-- 6 · CUSTOM PRINTING BANNER -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag keep"><b>KEEP</b> 6 · Custom printing banner — your Code Studio slider (plate frames / motorcycle / Lexan). Keep</div>
+<div class="mid"><div class="bg"></div><div class="t"><span class="tg">Now Printing</span><h2 class="c">Custom Plate Frames &amp; Covers</h2><p>Custom printed, chrome, metal, raised print and motorcycle options for dealerships and automotive businesses.</p><a class="btn" href="#">Shop Now</a></div></div>
+</div></section>
+
+<!-- 7 · DEALERSHIP NAMEPLATES & DECALS -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag keep"><b>KEEP</b> 7 · Dealership Nameplates &amp; Decals — keep (same smaller cards)</div>
+<div class="sh"><h2 class="c">Dealership Nameplates &amp; Decals</h2><a href="#">Shop custom printing →</a></div><div class="prow"><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/a/c/acfn_1_3.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU ACFN</small><b class="pc-n">Custom Flexible Chrome O.E.M. Style Nameplates</b><div class="pc-p"><span class="pc-l">As low as</span><strong>CAD$ 2.09</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/a/c/acmn-metal-chrome-nameplate.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU ACMN</small><b class="pc-n">O.E.M. Metal Chrome Dealership Nameplates</b><div class="pc-p"><span class="pc-l">As low as</span><strong>CAD$ 3.25</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/a/c/acsn-abs-nameplate3.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU ACSN</small><b class="pc-n">Hard Chrome Plastic O.E.M. Style Nameplates</b><div class="pc-p"><span class="pc-l">As low as</span><strong>CAD$ 2.75</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/n/cn101-cn101ac-3d-nameplates-1.png" alt=""></div><div class="pc-t"><small class="pc-s">SKU CN101</small><b class="pc-n">3D Plastic Custom Dealership Nameplates</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 3.15</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/b/cbdl-2.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU CBDL</small><b class="pc-n">Clear Domed Full Colour Dealership Decals</b><div class="pc-p"><span class="pc-l">As low as</span><strong>CAD$ 2.15</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/c/scdd.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU SCDD</small><b class="pc-n">Thermal Cut Vinyl Silhouette Decals</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 1.99</strong><i>→</i></div></div></a><a class="pc" href="#"><div class="pc-im"><span class=pc-b>Custom</span><img loading="lazy" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/f/cfdd.jpg" alt=""></div><div class="pc-t"><small class="pc-s">SKU CFDD</small><b class="pc-n">Custom Shaped Full Colour Dealership Decals</b><div class="pc-p"><span class="pc-l">Starting at</span><strong>CAD$ 1.09</strong><i>→</i></div></div></a></div></div></section>
+
+<!-- 8 · NEW: DEAL TILES -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag new"><b>NEW</b> 8 · Feature tiles — NEW. Replaces the hidden/duplicate Key Management banner. Page Builder columns: pick image + category, CSS does the look</div>
+<div class="dt4">
+ <a class="dt" href="#"><div class="tt"><small>10% off</small><h3 class="c">Display Podiums</h3><span>While quantities last</span></div><div class="im"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/7/0/700315_1.jpg" alt=""></div></a>
+ <a class="dt" href="#"><div class="tt"><small>Featured</small><h3 class="c">Key Management</h3><span>Cabinets, KEYper &amp; Cobra</span></div><div class="im"><img src="https://wheelsauto.com/media/wysiwyg/Banner-Images/key-control-management.png" alt=""></div></a>
+ <a class="dt" href="#"><div class="tt"><small>10% on 10</small><h3 class="c">Window Flags</h3><span>Canada clip-on flags</span></div><div class="im"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/3/0/30208-canada-window-flag.png" alt=""></div></a>
+ <a class="dt" href="#"><div class="tt"><small>Need it fast?</small><h3 class="c">Rush Service</h3><span>Ask us about rush orders</span></div><div class="im"><svg viewBox="0 0 24 24"><path d="M3 18a9 9 0 0 1 18 0"/><path d="m12 18 5-5"/><path d="M1 9h4M2 13h3"/></svg></div></a>
+</div></div></section>
+
+<!-- 9 · NEW: CATALOGUE + CONTACT -->
+<section class="sec" style="padding-top:6px"><div class="w"><div class="plan-tag new"><b>NEW</b> 9 · Catalogue + talk to us — NEW</div>
+<div class="duo"><div class="box dark"><h3 class="c">Get the 2026 Catalogue</h3><p>Every product, every price — flip through it online.</p><a class="btn" href="https://heyzine.com/flip-book/78661a3df5.html">Canadian Catalogue</a> <a class="btn w" href="https://heyzine.com/flip-book/3107462f8b.html">USA Catalogue</a></div>
+<div class="box light"><h3 class="c">Talk to a real person</h3><p>Bulk order, group pricing or a custom job? We've probably done it before.</p><span class="ph">1 (800) 465-8831</span><a class="btn o" href="https://wheelsauto.com/ca-en/quick-quote/">Quick Quote</a></div></div>
+</div></section>
+
+<footer><div class="w">Your current footer — unchanged</div></footer>
+</body></html>

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Wheels Homepage — Final Plan (Desktop + Phone)</title>
+<style>body{margin:0;background:#e9e7e3;font-family:system-ui,sans-serif;color:#222}
+.top{position:sticky;top:0;z-index:5;background:#141414;color:#fff;display:flex;gap:14px;align-items:center;padding:10px 20px;font-size:14px}
+.top b{font-size:15px}.top button{margin-left:auto;background:#fff;border:0;border-radius:20px;padding:7px 14px;font-weight:700;cursor:pointer}
+.wrap{display:flex;gap:24px;align-items:flex-start;padding:20px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin:0 0 8px}
+.desk{flex:1;min-width:720px}.desk iframe{width:100%;height:calc(100vh - 110px);border:1px solid #ccc;border-radius:8px;background:#fff}
+.phone iframe{width:390px;height:calc(100vh - 130px);max-height:844px;border:10px solid #141414;border-radius:38px;background:#fff}</style></head><body>
+<div class="top"><b>Wheels homepage — final plan</b><span>Desktop left · Phone right · scroll each one</span><button id="t">Hide plan labels</button></div>
+<div class="wrap"><div class="desk"><p class="lbl">Desktop</p><iframe id="d" src="HOMEPAGE-FINAL-frame.html"></iframe></div>
+<div class="phone"><p class="lbl">Phone</p><iframe id="m" src="HOMEPAGE-FINAL-frame.html"></iframe></div></div>
+<script>document.getElementById('t').onclick=function(){var on;['d','m'].forEach(function(id){try{var b=document.getElementById(id).contentDocument.body;b.classList.toggle('nolabels');on=b.classList.contains('nolabels')}catch(e){}});this.textContent=on?'Show plan labels':'Hide plan labels'};</script>
+</body></html>

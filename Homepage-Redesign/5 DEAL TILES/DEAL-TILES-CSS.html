@@ -1,0 +1,80 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap');
+
+/* =====================================================
+   DEAL TILES — black tiles built from a Products element
+   HOW TO USE (Page Builder):
+     1. Drag in "Products" → Appearance: Product Grid
+     2. Select Products By: Category → pick your deals category
+     3. Number of Products to Display: 4
+     4. Advanced → CSS Classes: wdeal
+   Change the deals by changing which products are in that category.
+   Everything is scoped to .wdeal — nothing else on the page changes.
+===================================================== */
+.wdeal{--r:#d9161e;--rd:#b30f16;font-family:Barlow,system-ui,sans-serif}
+.wdeal,.wdeal *,.wdeal *::before,.wdeal *::after{box-sizing:border-box !important}
+
+/* ---------- the grid: 4 across (beats the global product-row CSS) ---------- */
+.wdeal .product-items.widget-product-grid{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:16px !important;margin:0 !important;padding:0 !important;overflow:visible !important;flex-wrap:wrap !important;list-style:none !important}
+.wdeal .product-items.widget-product-grid > .product-item{list-style:none !important;position:relative !important;flex:none !important;width:auto !important;max-width:none !important;margin:0 !important;padding:0 0 30px !important}
+/* the homepage slider script copies products — hide the copies here */
+.wdeal .product-items.widget-product-grid > .auto-slider-clone{display:none !important}
+
+/* ---------- the black tile ---------- */
+.wdeal .product-item-info{position:relative !important;width:100% !important;height:auto !important;aspect-ratio:1.6/1 !important;margin:0 !important;padding:0 !important;background:#000 !important;border:0 !important;border-radius:4px !important;overflow:hidden !important;box-shadow:none !important;transform:none !important;transition:outline-color .15s !important;outline:2px solid transparent}
+.wdeal .product-item-info:hover{outline-color:var(--r) !important;transform:none !important;box-shadow:none !important}
+.wdeal .product-card{display:flex !important;flex-direction:column !important;justify-content:center !important;height:100% !important;padding:20px !important;max-width:58% !important;position:static !important}
+.wdeal .info-section,.wdeal .cart-section,.wdeal .price-section{display:contents !important}
+
+/* order inside the tile: small red line → big price → product name */
+.wdeal .offer-tag{order:1 !important;position:static !important;margin:0 0 2px !important}
+.wdeal .lable-tag{display:inline !important;background:none !important;padding:0 !important;color:#fff !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:clamp(14px,1.3vw,18px) !important;line-height:1 !important;text-transform:uppercase !important;letter-spacing:.01em !important;white-space:nowrap !important}
+.wdeal .price-box{order:2 !important;display:block !important;margin:0 !important;line-height:1 !important}
+.wdeal .price-label{display:block !important;margin:0 0 2px !important;color:#fff !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:clamp(14px,1.3vw,18px) !important;line-height:1 !important;text-transform:uppercase !important}
+.wdeal .product-card:has(.offer-tag) .price-label,
+.wdeal .special-price .price-label,
+.wdeal .old-price .price-label{display:none !important}
+.wdeal .price-box:has(.old-price)::before{content:"On sale";display:block;margin:0 0 2px;color:#fff;font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;font-size:clamp(14px,1.3vw,18px);line-height:1;text-transform:uppercase}
+.wdeal .price{display:block !important;color:#fff !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:clamp(26px,2.5vw,36px) !important;line-height:.9 !important;letter-spacing:-.01em !important;white-space:nowrap !important}
+.wdeal .special-price .price{color:#fff !important}
+.wdeal .old-price .price{font-size:clamp(12px,1vw,14px) !important;font-weight:700 !important;color:#999 !important;text-decoration:line-through !important;margin-top:3px !important}
+.wdeal .price-suffix{color:#bbb !important;font-size:12px !important}
+.wdeal .product-item-name{order:3 !important;min-height:0 !important;max-height:none !important;margin:6px 0 0 !important;padding:0 !important;overflow:visible !important;font-size:inherit !important;line-height:1 !important}
+.wdeal .product-item-name a{display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important;color:#fff !important;text-decoration:none !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;font-size:clamp(14px,1.3vw,18px) !important;line-height:1.02 !important;text-transform:uppercase !important}
+
+/* whole tile + caption clickable (stretches the product-name link) */
+.wdeal .product-item-name a::after{content:"";position:absolute;inset:0;z-index:3}
+
+/* ---------- photo in the red circle ---------- */
+.wdeal .image-section{position:absolute !important;right:-18px !important;bottom:-18px !important;width:42% !important;aspect-ratio:1 !important;margin:0 !important;padding:0 !important;background:#fff !important;border:4px solid var(--r) !important;border-radius:50% !important;overflow:hidden !important;z-index:1}
+.wdeal .image-section a,.wdeal .product-image-container{display:block !important;width:100% !important;height:100% !important}
+.wdeal .image-section img{width:100% !important;height:100% !important;object-fit:cover !important;display:block !important}
+
+/* ---------- "Shop now ›" under each tile ---------- */
+.wdeal .product-item::after{content:"Shop now \203A";position:absolute;left:0;right:0;bottom:4px;text-align:center;color:var(--r);font-weight:700;font-size:14.5px}
+
+/* ---------- hide what the tile doesn't need ---------- */
+.wdeal .product-sku,
+.wdeal .short-description,.wdeal .short-discription,
+.wdeal .product-reviews-summary,.wdeal .product-reviews-main,
+.wdeal .button-section,.wdeal .product-setup{display:none !important}
+
+/* ---------- tablet & phone ---------- */
+@media(max-width:1100px){
+  .wdeal .product-items.widget-product-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .wdeal .price{font-size:clamp(26px,4.4vw,38px) !important}
+  .wdeal .lable-tag,.wdeal .price-label,.wdeal .price-box:has(.old-price)::before,.wdeal .product-item-name a{font-size:clamp(14px,2.4vw,18px) !important}
+}
+@media(max-width:640px){
+  .wdeal .product-items.widget-product-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  .wdeal .product-items.widget-product-grid > .product-item{padding-bottom:26px !important}
+  .wdeal .product-item-info{aspect-ratio:1/1.12 !important}
+  .wdeal .product-card{justify-content:flex-start !important;max-width:100% !important;padding:12px !important}
+  .wdeal .price{font-size:24px !important}
+  .wdeal .lable-tag,.wdeal .price-label,.wdeal .price-box:has(.old-price)::before{font-size:12px !important}
+  .wdeal .product-item-name a{font-size:13px !important}
+  .wdeal .price-suffix,.wdeal .old-price .price{font-size:11px !important}
+  .wdeal .image-section{width:56% !important;right:-14px !important;bottom:-14px !important;border-width:3px !important}
+  .wdeal .product-item::after{font-size:13px;bottom:2px}
+}
+</style>

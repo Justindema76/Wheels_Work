@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shop by Category — Options</title>
+<style>body{margin:0;background:#ecebe8;font-family:system-ui,sans-serif;color:#222}
+.top{position:sticky;top:0;z-index:5;background:#141414;color:#fff;padding:12px 20px}
+.top h1{font-size:16px;margin:0 0 10px}.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{border:0;border-radius:24px;padding:9px 16px;font:600 14px system-ui;background:#2b2b2b;color:#ddd;cursor:pointer}.tabs button b{color:#fff;margin-right:4px}
+.tabs button.on{background:#d9161e;color:#fff}.tabs i{font-style:normal;font-size:11px;background:#fff;color:#d9161e;border-radius:10px;padding:1px 7px;margin-left:6px}
+.desc{margin:10px 0 0;font-size:13.5px;color:#ccc}
+.wrap{display:flex;gap:24px;align-items:flex-start;padding:20px;flex-wrap:wrap}.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#777;margin:0 0 8px}
+.desk{flex:1;min-width:760px}.desk iframe{width:100%;height:560px;border:1px solid #ccc;border-radius:8px;background:#fff}.phone iframe{width:390px;height:760px;border:10px solid #141414;border-radius:38px;background:#fff}</style></head><body>
+<div class="top"><h1>Wheels homepage · Shop by Category — 4 options</h1><div class="tabs"><button data-o="A" class="on"><b>A</b> White tiles <i>Recommended</i></button><button data-o="B" class=""><b>B</b> Grey tiles</button><button data-o="C" class=""><b>C</b> Full photo cards</button><button data-o="D" class=""><b>D</b> Icons only</button></div><p class="desc" id="desc"></p></div>
+<div class="wrap"><div class="desk"><p class="lbl">Desktop</p><iframe id="d" src="option-A.html"></iframe></div><div class="phone"><p class="lbl">Phone</p><iframe id="m" src="option-A.html"></iframe></div></div>
+<script>var D={"A":"Your images on white with a thin border, name centred underneath. Busy collage images look cleanest this way.","B":"Home Depot style. Works best with single products on white backgrounds (they blend into the grey).","C":"Image fills the top of the card edge to edge, name underneath. Most photo-heavy.","D":"No images — red icons. Cleanest and fastest, but some icons may not say enough."};document.getElementById('desc').textContent=D.A;
+document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){document.querySelectorAll('.tabs button').forEach(function(x){x.classList.toggle('on',x===b)});var o=b.dataset.o;document.getElementById('d').src='option-'+o+'.html';document.getElementById('m').src='option-'+o+'.html';document.getElementById('desc').textContent=D[o]}});</script>
+</body></html>

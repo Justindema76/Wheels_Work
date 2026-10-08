@@ -1,0 +1,108 @@
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.wob{--r:#d9161e;--rd:#b30f16;--y:#ffc21a;--o:#ff7a00;font-family:Barlow,system-ui,sans-serif;border:1px solid #e3e3e3;border-radius:8px;overflow:hidden;color:#141414}
+.wob *{box-sizing:border-box;margin:0;padding:0}
+.wob a{color:inherit;text-decoration:none}
+/* beat the theme rule that makes all headings black */
+.wob h1,.wob h2,.wob h3,.wob h4,.wob p{color:inherit;letter-spacing:inherit;font-weight:inherit}
+.wob .c{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.01em}
+
+/* black top bar */
+.wob-top{position:relative;background:#000;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 26px;overflow:hidden}
+.wob-top::after{content:"";position:absolute;right:0;top:0;bottom:0;width:40%;background:conic-gradient(#1c1c1c 25%,transparent 0 50%,#1c1c1c 0 75%,transparent 0) 0 0/16px 16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 75%);mask-image:linear-gradient(90deg,transparent,#000 75%);pointer-events:none}
+.wob-hl{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.wob-stripes{display:flex;gap:4px}
+.wob-stripes i{display:block;width:10px;height:38px;transform:skewX(-24deg)}
+.wob-stripes i:nth-child(1){background:var(--r)}.wob-stripes i:nth-child(2){background:var(--o)}.wob-stripes i:nth-child(3){background:var(--y)}
+.wob-hl h2{font-size:44px;line-height:1}
+.wob-hl h2 em{font-style:normal;color:var(--r)}
+.wob-hl h2 sup{font-size:.5em;color:#fff}
+.wob-code{position:relative;z-index:1;border:2px dashed var(--r);border-radius:6px;padding:6px 14px;text-align:right;white-space:nowrap;background:#000}
+.wob-code span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb}
+.wob-code b{font-family:"Barlow Condensed";font-weight:800;font-size:24px;letter-spacing:.03em}
+
+/* grey bottom */
+.wob-bot{background:#f3f3f3;padding:12px 20px 10px}
+.wob-sub{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.wob-sub b{display:block;color:var(--r);font-family:"Barlow Condensed";font-weight:800;font-size:18px;line-height:1;text-transform:uppercase}
+.wob-sub span{font-family:"Barlow Condensed";font-weight:800;font-size:30px;line-height:1;text-transform:uppercase}
+.wob-sub span em{font-style:normal;color:var(--r)}
+
+/* the joined offers */
+.wob-join{display:grid;grid-template-columns:repeat(4,1fr) 1.05fr;border:2px solid #000;border-radius:5px;overflow:visible;background:var(--r)}
+.wob .wob-o{color:#fff}
+.wob-o{position:relative;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 20px;color:#fff;transition:background .15s}
+.wob-o+.wob-o{border-left:1px solid rgba(0,0,0,.35)}
+.wob-o+.wob-o::before{content:"+";position:absolute;left:-14px;top:50%;transform:translateY(-50%);z-index:2;width:26px;height:26px;border-radius:50%;background:#000;color:#fff;font:800 17px/26px Barlow,sans-serif;text-align:center;border:2px solid #f3f3f3}
+.wob-ic{flex:none;width:34px;height:34px;display:grid;place-items:center}
+.wob-ic svg{width:34px;height:34px;display:block}
+.wob-o b{display:block;font-family:"Barlow Condensed";font-weight:800;font-size:25px;line-height:.95;text-transform:uppercase}
+.wob-o small{display:block;font-size:12px;font-weight:700;margin-top:2px;color:#ffe0e0}
+/* rush = add-on, not a discount */
+.wob-o.rush{background:#141414;border-radius:0 3px 3px 0}
+.wob-o.rush::before{content:"&";font-size:14px}
+.wob-o.rush b{font-size:22px}
+.wob-o.rush b em{font-style:normal;color:var(--y)}
+.wob-o.rush small{color:#bbb}
+.wob-fine{margin-top:6px;font-size:11.5px;color:#777}
+.wob-fine a{color:var(--r);font-weight:700}
+.wob-foot{height:4px;background:linear-gradient(90deg,var(--r) 0 40%,var(--o) 40% 70%,var(--y) 70%)}
+
+@media(max-width:1100px){
+  .wob-join{grid-template-columns:1fr 1fr}
+  .wob-o,.wob-o+.wob-o{border-left:0;border-top:1px solid rgba(0,0,0,.35)}
+  .wob-o:nth-child(-n+2){border-top:0}
+  .wob-o:nth-child(2n){border-left:1px solid rgba(0,0,0,.35)}
+  .wob-o+.wob-o::before{display:none}
+  .wob-o:nth-child(2n)::before{display:block}
+  .wob-o.rush{grid-column:1/-1;border-radius:0 0 3px 3px}
+  .wob-o.rush::before{display:block;left:50%;top:-14px;transform:translateX(-50%)}
+}
+@media(max-width:640px){
+  .wob-top{flex-direction:column;align-items:flex-start;padding:14px 16px}
+  .wob-top::after{width:100%}
+  .wob-hl h2{font-size:32px}
+  .wob-code{text-align:left}
+  .wob-bot{padding:14px 16px}
+  .wob-sub span{font-size:26px}
+  .wob-join{grid-template-columns:1fr}
+  .wob-o,.wob-o+.wob-o,.wob-o:nth-child(2n){border-left:0;border-top:1px solid rgba(0,0,0,.35)}
+  .wob-o:first-child{border-top:0}
+  .wob-o+.wob-o::before,.wob-o:nth-child(2n)::before{display:block;left:50%;top:-14px;transform:translateX(-50%)}
+  .wob-o b{font-size:26px}
+}
+</style>
+
+<div class="wob">
+
+  <div class="wob-bot">
+    <div class="wob-sub">
+      <div><b>Our dealer discounts work together</b><span>Combine them <em>on every order</em></span></div>
+    </div>
+
+    <div class="wob-join">
+      <div class="wob-o">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><rect x="2" y="8" width="18" height="18" rx="4" fill="#2f6bff" stroke="#000" stroke-width="1.5" transform="rotate(-10 11 17)"/><rect x="18" y="3" width="18" height="18" rx="4" fill="#fff" stroke="#000" stroke-width="1.5" transform="rotate(8 27 12)"/><rect x="14" y="20" width="18" height="18" rx="4" fill="#ffc21a" stroke="#000" stroke-width="1.5" transform="rotate(-4 23 29)"/></svg></span>
+        <span><b>Mix &amp; Match</b><small>Bulk discount eligible</small></span>
+      </div>
+      <div class="wob-o">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><g transform="skewX(-20)"><rect x="12" y="8" width="6" height="26" fill="#000"/><rect x="21" y="8" width="6" height="26" fill="#ff7a00"/><rect x="30" y="8" width="6" height="26" fill="#ffc21a"/></g></svg></span>
+        <span><b>Save 10%</b><small>When you buy 10+</small></span>
+      </div>
+      <div class="wob-o">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><defs><pattern id="wobk" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#111"/><rect x="3" y="3" width="3" height="3" fill="#111"/></pattern></defs><rect x="2" y="8" width="38" height="26" rx="4" fill="#ffc21a" stroke="#000" stroke-width="1.5"/><rect x="2" y="13" width="38" height="6" fill="url(#wobk)"/><rect x="7" y="24" width="14" height="3" rx="1.5" fill="#111" opacity=".6"/></svg></span>
+        <span><b>Save 3%</b><small>Pay by credit card</small></span>
+      </div>
+      <div class="wob-o">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="18" fill="#000"/><path d="M27 9 15 33" stroke="#ffc21a" stroke-width="3.5"/><text x="21" y="27" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="17" fill="#fff">$</text></svg></span>
+        <span><b>Save $250</b><small>When you spend $2,500+</small></span>
+      </div>
+      <div class="wob-o rush">
+        <span class="wob-ic"><svg viewBox="0 0 42 42"><defs><linearGradient id="wobf" x1="0" x2="1"><stop offset="0" stop-color="#ffc21a"/><stop offset=".55" stop-color="#ff7a00"/><stop offset="1" stop-color="#d9161e"/></linearGradient></defs><path d="M6 32a15 15 0 0 1 30 0" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/><path d="M6 32a15 15 0 0 1 30 0" fill="none" stroke="url(#wobf)" stroke-width="5" stroke-linecap="round" stroke-dasharray="47.1" stroke-dashoffset="6"/><path d="M21 32 31 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="21" cy="32" r="3" fill="#fff"/></svg></span>
+        <span><b>Rush <em>Service</em></b><small>Need it fast? Just ask</small></span>
+      </div>
+    </div>
+
+    <p class="wob-fine">*Discounts combine on eligible products.</p>
+  </div>
+</div>
