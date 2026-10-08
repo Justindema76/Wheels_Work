@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{margin:0;padding:20px 16px;font-family:system-ui,sans-serif;background:#fff}.note{font:600 11px system-ui;color:#7a5600;background:#fff8c5;display:inline-block;padding:3px 8px;margin-bottom:10px}</style></head><body>
-<div class="note">Sample product photos — you pick the real ones in Page Builder</div>
+
 <div data-content-type="row" data-appearance="contained" data-element="main"><div data-element="inner">
 <h1 data-content-type="heading" style="display:none">Shop by Category</h1>
 <div data-content-type="html" data-appearance="default" data-element="main"><link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
@@ -15,30 +15,24 @@
 .wcat-grid ~ .wcat-grid{margin-top:12px !important}
 
 /* each card (Column element, class wcat-card) */
-.wcat-grid .wcat-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;align-items:center !important;text-align:center !important;gap:10px !important;
-  width:auto !important;max-width:none !important;min-width:0 !important;flex:none !important;min-height:0 !important;height:auto !important;
-  margin:0 !important;padding:14px 12px 16px !important;background:#f2f2f2 !important;border:1px solid #f2f2f2 !important;border-radius:6px !important;
+.wcat-grid .wcat-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:space-between !important;gap:16px !important;
+  width:auto !important;max-width:none !important;min-width:0 !important;flex:none !important;min-height:132px !important;height:auto !important;
+  margin:0 !important;padding:16px !important;background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:10px !important;
   box-shadow:none !important;transition:border-color .15s,transform .15s,box-shadow .15s !important;font-family:Barlow,system-ui,sans-serif}
-.wcat-grid .wcat-card:hover{border-color:#d6d6d6 !important;background:#ececec !important;box-shadow:none !important}
-.wcat-grid .wcat-card:hover [data-content-type="text"] span,.wcat-grid .wcat-card:hover [data-content-type="text"] p{text-decoration:underline !important}
+.wcat-grid .wcat-card:hover{border-color:#141414 !important;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.06) !important}
 
 /* red icon, drawn by CSS */
-.wcat-grid .wcat-card.wcat-all::before{content:"";display:block;width:36px;height:36px;flex:none;background:#d9161e;-webkit-mask:var(--wcat-ico) center/contain no-repeat;mask:var(--wcat-ico) center/contain no-repeat}
+.wcat-grid .wcat-card::before{content:"";display:block;width:36px;height:36px;flex:none;background:#d9161e;-webkit-mask:var(--wcat-ico) center/contain no-repeat;mask:var(--wcat-ico) center/contain no-repeat}
 
-/* the photo you pick in Page Builder — on top, centred; white backgrounds blend into the grey tile */
-.wcat-grid .wcat-card figure,.wcat-grid .wcat-card [data-content-type="image"]{order:-1 !important;display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;aspect-ratio:4/3 !important;height:auto !important;margin:0 !important;padding:0 !important;background:transparent !important;border:0 !important;border-radius:0 !important;overflow:hidden !important;flex:none !important}
-.wcat-grid .wcat-card figure a{display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;height:100% !important}
-.wcat-grid .wcat-card figure img{width:auto !important;height:auto !important;max-width:100% !important;max-height:100% !important;object-fit:contain !important;margin:0 auto !important;padding:0 !important;mix-blend-mode:multiply;transition:transform .2s}
-.wcat-grid .wcat-card:hover figure img{transform:scale(1.04)}
-.wcat-grid .wcat-card.wcat-all figure{display:none !important}
+/* hide the photo */
+.wcat-grid .wcat-card figure,.wcat-grid .wcat-card [data-content-type="image"]{display:none !important}
 
 /* title (Text element) — overrides the red/centered inline styles */
 .wcat-grid .wcat-card [data-content-type="text"]{margin:0 !important;padding:0 !important}
 .wcat-grid .wcat-card [data-content-type="text"] p,
 .wcat-grid .wcat-card [data-content-type="text"] span,
-.wcat-grid .wcat-card [data-content-type="text"] a{text-align:center !important;color:#141414 !important;font-size:14.5px !important;font-weight:700 !important;line-height:1.2 !important;text-transform:none !important;text-decoration:none !important;margin:0 !important;height:auto !important;display:inline !important}
-.wcat-grid .wcat-card [data-content-type="text"] p{display:block !important;text-align:center !important}
-.wcat-grid .wcat-card:not(.wcat-all) [data-content-type="text"] p::after{content:" \203A";color:#d9161e;font-weight:700}
+.wcat-grid .wcat-card [data-content-type="text"] a{text-align:left !important;color:#141414 !important;font-size:14.5px !important;font-weight:700 !important;line-height:1.2 !important;text-transform:none !important;text-decoration:none !important;margin:0 !important;height:auto !important;display:inline !important}
+.wcat-grid .wcat-card [data-content-type="text"] p{display:block !important}
 
 /* "View All" button → invisible, covers the whole card */
 .wcat-grid .wcat-card [data-content-type="buttons"]{position:static !important;margin:0 !important}
@@ -57,21 +51,21 @@
 .wcat-i-oem{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='M8.5 14 7 22l5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
 
 /* catalogue card (10th) */
-.wcat-grid .wcat-card.wcat-all{background:#141414 !important;border-color:#141414 !important;justify-content:center !important;gap:14px !important}
+.wcat-grid .wcat-card.wcat-all{background:#141414 !important;border-color:#141414 !important}
 .wcat-grid .wcat-card.wcat-all:hover{border-color:#d9161e !important}
 .wcat-grid .wcat-card.wcat-all::before{background:#fff}
 .wcat-grid .wcat-card.wcat-all [data-content-type="text"] p,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] span,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] a{color:#fff !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;text-transform:uppercase !important;font-size:20px !important;line-height:1 !important}
 .wcat-all{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z'/%3E%3Cpath d='M20 4h-4a2 2 0 0 0-2 2'/%3E%3Cpath d='M20 4v14h-6'/%3E%3C/svg%3E")}
 
-/* phones: one clean 2-column grid of all 10 cards (no sideways sliding) */
+/* phones: 2 cards per row — plain CSS (no :has, no display:contents — Safari-safe)
+   each Columns row has 5 cards, so the 5th card of each row goes full width */
 @media(max-width:760px){
   .wcat-head h2{font-size:28px !important}
   .wcat-head a{display:none !important}
-  [data-element="inner"]:has(> .wcat-grid){display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important}
-  [data-element="inner"]:has(> .wcat-grid) > *:not(.wcat-grid){grid-column:1 / -1 !important}
-  .wcat-grid,.wcat-grid .pagebuilder-column-line{display:contents !important}
-  .wcat-grid ~ .wcat-grid{margin:0 !important}
-  .wcat-grid .wcat-card{min-height:0 !important;padding:10px 8px 12px !important;gap:8px !important}
+  .wcat-grid .pagebuilder-column-line{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:10px !important;width:100% !important}
+  .wcat-grid ~ .wcat-grid{margin-top:10px !important}
+  .wcat-grid .pagebuilder-column-line > .wcat-card:nth-child(5){grid-column:1 / -1 !important}
+  .wcat-grid .wcat-card{min-height:104px !important;padding:14px !important;gap:12px !important}
   .wcat-grid .wcat-card::before{width:28px;height:28px}
   .wcat-grid .wcat-card [data-content-type="text"] p,.wcat-grid .wcat-card [data-content-type="text"] span,.wcat-grid .wcat-card [data-content-type="text"] a{font-size:14px !important}
   .wcat-grid .wcat-card.wcat-all [data-content-type="text"] p,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] span,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] a{font-size:17px !important}
