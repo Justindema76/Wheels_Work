@@ -84,15 +84,21 @@
   .whero .pagebuilder-column-line{display:block !important}
   .whero .pagebuilder-column-line > .pagebuilder-column{display:block !important;width:100% !important;max-width:100% !important;margin:0 0 12px !important;padding:0 !important}
   /* 2 products side by side, photo on top */
-  .whero .product-items.widget-product-grid{overflow:hidden !important}
-  .whero .product-items.widget-product-grid > .product-item{float:left !important;width:calc(50% - 6px) !important;margin:0 !important}
+  /* both cards always the same height: the shorter one stretches to match (plain flexbox, no % heights) */
+  .whero .product-items.widget-product-grid{display:flex !important;flex-wrap:nowrap !important;align-items:stretch !important;overflow:visible !important}
+  .whero .product-items.widget-product-grid > .product-item{float:none !important;display:flex !important;flex-direction:column !important;flex:0 0 calc(50% - 6px) !important;width:calc(50% - 6px) !important;margin:0 !important}
   .whero .product-items.widget-product-grid > .product-item:first-child{margin-right:12px !important}
-  .whero .product-item-info{height:auto !important}
-  .whero .product-card{display:flex !important;flex-direction:column !important;width:100% !important;height:auto !important;padding:0 12px 14px !important}
+  .whero .product-item-info{display:flex !important;flex-direction:column !important;flex:1 1 auto !important;height:auto !important}
+  .whero .product-card{display:flex !important;flex-direction:column !important;flex:1 1 auto !important;width:100% !important;height:auto !important;padding:0 12px 14px !important}
+  /* price + "Shop now" sit at the bottom so they line up across both cards */
+  .whero .cart-section{margin-top:auto !important}
   .whero .image-section{-webkit-box-ordinal-group:0;order:-1 !important}
   .whero .image-section{position:static !important;width:auto !important;height:150px !important;margin:0 -12px 10px !important}
   .whero .lable-tag{font-size:16px !important}
   .whero .product-item-name a{font-size:16px !important}
   .whero .cart-section::after{font-size:13px;margin-top:8px}
+  /* keep extra products and the slider-script copies hidden */
+  .whero .product-items.widget-product-grid > .product-item:nth-child(n+3),
+  .whero .product-items.widget-product-grid > .auto-slider-clone{display:none !important}
 }
 </style>
