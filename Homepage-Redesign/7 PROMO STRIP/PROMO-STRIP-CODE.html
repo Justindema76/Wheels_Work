@@ -1,0 +1,93 @@
+<!-- ===== WHEELS · PROMO STRIP — PAGE BUILDER VERSION =====
+     4 promo tiles. Each one links to whatever you pick (a Category, product, page or URL).
+     Paste this whole file into an HTML Code element in the same Row, above the Columns.
+
+     PAGE BUILDER SETUP (Advanced → CSS Classes):
+       Columns (4 columns) ............ wpromo
+       Each Column .................... wpromo-card wpromo-i-ICON
+         (first one red: add wpromo-red →  wpromo-card wpromo-red wpromo-i-podium)
+
+       ICON names: podium, key, flag, catalogue, tag, percent, gift, megaphone, car, star
+       Want your own picture instead of an icon? Use  wpromo-card wpromo-photo
+       and add an Image element to that column.
+
+     INSIDE EACH COLUMN:
+       1. Text element — 2 lines, press ENTER between them (not Shift+Enter):
+              10% OFF                      ← small red line
+              VEHICLE DISPLAY PODIUMS      ← big title
+          (Type them in any style. The CSS sets the colours and sizes.)
+       2. Buttons element — 1 button, Link → Category (pick it). The button is invisible
+          and covers the whole tile, so clicking anywhere goes there.
+       (3. Image element — only with wpromo-photo.)
+     Phones: 2 tiles per row. Every tile in a row is always the same height. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* the row of tiles (Columns element, class wpromo) */
+.wpromo{font-family:Barlow,system-ui,sans-serif}
+.wpromo,.wpromo .pagebuilder-column-line{margin:0 !important;padding:0 !important;width:100% !important}
+.wpromo .pagebuilder-column-line{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:12px !important}
+
+/* each tile (Column element, class wpromo-card) */
+.wpromo .wpromo-card{position:relative !important;display:flex !important;flex-direction:row !important;align-items:center !important;justify-content:flex-start !important;gap:16px !important;
+  box-sizing:border-box !important;width:auto !important;max-width:none !important;min-width:0 !important;flex:none !important;align-self:stretch !important;min-height:92px !important;height:auto !important;
+  margin:0 !important;padding:18px 20px !important;background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:12px !important;box-shadow:none !important;
+  transition:border-color .15s,box-shadow .15s !important}
+@media(hover:hover){
+  .wpromo .wpromo-card:hover{border-color:#141414 !important;box-shadow:0 8px 18px rgba(0,0,0,.06) !important}
+  .wpromo .wpromo-card.wpromo-red:hover{border-color:#b30f16 !important}
+}
+
+/* icon box */
+.wpromo .wpromo-card::before{content:"";display:block;flex:none;width:46px;height:46px;border-radius:10px;background:#fff var(--wpromo-ico) center/22px 22px no-repeat}
+
+/* your own picture (class wpromo-photo) instead of an icon */
+.wpromo .wpromo-card figure,.wpromo .wpromo-card [data-content-type="image"]{display:none !important}
+.wpromo .wpromo-card.wpromo-photo::before{display:none}
+.wpromo .wpromo-card.wpromo-photo figure,.wpromo .wpromo-card.wpromo-photo [data-content-type="image"]{display:block !important;order:-1 !important;flex:none !important;width:46px !important;height:46px !important;margin:0 !important;padding:0 !important;border-radius:10px !important;overflow:hidden !important;background:#fff !important}
+.wpromo .wpromo-card.wpromo-photo figure a{display:block !important;width:100% !important;height:100% !important}
+.wpromo .wpromo-card.wpromo-photo figure img{display:block !important;width:100% !important;height:100% !important;max-width:none !important;object-fit:cover !important}
+
+/* the 2 lines of text — overrides whatever colour/size/alignment was typed in the Text element */
+.wpromo .wpromo-card [data-content-type="text"]{flex:1 1 auto !important;min-width:0 !important;margin:0 !important;padding:0 !important}
+.wpromo .wpromo-card [data-content-type="text"] *{color:inherit !important;font:inherit !important;text-align:left !important;text-transform:inherit !important;letter-spacing:inherit !important;text-decoration:none !important;background:none !important;margin:0 !important;padding:0 !important}
+.wpromo .wpromo-card [data-content-type="text"] p:first-child{display:block !important;margin:0 0 5px !important;color:#d9161e !important;font:700 12px/1.2 Barlow,system-ui,sans-serif !important;letter-spacing:.09em !important;text-transform:uppercase !important}
+.wpromo .wpromo-card [data-content-type="text"] p:last-child{display:block !important;margin:0 !important;color:#141414 !important;font:800 18px/1.05 "Barlow Condensed",Barlow,sans-serif !important;letter-spacing:.01em !important;text-transform:uppercase !important}
+
+/* invisible button covering the whole tile */
+.wpromo .wpromo-card [data-content-type="buttons"]{position:static !important;margin:0 !important}
+.wpromo .wpromo-card .pagebuilder-button-primary,.wpromo .wpromo-card .pagebuilder-button-secondary,.wpromo .wpromo-card .pagebuilder-button-link,
+.wpromo .wpromo-card [data-content-type="button-item"] a{position:absolute !important;inset:0 !important;z-index:2 !important;width:auto !important;height:auto !important;margin:0 !important;padding:0 !important;opacity:0 !important;border:0 !important;background:none !important;box-shadow:none !important}
+
+/* red tile (class wpromo-red) */
+.wpromo .wpromo-card.wpromo-red{background:#d9161e !important;border-color:#d9161e !important}
+.wpromo .wpromo-card.wpromo-red::before{background:#b30f16 var(--wpromo-ico-w) center/22px 22px no-repeat}
+.wpromo .wpromo-card.wpromo-red [data-content-type="text"] p:first-child{color:rgba(255,255,255,.85) !important}
+.wpromo .wpromo-card.wpromo-red [data-content-type="text"] p:last-child{color:#fff !important}
+
+/* icons */
+.wpromo-i-podium{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='7' y='3' width='10' height='7' rx='1'/%3E%3Cpath d='M12 10v9M8 21h8'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='7' y='3' width='10' height='7' rx='1'/%3E%3Cpath d='M12 10v9M8 21h8'/%3E%3C/svg%3E")}
+.wpromo-i-key{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16.5 6.5l2 2M14.5 8.5l2 2'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16.5 6.5l2 2M14.5 8.5l2 2'/%3E%3C/svg%3E")}
+.wpromo-i-flag{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22V3'/%3E%3Cpath d='M5 4h12l-2 4 2 4H5'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22V3'/%3E%3Cpath d='M5 4h12l-2 4 2 4H5'/%3E%3C/svg%3E")}
+.wpromo-i-catalogue{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cpath d='M3 9h18M9 9v12'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cpath d='M3 9h18M9 9v12'/%3E%3C/svg%3E")}
+.wpromo-i-tag{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E")}
+.wpromo-i-percent{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 5L5 19'/%3E%3Ccircle cx='6.5' cy='6.5' r='2.5'/%3E%3Ccircle cx='17.5' cy='17.5' r='2.5'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 5L5 19'/%3E%3Ccircle cx='6.5' cy='6.5' r='2.5'/%3E%3Ccircle cx='17.5' cy='17.5' r='2.5'/%3E%3C/svg%3E")}
+.wpromo-i-gift{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='8' width='18' height='4' rx='1'/%3E%3Cpath d='M12 8v13M5 12v9h14v-9'/%3E%3Cpath d='M12 8c-1.5-4-6-4.5-6-1.5S12 8 12 8s6 1 6-1.5S13.5 4 12 8z'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='8' width='18' height='4' rx='1'/%3E%3Cpath d='M12 8v13M5 12v9h14v-9'/%3E%3Cpath d='M12 8c-1.5-4-6-4.5-6-1.5S12 8 12 8s6 1 6-1.5S13.5 4 12 8z'/%3E%3C/svg%3E")}
+.wpromo-i-megaphone{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10v4h3l7 5V5L6 10z'/%3E%3Cpath d='M17 8a5 5 0 0 1 0 8'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10v4h3l7 5V5L6 10z'/%3E%3Cpath d='M17 8a5 5 0 0 1 0 8'/%3E%3C/svg%3E")}
+.wpromo-i-car{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 16v-3l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v3'/%3E%3Cpath d='M3 16h18v2H3z'/%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 16v-3l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v3'/%3E%3Cpath d='M3 16h18v2H3z'/%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E")}
+.wpromo-i-star{--wpromo-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9161e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/%3E%3C/svg%3E");--wpromo-ico-w:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/%3E%3C/svg%3E")}
+
+/* tablets: 2 per row */
+@media(max-width:1100px){
+  .wpromo .pagebuilder-column-line{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+/* phones: 2 per row, icon on top, same height across the row */
+@media(max-width:640px){
+  .wpromo .pagebuilder-column-line{gap:10px !important}
+  .wpromo .wpromo-card{flex-direction:column !important;align-items:flex-start !important;justify-content:flex-start !important;gap:10px !important;min-height:0 !important;padding:14px !important}
+  .wpromo .wpromo-card::before{width:38px;height:38px;border-radius:9px;background-size:19px 19px}
+  .wpromo .wpromo-card.wpromo-photo figure,.wpromo .wpromo-card.wpromo-photo [data-content-type="image"]{width:38px !important;height:38px !important;border-radius:9px !important}
+  .wpromo .wpromo-card [data-content-type="text"]{flex:0 0 auto !important;width:100% !important}
+  .wpromo .wpromo-card [data-content-type="text"] p:first-child{font-size:11px !important}
+  .wpromo .wpromo-card [data-content-type="text"] p:last-child{font-size:17px !important}
+}
+</style>
