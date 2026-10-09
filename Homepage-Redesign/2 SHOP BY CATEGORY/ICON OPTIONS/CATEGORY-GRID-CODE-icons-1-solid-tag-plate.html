@@ -1,0 +1,109 @@
+<!-- ===== WHEELS · BLOCK 2 · SHOP BY CATEGORY — PAGE BUILDER VERSION =====
+     Paste this into the HTML Code element at the top of the row (replaces the old <style> one).
+     Then give each Page Builder piece these CSS classes (Advanced → CSS Classes):
+
+       Columns (the group) ...................... wcat-grid
+       Column 1  Dealership Marketing ........... wcat-card wcat-i-marketing
+       Column 2  Vehicle Advertising & Display .. wcat-card wcat-i-vehicle
+       Column 3  Flags & Banners ................ wcat-card wcat-i-flags
+       Column 4  License & Nameplates ........... wcat-card wcat-i-plates
+       Column 5  Showroom Marketing & Displays .. wcat-card wcat-i-showroom
+       Column 6  Outdoor Display Solutions ...... wcat-card wcat-i-outdoor
+       Column 7  Mirror Tags & Hanger Signs ..... wcat-card wcat-i-tags
+       Column 8  Service & Lot Solutions ........ wcat-card wcat-i-service
+       (2 Columns rows of 5 — both get wcat-grid)
+       Column 9  OEM Programs ................... wcat-card wcat-i-oem
+       Column 10 Browse the full catalogue ...... wcat-card wcat-all
+
+     The photo in each column is hidden (you can leave it or delete it).
+     The "View All" button stays — it becomes invisible and covers the whole card,
+     so clicking anywhere on the card goes to the category the button is linked to. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* heading */
+.wcat-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 18px;font-family:Barlow,system-ui,sans-serif}
+.wcat-head h2{font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;text-transform:uppercase;font-size:34px !important;line-height:1 !important;color:#141414 !important;margin:0 !important;letter-spacing:.01em}
+.wcat-head a,.wcat-head a:visited{font-weight:700;font-size:14.5px;color:#d9161e !important;text-decoration:none !important;white-space:nowrap}
+
+/* the grid (Columns element, class wcat-grid) */
+.wcat-grid,.wcat-grid .pagebuilder-column-line{margin:0 !important;padding:0 !important;width:100% !important}
+.wcat-grid .pagebuilder-column-line{display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:12px !important}
+.wcat-grid ~ .wcat-grid{margin-top:12px !important}
+
+/* each card (Column element, class wcat-card) */
+.wcat-grid .wcat-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:space-between !important;gap:16px !important;
+  width:auto !important;max-width:none !important;min-width:0 !important;flex:none !important;min-height:132px !important;height:auto !important;
+  margin:0 !important;padding:16px !important;background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:10px !important;
+  box-shadow:none !important;transition:border-color .15s,transform .15s,box-shadow .15s !important;font-family:Barlow,system-ui,sans-serif}
+.wcat-grid .wcat-card:hover{border-color:#141414 !important;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.06) !important}
+
+/* red icon, drawn by CSS */
+.wcat-grid .wcat-card::before{content:"";display:block;width:36px;height:36px;flex:none;background:#d9161e;-webkit-mask:var(--wcat-ico) center/contain no-repeat;mask:var(--wcat-ico) center/contain no-repeat}
+
+/* hide the photo */
+.wcat-grid .wcat-card figure,.wcat-grid .wcat-card [data-content-type="image"]{display:none !important}
+
+/* title (Text element) — overrides the red/centered inline styles */
+.wcat-grid .wcat-card [data-content-type="text"]{margin:0 !important;padding:0 !important}
+.wcat-grid .wcat-card [data-content-type="text"] p,
+.wcat-grid .wcat-card [data-content-type="text"] span,
+.wcat-grid .wcat-card [data-content-type="text"] a{text-align:left !important;color:#141414 !important;font-size:14.5px !important;font-weight:700 !important;line-height:1.2 !important;text-transform:none !important;text-decoration:none !important;margin:0 !important;height:auto !important;display:inline !important}
+.wcat-grid .wcat-card [data-content-type="text"] p{display:block !important}
+
+/* "View All" button → invisible, covers the whole card */
+.wcat-grid .wcat-card [data-content-type="buttons"]{position:static !important;margin:0 !important}
+.wcat-grid .wcat-card .pagebuilder-button-primary,
+.wcat-grid .wcat-card [data-content-type="button-item"] a{position:absolute !important;inset:0 !important;z-index:2 !important;width:auto !important;height:auto !important;margin:0 !important;padding:0 !important;opacity:0 !important;border:0 !important;background:none !important}
+
+/* icons */
+.wcat-i-marketing{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7v14'/%3E%3Cpath d='M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8'/%3E%3Cpath d='M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5'/%3E%3Crect x='3' y='7' width='18' height='4' rx='1'/%3E%3C/svg%3E")}
+.wcat-i-vehicle{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2'/%3E%3Ccircle cx='7' cy='17' r='2'/%3E%3Cpath d='M9 17h6'/%3E%3Ccircle cx='17' cy='17' r='2'/%3E%3C/svg%3E")}
+.wcat-i-flags{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22V3'/%3E%3Cpath d='M5 4h12l-2 4 2 4H5'/%3E%3C/svg%3E")}
+.wcat-i-plates{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12700 12700' fill='black' fill-rule='evenodd'%3E%3Cpath d='M1422 8978.27l9856 0 46.72 -3.29 45.87 -9.98 43.93 -16.43 41.13 -22.51 37.48 -27.98 33.21 -33.22 27.99 -37.48 22.51 -41.13 16.43 -43.92 9.97 -45.88 3.29 -46.72 0 -4599.46 -3.29 -46.73 -9.97 -45.87 -16.43 -43.93 -22.51 -41.12 -27.99 -37.48 -33.21 -33.22 -37.48 -27.99 -41.13 -22.51 -43.93 -16.42 -45.87 -9.98 -46.72 -3.29 -9856 0 -46.72 3.29 -45.87 9.98 -43.93 16.42 -41.13 22.51 -37.48 27.99 -33.21 33.22 -27.99 37.48 -22.51 41.12 -16.43 43.93 -9.97 45.87 -3.29 46.73 0 4599.46 3.29 46.72 9.97 45.88 16.43 43.92 22.51 41.13 27.99 37.48 33.21 33.22 37.48 27.98 41.13 22.51 43.93 16.43 45.87 9.98 46.72 3.29zm7775.28 -4821.51l438.05 0 24.34 2.8 23.12 8.03 20.8 13.02 17.4 17.4 13.02 20.81 8.03 23.11 2.8 24.34 -2.8 24.34 -8.03 23.12 -13.02 20.8 -17.4 17.4 -20.8 13.02 -23.12 8.03 -24.34 2.8 -438.05 0 -24.33 -2.8 -23.12 -8.03 -20.8 -13.02 -17.41 -17.4 -13.02 -20.8 -8.03 -23.12 -2.8 -24.34 2.8 -24.34 8.03 -23.11 13.02 -20.81 17.41 -17.4 20.8 -13.02 23.12 -8.03 24.33 -2.8zm-6132.61 0l438.04 0 24.34 2.8 23.12 8.03 20.8 13.02 17.41 17.4 13.02 20.81 8.03 23.11 2.79 24.34 -2.79 24.34 -8.03 23.12 -13.02 20.8 -17.41 17.4 -20.8 13.02 -23.12 8.03 -24.34 2.8 -438.04 0 -24.34 -2.8 -23.12 -8.03 -20.8 -13.02 -17.4 -17.4 -13.02 -20.8 -8.03 -23.12 -2.8 -24.34 2.8 -24.34 8.03 -23.11 13.02 -20.81 17.4 -17.4 20.8 -13.02 23.12 -8.03 24.34 -2.8zm0 4386.48l438.04 0 24.34 -2.8 23.12 -8.03 20.8 -13.02 17.41 -17.4 13.02 -20.81 8.03 -23.12 2.79 -24.33 -2.79 -24.34 -8.03 -23.12 -13.02 -20.8 -17.41 -17.41 -20.8 -13.02 -23.12 -8.03 -24.34 -2.79 -438.04 0 -24.34 2.79 -23.12 8.03 -20.8 13.02 -17.4 17.41 -13.02 20.8 -8.03 23.12 -2.8 24.34 2.8 24.33 8.03 23.12 13.02 20.81 17.4 17.4 20.8 13.02 23.12 8.03 24.34 2.8zm6132.61 0l438.05 0 24.34 -2.8 23.12 -8.03 20.8 -13.02 17.4 -17.4 13.02 -20.81 8.03 -23.12 2.8 -24.33 -2.8 -24.34 -8.03 -23.12 -13.02 -20.8 -17.4 -17.41 -20.8 -13.02 -23.12 -8.03 -24.34 -2.79 -438.05 0 -24.33 2.79 -23.12 8.03 -20.8 13.02 -17.41 17.41 -13.02 20.8 -8.03 23.12 -2.8 24.34 2.8 24.33 8.03 23.12 13.02 20.81 17.41 17.4 20.8 13.02 23.12 8.03 24.33 2.8z'/%3E%3C/svg%3E")}
+.wcat-i-showroom{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='7' y='3' width='10' height='7' rx='1'/%3E%3Cpath d='M12 10v9M8 21h8'/%3E%3C/svg%3E")}
+.wcat-i-outdoor{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='12' cy='9' rx='6' ry='7'/%3E%3Cpath d='M12 16l-1 2h2zM12 18c0 2-2 2-2 4'/%3E%3C/svg%3E")}
+.wcat-i-tags{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1300 1300 10100 10100' fill='black' fill-rule='evenodd'%3E%3Cpath d='M3049.52 3906.07l-0.84 6717.86 6602.63 0 0 -6715.67 -1730.55 -1832.19 -3049.98 0 -1821.26 1830zm3300.48 -1574.85c327.51,0 593.02,265.5 593.02,593.03 0,327.52 -265.51,593.02 -593.02,593.02 -327.52,0 -593.03,-265.5 -593.03,-593.02 0,-327.53 265.51,-593.03 593.03,-593.03z'/%3E%3Cpath d='M3470.67 7976.64l-7.13 10.24 -85.33 -59.45 21.86 0 70.6 49.21zm235.83 164.33l-7.15 10.24 -94.32 -65.73 7.15 -10.24 94.32 65.73zm235.82 164.32l-7.14 10.24 -94.32 -65.73 7.13 -10.24 94.33 65.73zm235.82 164.33l-7.14 10.24 -94.33 -65.73 7.15 -10.24 94.32 65.73zm235.82 164.33l-7.12 10.24 -94.34 -65.73 7.15 -10.26 94.31 65.75zm145.6 116.67l-11.23 -7.82 7.14 -10.25 11.22 7.82 -7.13 10.25z'/%3E%3C/svg%3E")}
+.wcat-i-service{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 6.5a4 4 0 0 0-5.3 5.3L3 18l3 3 6.2-6.2a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.5-.5-.5-2.5z'/%3E%3C/svg%3E")}
+.wcat-i-oem{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='M8.5 14 7 22l5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
+
+/* catalogue card (10th) */
+.wcat-grid .wcat-card.wcat-all{background:#141414 !important;border-color:#141414 !important}
+.wcat-grid .wcat-card.wcat-all:hover{border-color:#d9161e !important}
+.wcat-grid .wcat-card.wcat-all::before{background:#fff}
+.wcat-grid .wcat-card.wcat-all [data-content-type="text"] p,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] span,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] a{color:#fff !important;font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;text-transform:uppercase !important;font-size:20px !important;line-height:1 !important}
+.wcat-all{--wcat-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z'/%3E%3Cpath d='M20 4h-4a2 2 0 0 0-2 2'/%3E%3Cpath d='M20 4v14h-6'/%3E%3C/svg%3E")}
+
+/* phones: all 10 cards 2-across in 5 even rows, flowing through both Columns rows.
+   Plain floats only (no :has, no display:contents, no grid tricks — Safari-safe).
+   The small script below adds "wcat-row" to the Row that holds the two Columns. */
+@media(max-width:760px){
+  .wcat-head h2{font-size:28px !important}
+  .wcat-head a{display:none !important}
+  .wcat-row{display:block !important}
+  .wcat-row::after{content:"";display:block;clear:both}
+  .wcat-grid,.wcat-grid .pagebuilder-column-line{display:block !important;overflow:visible !important;height:auto !important;min-height:0 !important}
+  .wcat-grid ~ .wcat-grid{margin-top:0 !important}
+  .wcat-grid .wcat-card{float:left !important;box-sizing:border-box !important;width:calc(50% - 5px) !important;height:124px !important;min-height:0 !important;margin:0 0 10px !important;padding:13px !important;gap:10px !important;overflow:hidden !important;transform:none !important}
+  /* right-hand cards: 2nd and 4th of the first row, 1st, 3rd and 5th of the second */
+  .wcat-grid .wcat-card:nth-child(even),
+  .wcat-grid ~ .wcat-grid .wcat-card:nth-child(odd){float:right !important}
+  .wcat-grid ~ .wcat-grid .wcat-card:nth-child(even){float:left !important}
+  .wcat-grid .wcat-card::before{width:28px;height:28px}
+  .wcat-grid .wcat-card [data-content-type="text"] p,.wcat-grid .wcat-card [data-content-type="text"] span,.wcat-grid .wcat-card [data-content-type="text"] a{font-size:14px !important}
+  .wcat-grid .wcat-card.wcat-all [data-content-type="text"] p,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] span,.wcat-grid .wcat-card.wcat-all [data-content-type="text"] a{font-size:17px !important}
+}
+/* small phones (iPhone SE / mini): a little taller so 3-line titles fit */
+@media(max-width:359px){
+  .wcat-grid .wcat-card{height:138px !important}
+}
+</style>
+<script>
+(function(){
+  function wcatRow(){var g=document.querySelectorAll('.wcat-grid');for(var i=0;i<g.length;i++){if(g[i].parentNode&&g[i].parentNode.classList)g[i].parentNode.classList.add('wcat-row');}}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',wcatRow);}else{wcatRow();}
+})();
+</script>
+<div class="wcat-head">
+  <h2>Shop by Category</h2>
+  <a href="https://heyzine.com/flip-book/78661a3df5.html" target="_blank" rel="noopener">View catalogue →</a>
+</div>
