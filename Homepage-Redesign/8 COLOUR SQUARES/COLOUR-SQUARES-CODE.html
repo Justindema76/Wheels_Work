@@ -1,0 +1,105 @@
+<!-- ===== WHEELS · COLOUR SQUARES ("Shop more at Wheels") — PAGE BUILDER VERSION =====
+     6 colour squares. Each one links to whatever you pick (Category, product, page or URL).
+     Paste this whole file into an HTML Code element in the same Row, above the Columns.
+     (Change the heading text below, at the very bottom of this file.)
+
+     PAGE BUILDER SETUP (Advanced → CSS Classes):
+       Columns (6 columns) ........ wsq
+       Each Column ................ wsq-card + a colour:
+            wsq-charcoal   wsq-red   wsq-lime   wsq-black   wsq-white   wsq-maroon
+         optional icon on top ..... wsq-i-NAME   (flag, oem, tag, gift, car, key, star, percent)
+         e.g.  wsq-card wsq-black wsq-i-flag
+
+     INSIDE EACH COLUMN:
+       1. Text element = the square. Each line is its own line (press ENTER).
+          Pick the size from the editor's "Paragraph" dropdown:
+              Heading 2 ...... BIG line        (ARRIVED, NUMBERS, SEASON)
+              Heading 3 ...... medium line     (JUST, SALE EVENT, UNDER $10)
+              Heading 4 ...... red tag         (DEALS)
+              Paragraph ...... small line      (New this month)
+          Type in any colour/size — the CSS sets them.
+       2. Buttons element = the red link under the square ("Deals Under $10").
+          Link → Category. The › is added for you. Clicking the square works too.
+     Desktop 6 across · tablets 3 across · phones 2 across (3 even rows). -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* heading above the squares */
+.wsq-head{margin:0 0 18px;text-align:center}
+.wsq-head h2{font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;text-transform:uppercase !important;font-size:34px !important;line-height:1 !important;color:#141414 !important;margin:0 !important;letter-spacing:.01em}
+
+/* the row (Columns element, class wsq) */
+.wsq,.wsq .pagebuilder-column-line{margin:0 !important;padding:0 !important;width:100% !important}
+.wsq .pagebuilder-column-line{display:grid !important;grid-template-columns:repeat(6,minmax(0,1fr)) !important;gap:16px !important}
+
+/* each tile (Column element, class wsq-card) */
+.wsq .wsq-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;box-sizing:border-box !important;
+  width:auto !important;max-width:none !important;min-width:0 !important;flex:none !important;align-self:stretch !important;height:auto !important;min-height:0 !important;
+  margin:0 !important;padding:0 !important;background:none !important;border:0 !important;box-shadow:none !important;
+  --wsq-bg:#2a2a2a;--wsq-ink:#fff;--wsq-tag:#d9161e;--wsq-line:transparent;--wsq-icon:#fff;
+  --wsq-big:clamp(28px,2.9vw,40px);--wsq-mid:clamp(18px,1.85vw,26px);--wsq-small:13px}
+
+/* the square (Text element) */
+.wsq .wsq-card [data-content-type="text"]{display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;gap:3px !important;
+  box-sizing:border-box !important;width:100% !important;aspect-ratio:1/1 !important;margin:0 !important;padding:12px !important;overflow:hidden !important;
+  background:var(--wsq-bg) !important;color:var(--wsq-ink) !important;border:2px solid var(--wsq-line) !important;text-align:center !important;transition:box-shadow .15s !important}
+.wsq .wsq-card [data-content-type="text"] *{color:inherit !important;font:inherit !important;text-transform:inherit !important;letter-spacing:inherit !important;text-decoration:none !important;text-align:center !important;background:none !important;margin:0 !important;padding:0 !important}
+.wsq .wsq-card [data-content-type="text"] h2,.wsq .wsq-card [data-content-type="text"] h3,.wsq .wsq-card [data-content-type="text"] h4,.wsq .wsq-card [data-content-type="text"] p{display:block !important;max-width:100% !important;margin:0 !important;padding:0 !important;color:var(--wsq-ink) !important;text-align:center !important;border:0 !important}
+.wsq .wsq-card [data-content-type="text"] h2{font:800 var(--wsq-big)/.95 "Barlow Condensed",Barlow,sans-serif !important;text-transform:uppercase !important;letter-spacing:0 !important}
+.wsq .wsq-card [data-content-type="text"] h3{font:800 var(--wsq-mid)/1 "Barlow Condensed",Barlow,sans-serif !important;text-transform:uppercase !important;letter-spacing:.01em !important}
+.wsq .wsq-card [data-content-type="text"] p{font:600 var(--wsq-small)/1.25 Barlow,system-ui,sans-serif !important;text-transform:none !important;margin-top:6px !important;opacity:.92}
+/* red tag (Heading 4) */
+.wsq .wsq-card [data-content-type="text"] h4{display:inline-block !important;margin:4px 0 !important;padding:5px 20px 5px 16px !important;background:var(--wsq-tag) !important;color:#fff !important;
+  font:800 calc(var(--wsq-mid)*.95)/1 "Barlow Condensed",Barlow,sans-serif !important;text-transform:uppercase !important;
+  -webkit-clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,5% 50%);clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,5% 50%)}
+
+/* optional icon on top of the square (class wsq-i-NAME) */
+.wsq .wsq-card[class*="wsq-i-"] [data-content-type="text"]::before{content:"";display:block;flex:none;width:44px;height:44px;margin:0 0 8px;background:var(--wsq-icon);-webkit-mask:var(--wsq-ico) center/contain no-repeat;mask:var(--wsq-ico) center/contain no-repeat}
+
+/* the red link under the square (Buttons element) — the whole tile is clickable */
+.wsq .wsq-card [data-content-type="buttons"]{position:static !important;display:block !important;margin:10px 0 0 !important;padding:0 !important;text-align:center !important}
+.wsq .wsq-card [data-content-type="button-item"]{position:static !important;display:block !important;margin:0 !important}
+.wsq .wsq-card [data-content-type="button-item"] a,.wsq .wsq-card .pagebuilder-button-primary,.wsq .wsq-card .pagebuilder-button-secondary,.wsq .wsq-card .pagebuilder-button-link{
+  position:static !important;display:inline !important;width:auto !important;min-width:0 !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:0 !important;
+  background:none !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;
+  color:#d9161e !important;font:700 14.5px/1.3 Barlow,system-ui,sans-serif !important;text-transform:none !important;letter-spacing:0 !important;text-decoration:none !important}
+.wsq .wsq-card [data-content-type="button-item"] a span{color:inherit !important;font:inherit !important}
+.wsq .wsq-card [data-content-type="button-item"] a span::after{content:" \203A"}
+.wsq .wsq-card [data-content-type="button-item"] a::before{content:"";position:absolute;inset:0;z-index:2}
+@media(hover:hover){
+  .wsq .wsq-card:hover [data-content-type="text"]{box-shadow:0 10px 22px rgba(0,0,0,.16) !important}
+  .wsq .wsq-card:hover [data-content-type="button-item"] a{text-decoration:underline !important}
+}
+
+/* colours */
+.wsq .wsq-card.wsq-charcoal{--wsq-bg:#2a2a2a;--wsq-ink:#fff;--wsq-tag:#d9161e;--wsq-icon:#fff}
+.wsq .wsq-card.wsq-red{--wsq-bg:#d9161e;--wsq-ink:#fff;--wsq-tag:#141414;--wsq-icon:#fff}
+.wsq .wsq-card.wsq-lime{--wsq-bg:#d8ff1e;--wsq-ink:#141414;--wsq-tag:#d9161e;--wsq-icon:#141414}
+.wsq .wsq-card.wsq-black{--wsq-bg:#000;--wsq-ink:#fff;--wsq-tag:#d9161e;--wsq-line:#d9161e;--wsq-icon:#fff}
+.wsq .wsq-card.wsq-white{--wsq-bg:#fff;--wsq-ink:#141414;--wsq-tag:#d9161e;--wsq-line:#141414;--wsq-icon:#d9161e}
+.wsq .wsq-card.wsq-maroon{--wsq-bg:#6b0b0e;--wsq-ink:#fff;--wsq-tag:#d9161e;--wsq-icon:#fff}
+
+/* icons */
+.wsq-i-flag{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22V3'/%3E%3Cpath d='M5 4h12l-2 4 2 4H5'/%3E%3C/svg%3E")}
+.wsq-i-oem{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='M8.5 14 7 22l5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
+.wsq-i-tag{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'/%3E%3Ccircle cx='7.5' cy='7.5' r='.5' fill='black'/%3E%3C/svg%3E")}
+.wsq-i-gift{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7v14'/%3E%3Cpath d='M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8'/%3E%3Cpath d='M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5'/%3E%3Crect x='3' y='7' width='18' height='4' rx='1'/%3E%3C/svg%3E")}
+.wsq-i-car{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2'/%3E%3Ccircle cx='7' cy='17' r='2'/%3E%3Cpath d='M9 17h6'/%3E%3Ccircle cx='17' cy='17' r='2'/%3E%3C/svg%3E")}
+.wsq-i-key{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16.5 6.5l2 2M14.5 8.5l2 2'/%3E%3C/svg%3E")}
+.wsq-i-star{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/%3E%3C/svg%3E")}
+.wsq-i-percent{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 5L5 19'/%3E%3Ccircle cx='6.5' cy='6.5' r='2.5'/%3E%3Ccircle cx='17.5' cy='17.5' r='2.5'/%3E%3C/svg%3E")}
+
+/* tablets: 3 across */
+@media(max-width:1100px){
+  .wsq .pagebuilder-column-line{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:14px !important}
+  .wsq .wsq-card{--wsq-big:clamp(30px,5.6vw,54px);--wsq-mid:clamp(19px,3.5vw,34px)}
+}
+/* phones: 2 across, 3 even rows */
+@media(max-width:640px){
+  .wsq-head h2{font-size:28px !important}
+  .wsq .pagebuilder-column-line{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
+  .wsq .wsq-card{--wsq-big:clamp(24px,8.4vw,40px);--wsq-mid:clamp(16px,5.4vw,26px);--wsq-small:11.5px}
+  .wsq .wsq-card[class*="wsq-i-"] [data-content-type="text"]::before{width:34px;height:34px;margin-bottom:6px}
+  .wsq .wsq-card [data-content-type="button-item"] a,.wsq .wsq-card .pagebuilder-button-primary{font-size:13.5px !important}
+}
+</style>
+<div class="wsq-head"><h2>Shop more at Wheels</h2></div>
