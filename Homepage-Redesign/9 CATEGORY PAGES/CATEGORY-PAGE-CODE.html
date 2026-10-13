@@ -1,0 +1,78 @@
+<!-- ===== WHEELS · CATEGORY PAGES (subcategory cards) =====
+     Works with what your category pages already use — no class changes needed:
+       Columns ........ sub-category-slider      each Column ... sub-category-card
+       (Heading = name, Image = photo, Button = link)
+     Paste this into the empty HTML Code element under the page title (same code on every category page).
+
+     OPTIONAL
+       Intro line under the title ... add a Text element, CSS class: sub-category-intro
+       Dark "Browse the catalogue" card at the end (keeps rows even when you have 7) ...
+           add one more Column, CSS class: sub-category-card sub-category-all
+       French / English ... add class lang-en or lang-fr to any Heading, Text or Button.
+     Desktop: all cards in one row · tablets: 4 per row · phones: 2 per row. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* page title + intro */
+.category-cms h1[data-content-type="heading"]{font-family:"Barlow Condensed",Barlow,sans-serif !important;font-weight:800 !important;text-transform:uppercase !important;font-size:40px !important;line-height:1 !important;letter-spacing:.01em !important;color:#141414 !important;margin:6px 0 10px !important}
+.category-cms .sub-category-intro{margin:0 0 22px !important;max-width:760px}
+.category-cms .sub-category-intro,.category-cms .sub-category-intro *{font:500 16px/1.5 Barlow,system-ui,sans-serif !important;color:#555 !important;text-align:left !important;margin:0 !important}
+
+/* the cards: no more side-scrolling */
+.sub-category-slider,.sub-category-slider .pagebuilder-column-line{margin:0 !important;padding:0 !important;width:100% !important;max-width:none !important;overflow:visible !important;transform:none !important}
+.sub-category-slider{margin-top:6px !important}
+.sub-category-slider .pagebuilder-column-line{display:grid !important;grid-auto-flow:column !important;grid-auto-columns:minmax(0,1fr) !important;gap:14px !important;scroll-snap-type:none !important}
+.sub-category-slider::-webkit-scrollbar,.sub-category-slider .pagebuilder-column-line::-webkit-scrollbar{display:none !important}
+
+.sub-category-slider .sub-category-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;box-sizing:border-box !important;
+  width:auto !important;min-width:0 !important;max-width:none !important;flex:none !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:12px 12px 14px !important;
+  background:#f5f5f4 !important;border:1px solid #ececea !important;border-radius:12px !important;box-shadow:none !important;transform:none !important;transition:border-color .15s,box-shadow .15s !important;font-family:Barlow,system-ui,sans-serif}
+@media(hover:hover){
+  .sub-category-slider .sub-category-card:hover{border-color:#141414 !important;box-shadow:0 8px 18px rgba(0,0,0,.07) !important}
+  .sub-category-slider .sub-category-card:hover [data-content-type="button-item"] a span{text-decoration:underline !important}
+}
+/* photo on top, on white */
+.sub-category-slider .sub-category-card figure{order:-1 !important;display:block !important;margin:0 0 12px !important;padding:0 !important;border:0 !important;background:#fff !important;border-radius:9px !important;overflow:hidden !important;aspect-ratio:1/1 !important;width:100% !important}
+.sub-category-slider .sub-category-card figure a{display:block !important;width:100% !important;height:100% !important}
+.sub-category-slider .sub-category-card figure img{display:block !important;width:100% !important;height:100% !important;max-width:none !important;object-fit:contain !important;padding:8px !important;box-sizing:border-box !important;border:0 !important}
+/* name */
+.sub-category-slider .sub-category-card [data-content-type="heading"]{margin:0 0 6px !important;padding:0 !important;text-align:left !important;color:#141414 !important;font:700 15px/1.2 Barlow,system-ui,sans-serif !important;text-transform:none !important;letter-spacing:0 !important}
+/* SHOP ALL button → small red link, whole card clickable */
+.sub-category-slider .sub-category-card [data-content-type="buttons"]{position:static !important;display:block !important;margin:auto 0 0 !important;padding:0 !important;text-align:left !important}
+.sub-category-slider .sub-category-card [data-content-type="button-item"]{position:static !important;display:block !important;margin:0 !important;text-align:left !important}
+.sub-category-slider .sub-category-card [data-content-type="button-item"] a,.sub-category-slider .sub-category-card .pagebuilder-button-primary{position:static !important;display:inline !important;width:auto !important;min-width:0 !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:0 !important;
+  background:none !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;color:#d9161e !important;font:700 13.5px/1.3 Barlow,system-ui,sans-serif !important;text-transform:none !important;letter-spacing:0 !important;text-decoration:none !important}
+.sub-category-slider .sub-category-card [data-content-type="button-item"] a span{color:inherit !important;font:inherit !important;text-transform:none !important}
+.sub-category-slider .sub-category-card [data-content-type="button-item"] a span::after{content:" \203A"}
+.sub-category-slider .sub-category-card [data-content-type="button-item"] a::before{content:"";position:absolute;inset:0;z-index:2}
+
+/* dark "Browse the catalogue" card (class sub-category-all) */
+.sub-category-slider .sub-category-card.sub-category-all{background:#141414 !important;border-color:#141414 !important;justify-content:flex-end !important}
+.sub-category-slider .sub-category-card.sub-category-all::before{content:"";display:block;width:34px;height:34px;margin:0 0 auto;background:#fff;-webkit-mask:var(--sc-book) center/contain no-repeat;mask:var(--sc-book) center/contain no-repeat;
+  --sc-book:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z'/%3E%3Cpath d='M20 4h-4a2 2 0 0 0-2 2'/%3E%3Cpath d='M20 4v14h-6'/%3E%3C/svg%3E")}
+.sub-category-slider .sub-category-card.sub-category-all [data-content-type="heading"]{color:#fff !important;font:800 21px/1.02 "Barlow Condensed",Barlow,sans-serif !important;text-transform:uppercase !important;margin-top:14px !important}
+.sub-category-slider .sub-category-card.sub-category-all [data-content-type="button-item"] a{color:#fff !important}
+@media(hover:hover){.sub-category-slider .sub-category-card.sub-category-all:hover{border-color:#d9161e !important}}
+
+/* tablets: 4 per row */
+@media(max-width:1100px){
+  .sub-category-slider .pagebuilder-column-line{grid-auto-flow:row !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+}
+/* phones: 2 per row */
+@media(max-width:640px){
+  .category-cms h1[data-content-type="heading"]{font-size:30px !important}
+  .category-cms .sub-category-intro,.category-cms .sub-category-intro *{font-size:14.5px !important}
+  .sub-category-slider .pagebuilder-column-line{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  .sub-category-slider .sub-category-card{padding:10px 10px 12px !important}
+  .sub-category-slider .sub-category-card [data-content-type="heading"]{font-size:14px !important}
+}
+
+/* French / English switch (same as the homepage blocks) */
+html[lang^="fr"] .lang-en.lang-en.lang-en.lang-en,html[lang^="fr"] .lang-ca.lang-ca.lang-ca.lang-ca,html[lang^="fr"] .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html:not([lang^="fr"]) .lang-fr.lang-fr.lang-fr.lang-fr{display:none !important}
+html.wstore-ca-en .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html.wstore-us .lang-ca.lang-ca.lang-ca.lang-ca{display:none !important}
+</style>
+<script>
+(function(){var h=document.documentElement,m=location.pathname.match(/^\/(ca-en|ca-fr|us)(\/|$)/);
+  var st=m?m[1]:((h.lang||'').indexOf('fr')===0?'ca-fr':'ca-en');h.classList.add('wstore-'+st);})();
+</script>
