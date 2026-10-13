@@ -1,7 +1,7 @@
 <!-- ===== WHEELS · COLOUR SQUARES ("Shop more at Wheels") — PAGE BUILDER VERSION =====
      6 colour squares. Each one links to whatever you pick (Category, product, page or URL).
      Paste this whole file into an HTML Code element in the same Row, above the Columns.
-     (Change the heading text below, at the very bottom of this file.)
+     (Change the heading text at the very bottom of this file: English line + French line.)
 
      PAGE BUILDER SETUP (Advanced → CSS Classes):
        Columns (6 columns) ........ wsq
@@ -20,6 +20,15 @@
           Type in any colour/size — the CSS sets them.
        2. Buttons element = the red link under the square ("Deals Under $10").
           Link → Category. The › is added for you. Clicking the square works too.
+     LANGUAGES (one block for all 3 sites — no copies):
+       Put the English AND the French in the same column, and give each element
+       a CSS class (Advanced → CSS Classes on that Text / Buttons element):
+            lang-en ... English  → shows on ca-en and us
+            lang-fr ... French   → shows on ca-fr only
+            lang-ca ... Canada English only (ca-en)    use these two instead of lang-en
+            lang-us ... USA only (us)                   when the US wording is different
+       No class = shows on every site.
+       So each column has: Text (lang-en) + Text (lang-fr) + Buttons (lang-en) + Buttons (lang-fr).
      Desktop 6 across · tablets 3 across · phones 2 across (3 even rows). -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
@@ -101,5 +110,16 @@
   .wsq .wsq-card[class*="wsq-i-"] [data-content-type="text"]::before{width:34px;height:34px;margin-bottom:6px}
   .wsq .wsq-card [data-content-type="button-item"] a,.wsq .wsq-card .pagebuilder-button-primary{font-size:13.5px !important}
 }
+/* ===== LANGUAGE SWITCH — each site hides the other languages ===== */
+/* (the class is repeated on purpose so this always wins over the blocks' own styling) */
+html[lang^="fr"] .lang-en.lang-en.lang-en.lang-en,html[lang^="fr"] .lang-ca.lang-ca.lang-ca.lang-ca,html[lang^="fr"] .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html:not([lang^="fr"]) .lang-fr.lang-fr.lang-fr.lang-fr{display:none !important}
+html.wstore-ca-en .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html.wstore-us .lang-ca.lang-ca.lang-ca.lang-ca{display:none !important}
 </style>
-<div class="wsq-head"><h2>Shop more at Wheels</h2></div>
+<script>
+/* tags the page with its store (ca-en / ca-fr / us) from the web address */
+(function(){var h=document.documentElement,m=location.pathname.match(/^\/(ca-en|ca-fr|us)(\/|$)/);
+  var st=m?m[1]:((h.lang||'').indexOf('fr')===0?'ca-fr':'ca-en');h.classList.add('wstore-'+st);})();
+</script>
+<div class="wsq-head"><h2 class="lang-en">Shop more at Wheels</h2><h2 class="lang-fr">Plus de choix chez Wheels</h2></div>
