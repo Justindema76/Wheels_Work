@@ -9,7 +9,7 @@
        Dark "Browse the catalogue" card at the end (keeps rows even when you have 7) ...
            add one more Column, CSS class: sub-category-card sub-category-all
        French / English ... add class lang-en or lang-fr to any Heading, Text or Button.
-     Desktop: all cards in one row · tablets: 4 per row · phones: 2 per row. -->
+     Grid: 4 per row on desktop and tablets · 2 per row on phones. -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 /* page title + intro */
@@ -20,7 +20,7 @@
 /* the cards: no more side-scrolling */
 .sub-category-slider,.sub-category-slider .pagebuilder-column-line{margin:0 !important;padding:0 !important;width:100% !important;max-width:none !important;overflow:visible !important;transform:none !important}
 .sub-category-slider{margin-top:6px !important}
-.sub-category-slider .pagebuilder-column-line{display:grid !important;grid-auto-flow:column !important;grid-auto-columns:minmax(0,1fr) !important;gap:14px !important;scroll-snap-type:none !important}
+.sub-category-slider .pagebuilder-column-line{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:16px !important;scroll-snap-type:none !important}
 .sub-category-slider::-webkit-scrollbar,.sub-category-slider .pagebuilder-column-line::-webkit-scrollbar{display:none !important}
 
 .sub-category-slider .sub-category-card{position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;box-sizing:border-box !important;
@@ -55,7 +55,7 @@
 
 /* tablets: 4 per row */
 @media(max-width:1100px){
-  .sub-category-slider .pagebuilder-column-line{grid-auto-flow:row !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+  .sub-category-slider .pagebuilder-column-line{gap:12px !important}
 }
 /* phones: 2 per row */
 @media(max-width:640px){
