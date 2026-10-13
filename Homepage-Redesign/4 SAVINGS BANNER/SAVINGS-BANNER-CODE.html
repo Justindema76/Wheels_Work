@@ -106,3 +106,16 @@
     <p class="wob-fine">*Discounts combine on eligible products.</p>
   </div>
 </div>
+
+<!-- LANGUAGE / SITE SWITCH: put this banner in its own Row and give the Row a CSS class:
+     lang-en = English (ca-en + us)   ·   lang-fr = French (ca-fr) -->
+<style>
+html[lang^="fr"] .lang-en.lang-en.lang-en.lang-en,html[lang^="fr"] .lang-ca.lang-ca.lang-ca.lang-ca,html[lang^="fr"] .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html:not([lang^="fr"]) .lang-fr.lang-fr.lang-fr.lang-fr{display:none !important}
+html.wstore-ca-en .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html.wstore-us .lang-ca.lang-ca.lang-ca.lang-ca{display:none !important}
+</style>
+<script>
+(function(){var h=document.documentElement,m=location.pathname.match(/^\/(ca-en|ca-fr|us)(\/|$)/);
+  var st=m?m[1]:((h.lang||'').indexOf('fr')===0?'ca-fr':'ca-en');h.classList.add('wstore-'+st);})();
+</script>
