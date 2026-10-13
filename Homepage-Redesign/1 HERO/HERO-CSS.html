@@ -7,8 +7,15 @@
    no stretch tricks on phones — plain CSS only.
    PAGE BUILDER SETUP:
      Columns → Advanced → CSS Classes: whero
-       Left column  → HTML Code with your Code Studio banner
+       Left column  → one HTML Code element per site, each with its Code Studio banner.
+                      Give each HTML Code element a CSS class (Advanced → CSS Classes):
+                        lang-ca ... Canada English banner  (shows on ca-en only)
+                        lang-fr ... French banner          (shows on ca-fr only)
+                        lang-us ... USA banner             (shows on us only)
+                        lang-en ... one banner for BOTH English sites (ca-en + us)
+                      Only the right one shows on each site — one homepage block for all 3.
        Right column → Products (Product Grid, by Category, 2 products)
+                      (names, prices and links switch to each site automatically)
 ===================================================== */
 .whero{--r:#d9161e;--rd:#b30f16;--ink:#141414;font-family:Barlow,system-ui,sans-serif}
 .whero *,.whero *::before,.whero *::after{box-sizing:border-box}
@@ -101,4 +108,14 @@
   .whero .product-items.widget-product-grid > .product-item:nth-child(n+3),
   .whero .product-items.widget-product-grid > .auto-slider-clone{display:none !important}
 }
+/* ===== LANGUAGE / SITE SWITCH — each site hides the banners that aren't for it ===== */
+html[lang^="fr"] .lang-en.lang-en.lang-en.lang-en,html[lang^="fr"] .lang-ca.lang-ca.lang-ca.lang-ca,html[lang^="fr"] .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html:not([lang^="fr"]) .lang-fr.lang-fr.lang-fr.lang-fr{display:none !important}
+html.wstore-ca-en .lang-us.lang-us.lang-us.lang-us{display:none !important}
+html.wstore-us .lang-ca.lang-ca.lang-ca.lang-ca{display:none !important}
 </style>
+<script>
+/* tags the page with its store (ca-en / ca-fr / us) from the web address */
+(function(){var h=document.documentElement,m=location.pathname.match(/^\/(ca-en|ca-fr|us)(\/|$)/);
+  var st=m?m[1]:((h.lang||'').indexOf('fr')===0?'ca-fr':'ca-en');h.classList.add('wstore-'+st);})();
+</script>
