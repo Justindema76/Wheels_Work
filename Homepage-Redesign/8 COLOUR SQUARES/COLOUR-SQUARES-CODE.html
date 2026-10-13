@@ -7,8 +7,9 @@
        Columns (6 columns) ........ wsq
        Each Column ................ wsq-card + a colour:
             wsq-charcoal   wsq-red   wsq-lime   wsq-black   wsq-white   wsq-maroon
-         optional icon on top ..... wsq-i-NAME   (flag, oem, tag, gift, car, key, star, percent)
+         optional icon on top ..... wsq-i-NAME   (flag, oem, tag, gift, car, key, star, percent, sparkle, folio, card)
          e.g.  wsq-card wsq-black wsq-i-flag
+         bigger text (short words like SAVE 10% ON 10) ... add wsq-xl
 
      INSIDE EACH COLUMN:
        1. Text element = the square. Each line is its own line (press ENTER).
@@ -87,6 +88,12 @@
 .wsq .wsq-card.wsq-white{--wsq-bg:#fff;--wsq-ink:#141414;--wsq-tag:#d9161e;--wsq-line:#141414;--wsq-icon:#d9161e}
 .wsq .wsq-card.wsq-maroon{--wsq-bg:#6b0b0e;--wsq-ink:#fff;--wsq-tag:#d9161e;--wsq-icon:#fff}
 
+/* BIG version (add class wsq-xl to the column): the lines get bigger to fill the square, e.g. SAVE 10% ON 10 */
+.wsq .wsq-card.wsq-xl{--wsq-big:clamp(40px,4.3vw,62px);--wsq-mid:clamp(22px,2.3vw,32px)}
+.wsq .wsq-card.wsq-xl [data-content-type="text"] h4{font-size:calc(var(--wsq-mid)*1.05) !important;padding:6px 24px 6px 18px !important}
+@media(max-width:1100px){.wsq .wsq-card.wsq-xl{--wsq-big:clamp(44px,8.4vw,80px);--wsq-mid:clamp(24px,4.4vw,42px)}}
+@media(max-width:640px){.wsq .wsq-card.wsq-xl{--wsq-big:clamp(36px,12.5vw,58px);--wsq-mid:clamp(19px,6.6vw,30px)}}
+
 /* icons */
 .wsq-i-flag{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22V3'/%3E%3Cpath d='M5 4h12l-2 4 2 4H5'/%3E%3C/svg%3E")}
 .wsq-i-oem{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='6'/%3E%3Cpath d='M8.5 14 7 22l5-3 5 3-1.5-8'/%3E%3C/svg%3E")}
@@ -96,6 +103,9 @@
 .wsq-i-key{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16.5 6.5l2 2M14.5 8.5l2 2'/%3E%3C/svg%3E")}
 .wsq-i-star{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/%3E%3C/svg%3E")}
 .wsq-i-percent{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 5L5 19'/%3E%3Ccircle cx='6.5' cy='6.5' r='2.5'/%3E%3Ccircle cx='17.5' cy='17.5' r='2.5'/%3E%3C/svg%3E")}
+.wsq-i-sparkle{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z'/%3E%3Cpath d='M19 3v4M17 5h4'/%3E%3C/svg%3E")}
+.wsq-i-folio{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E")}
+.wsq-i-card{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='5' width='20' height='14' rx='2'/%3E%3Ccircle cx='8' cy='11' r='2'/%3E%3Cpath d='M5 16c.7-1.5 1.8-2 3-2s2.3.5 3 2M14 10h5M14 14h3'/%3E%3C/svg%3E")}
 
 /* tablets: 3 across */
 @media(max-width:1100px){
@@ -107,7 +117,8 @@
   .wsq-head h2{font-size:28px !important}
   .wsq .pagebuilder-column-line{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important}
   .wsq .wsq-card{--wsq-big:clamp(24px,8.4vw,40px);--wsq-mid:clamp(16px,5.4vw,26px);--wsq-small:11.5px}
-  .wsq .wsq-card[class*="wsq-i-"] [data-content-type="text"]::before{width:34px;height:34px;margin-bottom:6px}
+  .wsq .wsq-card [data-content-type="text"]{padding:10px !important}
+  .wsq .wsq-card[class*="wsq-i-"] [data-content-type="text"]::before{width:30px;height:30px;margin-bottom:4px}
   .wsq .wsq-card [data-content-type="button-item"] a,.wsq .wsq-card .pagebuilder-button-primary{font-size:13.5px !important}
 }
 /* ===== LANGUAGE SWITCH — each site hides the other languages ===== */
