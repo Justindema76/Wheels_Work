@@ -127,6 +127,25 @@ html[lang^="fr"] .lang-en.lang-en.lang-en.lang-en,html[lang^="fr"] .lang-ca.lang
 html:not([lang^="fr"]) .lang-fr.lang-fr.lang-fr.lang-fr{display:none !important}
 html.wstore-ca-en .lang-us.lang-us.lang-us.lang-us{display:none !important}
 html.wstore-us .lang-ca.lang-ca.lang-ca.lang-ca{display:none !important}
+/* ===== THIS BLOCK'S SETTINGS (coloured-sales-squares) — set here, nothing to change in Page Builder =====
+   icon on each colour square, and the big text on the charcoal one */
+.wsq .wsq-card.wsq-red{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z'/%3E%3Cpath d='M19 3v4M17 5h4'/%3E%3C/svg%3E")}
+.wsq .wsq-card.wsq-lime{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16.5 6.5l2 2M14.5 8.5l2 2'/%3E%3C/svg%3E")}
+.wsq .wsq-card.wsq-black{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E")}
+.wsq .wsq-card.wsq-maroon{--wsq-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='5' width='20' height='14' rx='2'/%3E%3Ccircle cx='8' cy='11' r='2'/%3E%3Cpath d='M5 16c.7-1.5 1.8-2 3-2s2.3.5 3 2M14 10h5M14 14h3'/%3E%3C/svg%3E")}
+.wsq .wsq-card.wsq-red [data-content-type="text"]::before,.wsq .wsq-card.wsq-lime [data-content-type="text"]::before,
+.wsq .wsq-card.wsq-black [data-content-type="text"]::before,.wsq .wsq-card.wsq-maroon [data-content-type="text"]::before{content:"";display:block;flex:none;width:44px;height:44px;margin:0 0 8px;background:var(--wsq-icon);-webkit-mask:var(--wsq-ico) center/contain no-repeat;mask:var(--wsq-ico) center/contain no-repeat}
+@media(max-width:640px){
+  .wsq .wsq-card.wsq-red [data-content-type="text"]::before,.wsq .wsq-card.wsq-lime [data-content-type="text"]::before,
+  .wsq .wsq-card.wsq-black [data-content-type="text"]::before,.wsq .wsq-card.wsq-maroon [data-content-type="text"]::before{width:30px;height:30px;margin-bottom:4px}
+}
+/* charcoal square (SAVE 10% ON 10): bigger text */
+.wsq .wsq-card.wsq-charcoal{--wsq-big:clamp(40px,4.3vw,62px);--wsq-mid:clamp(22px,2.3vw,32px)}
+.wsq .wsq-card.wsq-charcoal [data-content-type="text"] h4{font-size:calc(var(--wsq-mid)*1.05) !important;padding:6px 24px 6px 18px !important}
+@media(max-width:1100px){.wsq .wsq-card.wsq-charcoal{--wsq-big:clamp(44px,8.4vw,80px);--wsq-mid:clamp(24px,4.4vw,42px)}}
+@media(max-width:640px){.wsq .wsq-card.wsq-charcoal{--wsq-big:clamp(36px,12.5vw,58px);--wsq-mid:clamp(19px,6.6vw,30px)}}
+/* French: "PERSONNALISÉS" is too long for the big line, so the French big line on the lime and black squares is a bit smaller */
+.wsq .wsq-card.wsq-lime .lang-fr h2,.wsq .wsq-card.wsq-black .lang-fr h2{font-size:var(--wsq-mid) !important}
 </style>
 <script>
 /* tags the page with its store (ca-en / ca-fr / us) from the web address */
