@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Studio Editor</title>
+<!-- CODE STUDIO REDESIGN · PREVIEW 2 (all controls kept). Not the real plugin; nothing saves.
+     Every control from the current editor is here, regrouped by the piece you're editing (Red label, Heading, Small text, Button, Text box, Background, Slider).
+     Click a piece in either preview to edit it; drag it to move it. Desktop + Phone always side by side at the website's real sizes.
+     Each size/position setting shows Desktop and Phone next to each other, with a link so Phone can follow Desktop.
+     Data = the real Home-page-slider (wheelsauto.com, Oct 14 2026). Repo file: Code-Studio-Redesign/CODE-STUDIO-PREVIEW-2-all-controls.html -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141414;--ink2:#3a3a3a;--muted:#71717a;--line:#e4e4e7;--bg:#f4f4f5;--blue:#2f5bea;--blue-d:#1f45c4;--blue-l:#eef2ff;--warn:#b45309;--warn-bg:#fff7ed;--ok:#15803d}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font:13.5px/1.45 Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+
+/* top bar */
+.top{height:56px;background:#111;color:#fff;display:flex;align-items:center;gap:12px;padding:0 14px;position:sticky;top:0;z-index:30}
+.top .nm{font-weight:700}
+.top .st{font-size:12px;color:#9ca3af}
+.sites{display:flex;background:#222;border-radius:9px;padding:3px;margin-left:8px}
+.sites button{padding:6px 12px;border-radius:7px;font-weight:600;font-size:12.5px;color:#cfcfcf}
+.sites button.on{background:#fff;color:#111}
+.sp{flex:1}
+.tb{height:34px;padding:0 13px;border-radius:8px;font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:7px;color:#e5e5e5;border:1px solid #3a3a3a}
+.tb.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.menu{position:relative}
+.pop{position:absolute;right:0;top:42px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.18);padding:6px;min-width:220px;display:none;z-index:40}
+.menu.open .pop{display:block}
+.pop button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:6px}
+
+/* layout */
+.app{display:grid;grid-template-columns:210px minmax(0,1fr) 380px;height:calc(100vh - 56px)}
+.rail{background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:12px}
+.stage{overflow:auto;padding:18px}
+.side{background:#fff;border-left:1px solid var(--line);overflow-y:auto}
+.cap{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 2px 8px}
+
+/* slides */
+.sl{border:2px solid transparent;border-radius:10px;padding:6px;margin-bottom:8px;cursor:pointer;background:var(--bg)}
+.sl.on{border-color:var(--blue);background:var(--blue-l)}
+.sl .th{height:64px;border-radius:6px;background:#bbb center/cover no-repeat;position:relative}
+.sl .th b{position:absolute;left:5px;top:5px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:0 7px;border-radius:9px}
+.sl .t{font-size:12px;font-weight:600;margin:5px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl .w{font-size:11px;color:var(--warn);margin:1px 2px 0}
+.sl .tools{display:flex;gap:2px;margin-top:4px}
+.sl .tools button{font-size:11px;color:var(--muted);padding:2px 5px;border-radius:5px}
+.add{width:100%;border:1.5px dashed #c4c4c8;border-radius:10px;padding:9px;color:var(--muted);font-weight:600;margin-bottom:14px}
+.railbtn{width:100%;text-align:left;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+.railbtn.on{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+
+/* previews */
+.pvs{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.pv{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.pv .hd{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.pv .hd b{color:var(--ink);font-size:13px}
+.pv .box{position:relative;overflow:hidden}
+.pv iframe{border:0;display:block;transform-origin:0 0;background:#000}
+.phone .box{border-radius:14px;box-shadow:0 0 0 6px #1d1d1f}
+.hint{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--ink2)}
+.hint b{color:var(--ink)}
+.codebox{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.codebox summary{padding:12px 14px;font-weight:600;cursor:pointer}
+.codebox pre{margin:0 14px 14px;background:#111;color:#cfe3ff;border-radius:8px;padding:12px;font-size:11.5px;max-height:160px;overflow:auto;white-space:pre-wrap}
+
+/* right panel */
+.who{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:12px 14px}
+.who .row1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.who h2{font-size:16px}
+.who .sub{font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{padding:5px 10px;border-radius:20px;border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink2)}
+.chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.allbtn{font-size:12px;font-weight:600;color:var(--blue);border:1px solid #c7d2fe;border-radius:7px;padding:5px 9px;white-space:nowrap}
+.grp{border-bottom:1px solid var(--line)}
+.grp>summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.grp>summary::-webkit-details-marker{display:none}
+.grp>summary::after{content:"+";color:var(--muted);font-weight:500;font-size:16px;line-height:1}
+.grp[open]>summary::after{content:"\2212"}
+.gb{padding:0 14px 14px}
+.f{margin-bottom:12px}
+.f>label,.f .lb{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--ink2)}
+.f input[type=text],.f input[type=url],.f textarea,.f select{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fff;font-size:13px}
+.f textarea{min-height:58px;resize:vertical}
+.chk{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-bottom:10px}
+.col{display:flex;align-items:center;gap:8px}
+.col input[type=color]{width:38px;height:30px;border:1px solid var(--line);border-radius:6px;padding:2px;background:#fff}
+.col code{font-size:12px;color:var(--muted)}
+.rng{display:flex;align-items:center;gap:8px}
+.rng input[type=range]{flex:1;min-width:0;accent-color:var(--blue)}
+.rng input[type=number]{width:64px;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12.5px;text-align:right}
+.rng small{color:var(--muted);font-size:11.5px;width:16px}
+.dual{border:1px solid var(--line);border-radius:9px;padding:8px 10px 6px}
+.dual .dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.dual .dh .lb{margin:0}
+.link{font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:6px}
+.link.on{color:var(--blue);background:var(--blue-l)}
+.dv{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:6px;margin:3px 0}
+.dv>span{font-size:11.5px;font-weight:600;color:var(--muted)}
+.dv.off{opacity:.45}
+.seg{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:3px;flex:1}
+.seg button{flex:1;padding:5px 4px;border-radius:6px;font-size:12px;font-weight:600;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.thumb{height:76px;border-radius:7px;background:#ddd center/cover no-repeat;margin-top:6px;border:1px solid var(--line)}
+.warn{background:var(--warn-bg);border:1px solid #fed7aa;color:#7c2d12;border-radius:8px;padding:9px 11px;font-size:12.5px;margin-bottom:12px}
+.stops .stop{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr) 22px;gap:6px;align-items:center;margin-bottom:6px}
+.stops input[type=color]{width:38px;height:28px;border:1px solid var(--line);border-radius:6px;padding:2px}
+.stops input[type=number]{width:100%;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px}
+.stops .x{color:var(--muted);font-size:16px}
+.gbar{height:18px;border-radius:5px;margin:4px 0 10px;border:1px solid var(--line);background-image:linear-gradient(45deg,#ddd 25%,transparent 25%,transparent 75%,#ddd 75%),linear-gradient(45deg,#ddd 25%,transparent 25%,transparent 75%,#ddd 75%);background-size:10px 10px;background-position:0 0,5px 5px;position:relative;overflow:hidden}
+.gbar i{position:absolute;inset:0}
+.mini{font-size:12px;color:var(--blue);font-weight:600}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111;color:#fff;padding:11px 16px;border-radius:10px;font-weight:600;display:none;z-index:60}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.open{display:flex}
+.modal .bx{background:#fff;border-radius:14px;max-width:600px;width:100%;padding:22px;max-height:90vh;overflow:auto}
+.modal h3{font-size:18px;margin-bottom:10px}
+.modal li{margin:7px 0 7px 18px;color:var(--ink2)}
+.modal .acts{text-align:right;margin-top:12px}
+.modal .acts button{background:var(--blue);color:#fff;border-radius:8px;height:36px;padding:0 16px;font-weight:600}
+
+@media (hover:hover){
+  .tb:hover{background:#222}.tb.pri:hover{background:var(--blue-d)}
+  .pop button:hover,.sl .tools button:hover{background:var(--bg)}
+  .chips button:hover{border-color:var(--ink)}
+  .allbtn:hover{background:var(--blue-l)}
+}
+@media (max-width:1150px){.app{grid-template-columns:190px minmax(0,1fr);height:auto}.side{grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}}
+@media (max-width:700px){.app{grid-template-columns:1fr}.top{flex-wrap:wrap;height:auto;padding:10px 14px}.sp{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div><div class="nm">Home-page-slider</div><div class="st" id="st">All changes saved</div></div>
+  <div class="sites" id="sites"><button class="on">EN</button><button>FR</button><button>USA</button></div>
+  <div class="sp"></div>
+  <button class="tb" id="whyBtn">What changed?</button>
+  <button class="tb" data-t="Live preview opens the real output in a new window">Live preview</button>
+  <div class="menu" id="more"><button class="tb" id="moreBtn">More ▾</button>
+    <div class="pop">
+      <button data-t="New blank project">New blank</button>
+      <button data-t="Load code / project window">Load code / project</button>
+      <button data-t="Project JSON copied">Copy project JSON</button>
+    </div>
+  </div>
+  <button class="tb" data-t="Embed code copied">Copy embed code</button>
+  <button class="tb pri" id="saveBtn">Save</button>
+</header>
+
+<div class="app">
+  <aside class="rail">
+    <div class="cap">Slides</div>
+    <div id="slides"></div>
+    <button class="add" id="addSl">+ Add slide</button>
+    <div class="cap">Whole slider</div>
+    <button class="railbtn" id="sliderBtn">Slider settings <span>›</span></button>
+  </aside>
+
+  <main class="stage">
+    <div class="pvs">
+      <div class="pv desk"><div class="hd"><b>Desktop</b><span id="dLbl"></span></div><div class="box" id="dBox"><iframe id="dFrame" title="Desktop preview"></iframe></div></div>
+      <div class="pv phone"><div class="hd"><b>Phone</b><span id="pLbl"></span></div><div class="box" id="pBox"><iframe id="pFrame" title="Phone preview"></iframe></div></div>
+    </div>
+    <div class="hint"><b>Click any piece of the banner to edit it. Drag it to move it.</b> Desktop and Phone are always both on screen, at the sizes the website really uses (phone = 345px wide on wheelsauto.com, not 390).</div>
+    <details class="codebox"><summary>Embed code</summary><pre>&lt;!-- Built with Justinnovate Code Studio --&gt;
+(Same code as today. Copy embed code works the same way.)</pre></details>
+  </main>
+
+  <aside class="side" id="side"></aside>
+</div>
+
+<div class="modal" id="whyM"><div class="bx">
+  <h3>What changed (every control is still here)</h3>
+  <ul>
+    <li><b>Click the piece you want to change</b> (Red label, Heading, Small text, Button, Text box, Background) and only its controls show, all in one place. Before, one piece's settings were spread over 6 tabs.</li>
+    <li><b>Drag to move.</b> Drag a piece in the preview instead of hunting for the right X/Y slider.</li>
+    <li><b>Desktop and Phone side by side</b>, always, at the website's real sizes. No Desktop/Mobile switch to forget about.</li>
+    <li><b>Every size/position control shows Desktop and Phone next to each other.</b> Turn on the 🔗 link and Phone follows Desktop. Before, Phone copied Desktop once and then quietly drifted.</li>
+    <li><b>Phone text placement:</b> "Text under the picture" in one click, instead of nudging every piece down by 150px (your live slides do this today).</li>
+    <li><b>"Apply to all slides"</b> on every piece: style one slide, copy that look to the others.</li>
+    <li><b>Warnings</b> when a slide has no phone picture (the Podiums slide).</li>
+    <li><b>Number boxes next to every slider</b> for exact values, with sensible ranges (no more ±1000).</li>
+    <li><b>Slider settings in one place</b>: heights, autoplay, corners, breakpoint, arrows and dashes.</li>
+  </ul>
+  <div class="acts"><button data-close>Got it</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- real data: Home-page-slider from wheelsauto.com ----------
+var SLIDES = [
+{"eyebrow":"25% OFF","heading":"Vehicle Floor Display Stands, Retractable Banner Stands & Literature/Brochure Stands","subheading":"(Online Orders Only)\n*Offer Valid Until Oct 30, 2026*","buttonText":"SHOP NOW","buttonUrl":"https://wheelsauto.com/ca-en/on-sale-now.html","buttonNewTab":false,"altText":"High Quality Vehicle Display Podiums in Canada - Wheel's Auto","desktopImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/Modern_Automotive_Display_Catalog_Collage.png","mobileImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/Modern_Showroom_Display_Catalog_1.png","desktopBgLink":"https://wheelsauto.com/ca-en/on-sale-now.html","mobileBgLink":"https://wheelsauto.com/ca-en/on-sale-now.html","desktopBgNewTab":false,"mobileBgNewTab":false,"showContent":true,"mobileShowContent":true,"bgColor":"#ffffff","overlayType":"none","overlayColor":"#000000","overlayOpacity":30,"overlayBlendMode":"normal","overlayImage":"","desktopFit":"contain","desktopAttachment":"scroll","contentSide":"left","mobileContentSide":"left","desktopX":100,"desktopY":50,"desktopZoom":50,"mobileX":43,"mobileY":9,"mobileWidth":93,"gradient":{"type":"linear","angle":94,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.47},{"pos":60,"color":"#000000","opacity":0},{"pos":75,"color":"#000000","opacity":0}]},"mobileGradient":{"type":"linear","angle":2,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.51},{"pos":60,"color":"#000000","opacity":0},{"pos":78,"color":"#000000","opacity":0}]},"headingColor":"#ffffff","subColor":"#ffffff","eyebrowBg":"#D70015","eyebrowColor":"#ffffff","eyebrowBgEnabled":true,"eyebrowOpacity":100,"eyebrowPadX":12,"eyebrowPadY":5,"buttonBg":"#D70015","buttonColor":"#ffffff","buttonBgEnabled":true,"buttonOpacity":100,"buttonPadX":30,"buttonHeight":48,"arrowBg":"#000000","arrowBgOpacity":45,"arrowIconColor":"#ffffff","arrowBorderColor":"#ffffff","arrowBorderOpacity":35,"dashColor":"#D70015","headingFont":"Oswald","bodyFont":"Inter","eyebrowFont":"Oswald","buttonFont":"Oswald","headingWeight":700,"bodyWeight":400,"eyebrowWeight":600,"buttonWeight":700,"eyebrowSize":22,"headingSize":25,"subSize":14,"buttonFontSize":20,"contentWidth":410,"mobileEyebrowSize":21,"mobileHeadingSize":21,"mobileSubSize":12,"mobileButtonFontSize":20,"mobileContentWidth":480,"textAlign":"left","mobileTextAlign":"center","eyebrowLetterSpacing":2.2,"headingLetterSpacing":0,"subLetterSpacing":0,"buttonLetterSpacing":0.6,"mobileEyebrowLetterSpacing":2.2,"mobileHeadingLetterSpacing":0,"mobileSubLetterSpacing":0,"mobileButtonLetterSpacing":0.6,"eyebrowShiftX":13,"eyebrowShiftY":0,"headingShiftX":13,"headingShiftY":0,"subShiftX":13,"subShiftY":0,"buttonShiftX":13,"buttonShiftY":0,"buttonWidth":0,"mobileEyebrowShiftX":0,"mobileEyebrowShiftY":157,"mobileHeadingShiftX":0,"mobileHeadingShiftY":150,"mobileSubShiftX":0,"mobileSubShiftY":142,"mobileButtonShiftX":0,"mobileButtonShiftY":120,"mobileButtonWidth":0,"headingLineHeight":1.1,"subLineHeight":1.55,"eyebrowRadius":2,"buttonRadius":2,"buttonHoverEnabled":false,"buttonHoverBg":"#1a1a1a","buttonHoverColor":"#ffffff","eyebrowShadowEnabled":false,"eyebrowShadowColor":"#000000","eyebrowShadowOpacity":25,"eyebrowShadowBlur":8,"eyebrowShadowY":2,"buttonShadowEnabled":false,"buttonShadowColor":"#000000","buttonShadowOpacity":25,"buttonShadowBlur":12,"buttonShadowY":4,"contentAlign":"center","contentPadding":64,"contentShiftX":0,"contentShiftY":0,"mobileContentAlign":"center","mobileContentPadding":64,"mobileContentShiftX":0,"mobileContentShiftY":0,"gapEyebrow":20,"gapHeading":16,"gapSub":28,"mobileGapEyebrow":20,"mobileGapHeading":16,"mobileGapSub":28,"contentBgEnabled":false,"contentBgColor":"#ffffff","contentBgOpacity":100,"contentBgPadding":24,"contentBgRadius":8,"mobileContentBgEnabled":false,"mobileContentBgColor":"#ffffff","mobileContentBgOpacity":100,"mobileContentBgPadding":24,"mobileContentBgRadius":8,"contentBgShadowEnabled":false,"contentBgShadowColor":"#000000","contentBgShadowOpacity":20,"contentBgShadowBlur":24,"contentBgShadowY":10,"mobileContentBgShadowEnabled":false,"mobileContentBgShadowColor":"#000000","mobileContentBgShadowOpacity":20,"mobileContentBgShadowBlur":24,"mobileContentBgShadowY":10,"desktopHeight":490,"mobileHeight":550,"autoplay":5200,"pauseHover":true,"bannerRadius":0,"mobileBannerRadius":null,"mobileBreakpoint":900,"resetHostPadding":true},
+{"eyebrow":"10% OFF","heading":"Vehicle Display Podiums","subheading":"*Offer Valid While Quantities Last*","buttonText":"SHOP NOW","buttonUrl":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","buttonNewTab":false,"altText":"High Quality Vehicle Display Podiums in Canada - Wheel's Auto","desktopImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png","mobileImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/ChatGPT_Image_Oct_2_2026_12_00_42_PM.png","desktopBgLink":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","mobileBgLink":"https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html","desktopBgNewTab":false,"mobileBgNewTab":false,"showContent":true,"mobileShowContent":true,"bgColor":"#ffffff","overlayType":"none","overlayColor":"#000000","overlayOpacity":30,"overlayBlendMode":"normal","overlayImage":"","desktopFit":"contain","desktopAttachment":"scroll","contentSide":"left","mobileContentSide":"left","desktopX":97,"desktopY":50,"desktopZoom":131,"mobileX":50,"mobileY":5,"mobileWidth":93,"gradient":{"type":"linear","angle":94,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.46},{"pos":60,"color":"#000000","opacity":0},{"pos":78,"color":"#000000","opacity":0}]},"mobileGradient":{"type":"linear","angle":357,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.7},{"pos":32,"color":"#000000","opacity":0.47},{"pos":60,"color":"#000000","opacity":0},{"pos":78,"color":"#000000","opacity":0}]},"headingColor":"#ffffff","subColor":"#ffffff","eyebrowBg":"#D70015","eyebrowColor":"#ffffff","eyebrowBgEnabled":true,"eyebrowOpacity":100,"eyebrowPadX":12,"eyebrowPadY":5,"buttonBg":"#D70015","buttonColor":"#ffffff","buttonBgEnabled":true,"buttonOpacity":100,"buttonPadX":30,"buttonHeight":48,"arrowBg":"#000000","arrowBgOpacity":45,"arrowIconColor":"#ffffff","arrowBorderColor":"#ffffff","arrowBorderOpacity":35,"dashColor":"#D70015","headingFont":"Oswald","bodyFont":"Inter","eyebrowFont":"Oswald","buttonFont":"Oswald","headingWeight":700,"bodyWeight":400,"eyebrowWeight":600,"buttonWeight":700,"eyebrowSize":22,"headingSize":30,"subSize":13,"buttonFontSize":20,"contentWidth":250,"mobileEyebrowSize":21,"mobileHeadingSize":31,"mobileSubSize":13,"mobileButtonFontSize":20,"mobileContentWidth":480,"textAlign":"left","mobileTextAlign":"center","eyebrowLetterSpacing":2.2,"headingLetterSpacing":0,"subLetterSpacing":0,"buttonLetterSpacing":0.6,"mobileEyebrowLetterSpacing":2.2,"mobileHeadingLetterSpacing":0,"mobileSubLetterSpacing":0,"mobileButtonLetterSpacing":0.6,"eyebrowShiftX":13,"eyebrowShiftY":0,"headingShiftX":13,"headingShiftY":0,"subShiftX":13,"subShiftY":0,"buttonShiftX":13,"buttonShiftY":0,"buttonWidth":0,"mobileEyebrowShiftX":0,"mobileEyebrowShiftY":176,"mobileHeadingShiftX":0,"mobileHeadingShiftY":165,"mobileSubShiftX":0,"mobileSubShiftY":155,"mobileButtonShiftX":0,"mobileButtonShiftY":135,"mobileButtonWidth":0,"headingLineHeight":1.1,"subLineHeight":1.55,"eyebrowRadius":2,"buttonRadius":2,"buttonHoverEnabled":false,"buttonHoverBg":"#1a1a1a","buttonHoverColor":"#ffffff","eyebrowShadowEnabled":false,"eyebrowShadowColor":"#000000","eyebrowShadowOpacity":25,"eyebrowShadowBlur":8,"eyebrowShadowY":2,"buttonShadowEnabled":false,"buttonShadowColor":"#000000","buttonShadowOpacity":25,"buttonShadowBlur":12,"buttonShadowY":4,"contentAlign":"center","contentPadding":64,"contentShiftX":0,"contentShiftY":0,"mobileContentAlign":"center","mobileContentPadding":64,"mobileContentShiftX":0,"mobileContentShiftY":0,"gapEyebrow":20,"gapHeading":16,"gapSub":28,"mobileGapEyebrow":20,"mobileGapHeading":16,"mobileGapSub":28,"contentBgEnabled":false,"contentBgColor":"#ffffff","contentBgOpacity":100,"contentBgPadding":24,"contentBgRadius":8,"mobileContentBgEnabled":false,"mobileContentBgColor":"#ffffff","mobileContentBgOpacity":100,"mobileContentBgPadding":24,"mobileContentBgRadius":8,"contentBgShadowEnabled":false,"contentBgShadowColor":"#000000","contentBgShadowOpacity":20,"contentBgShadowBlur":24,"contentBgShadowY":10,"mobileContentBgShadowEnabled":false,"mobileContentBgShadowColor":"#000000","mobileContentBgShadowOpacity":20,"mobileContentBgShadowBlur":24,"mobileContentBgShadowY":10,"desktopHeight":490,"mobileHeight":550,"autoplay":5200,"pauseHover":true,"bannerRadius":0,"mobileBannerRadius":null,"mobileBreakpoint":900,"resetHostPadding":true},
+{"eyebrow":"CATALOGUE 2026","heading":"DISCOVER NEW PRODUCTS, FRESH IDEAS & TRUSTED DEALERSHIP ESSENTIALS","subheading":"","buttonText":"DOWNLOAD","buttonUrl":"https://heyzine.com/flip-book/78661a3df5.html","buttonNewTab":true,"altText":"","desktopImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_Catalogue-_desktop_-_USA.jpg","mobileImage":"https://wheelsauto.com/media/wysiwyg/Banner-Images/6th_Email_Blast_-_MOBILE.jpg","desktopBgLink":"https://heyzine.com/flip-book/78661a3df5.html","mobileBgLink":"https://heyzine.com/flip-book/78661a3df5.html","desktopBgNewTab":true,"mobileBgNewTab":true,"showContent":true,"mobileShowContent":true,"bgColor":"#000000","overlayType":"none","overlayColor":"#000000","overlayOpacity":30,"overlayBlendMode":"normal","overlayImage":"","desktopFit":"custom","desktopAttachment":"scroll","contentSide":"right","mobileContentSide":"right","desktopX":24,"desktopY":40,"desktopZoom":143,"mobileX":50,"mobileY":120,"mobileWidth":95,"gradient":{"type":"off","angle":90,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.82},{"pos":32,"color":"#000000","opacity":0.6},{"pos":60,"color":"#000000","opacity":0.15},{"pos":78,"color":"#000000","opacity":0}]},"mobileGradient":{"type":"off","angle":90,"radialX":0,"radialY":50,"stops":[{"pos":0,"color":"#000000","opacity":0.82},{"pos":32,"color":"#000000","opacity":0.6},{"pos":60,"color":"#000000","opacity":0.15},{"pos":78,"color":"#000000","opacity":0}]},"headingColor":"#ffffff","subColor":"#ffffff","eyebrowBg":"#D70015","eyebrowColor":"#ffffff","eyebrowBgEnabled":true,"eyebrowOpacity":100,"eyebrowPadX":12,"eyebrowPadY":5,"buttonBg":"#D70015","buttonColor":"#ffffff","buttonBgEnabled":true,"buttonOpacity":100,"buttonPadX":30,"buttonHeight":48,"arrowBg":"#000000","arrowBgOpacity":45,"arrowIconColor":"#ffffff","arrowBorderColor":"#ffffff","arrowBorderOpacity":35,"dashColor":"#D70015","headingFont":"Oswald","bodyFont":"Inter","eyebrowFont":"Oswald","buttonFont":"Oswald","headingWeight":700,"bodyWeight":400,"eyebrowWeight":600,"buttonWeight":700,"eyebrowSize":40,"headingSize":34,"subSize":16,"buttonFontSize":22,"contentWidth":420,"mobileEyebrowSize":19,"mobileHeadingSize":22,"mobileSubSize":16,"mobileButtonFontSize":18,"mobileContentWidth":420,"textAlign":"center","mobileTextAlign":"center","eyebrowLetterSpacing":2.2,"headingLetterSpacing":0,"subLetterSpacing":0,"buttonLetterSpacing":0.6,"mobileEyebrowLetterSpacing":2.2,"mobileHeadingLetterSpacing":0,"mobileSubLetterSpacing":0,"mobileButtonLetterSpacing":0.6,"eyebrowShiftX":0,"eyebrowShiftY":0,"headingShiftX":0,"headingShiftY":0,"subShiftX":0,"subShiftY":0,"buttonShiftX":0,"buttonShiftY":0,"buttonWidth":0,"mobileEyebrowShiftX":0,"mobileEyebrowShiftY":165,"mobileHeadingShiftX":0,"mobileHeadingShiftY":159,"mobileSubShiftX":0,"mobileSubShiftY":0,"mobileButtonShiftX":0,"mobileButtonShiftY":146,"mobileButtonWidth":0,"headingLineHeight":1.1,"subLineHeight":1.55,"eyebrowRadius":2,"buttonRadius":2,"buttonHoverEnabled":false,"buttonHoverBg":"#1a1a1a","buttonHoverColor":"#ffffff","eyebrowShadowEnabled":false,"eyebrowShadowColor":"#000000","eyebrowShadowOpacity":25,"eyebrowShadowBlur":8,"eyebrowShadowY":2,"buttonShadowEnabled":false,"buttonShadowColor":"#000000","buttonShadowOpacity":25,"buttonShadowBlur":12,"buttonShadowY":4,"contentAlign":"center","contentPadding":48,"contentShiftX":0,"contentShiftY":0,"mobileContentAlign":"center","mobileContentPadding":48,"mobileContentShiftX":0,"mobileContentShiftY":0,"gapEyebrow":20,"gapHeading":16,"gapSub":28,"mobileGapEyebrow":20,"mobileGapHeading":16,"mobileGapSub":28,"contentBgEnabled":false,"contentBgColor":"#ffffff","contentBgOpacity":100,"contentBgPadding":24,"contentBgRadius":8,"mobileContentBgEnabled":false,"mobileContentBgColor":"#ffffff","mobileContentBgOpacity":100,"mobileContentBgPadding":24,"mobileContentBgRadius":8,"contentBgShadowEnabled":false,"contentBgShadowColor":"#000000","contentBgShadowOpacity":20,"contentBgShadowBlur":24,"contentBgShadowY":10,"mobileContentBgShadowEnabled":false,"mobileContentBgShadowColor":"#000000","mobileContentBgShadowOpacity":20,"mobileContentBgShadowBlur":24,"mobileContentBgShadowY":10,"desktopHeight":490,"mobileHeight":550,"autoplay":5200,"pauseHover":true,"bannerRadius":0,"mobileBannerRadius":null,"mobileBreakpoint":900,"resetHostPadding":true}
+];
+var FONTS=['Oswald','Inter','Barlow','Barlow Condensed','Bebas Neue','Anton','Montserrat','Poppins','Roboto','Open Sans','Lato'];
+var WEIGHTS=[['300','300 Light'],['400','400 Regular'],['500','500 Medium'],['600','600 Semi-bold'],['700','700 Bold'],['800','800 Extra-bold'],['900','900 Black']];
+var BLENDS=['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity'];
+var LR=[['left','Left'],['center','Center'],['right','Right']], TB=[['flex-start','Top'],['center','Middle'],['flex-end','Bottom']];
+var DW=893, PW=345; // real widths on wheelsauto.com (hero slot / phone)
+
+// ---------- controls, grouped by the piece you edit ----------
+// d: desktop key, p: phone key (shows Desktop + Phone side by side with a link)
+var PIECES={
+ eyebrow:{name:'Red label',hint:'The small label above the heading (eyebrow)',groups:[
+  ['Text',[{d:'eyebrow',t:'text',l:'Label text'}]],
+  ['Font',[{d:'eyebrowFont',t:'font',l:'Font'},{d:'eyebrowWeight',t:'weight',l:'Weight'},{d:'eyebrowSize',p:'mobileEyebrowSize',t:'range',l:'Size',min:8,max:120,u:'px'},{d:'eyebrowLetterSpacing',p:'mobileEyebrowLetterSpacing',t:'range',l:'Letter spacing',min:-5,max:30,step:.5,u:'px'}]],
+  ['Colours',[{d:'eyebrowColor',t:'color',l:'Text colour'},{d:'eyebrowBgEnabled',t:'check',l:'Show background'},{d:'eyebrowBg',t:'color',l:'Background colour'},{d:'eyebrowOpacity',t:'range',l:'Background opacity',min:0,max:100,u:'%'}]],
+  ['Box',[{d:'eyebrowPadX',t:'range',l:'Padding left/right',min:0,max:40,u:'px'},{d:'eyebrowPadY',t:'range',l:'Padding top/bottom',min:0,max:24,u:'px'},{d:'eyebrowRadius',t:'range',l:'Corner radius',min:0,max:30,u:'px'}]],
+  ['Shadow',[{d:'eyebrowShadowEnabled',t:'check',l:'Add drop shadow'},{d:'eyebrowShadowColor',t:'color',l:'Shadow colour'},{d:'eyebrowShadowOpacity',t:'range',l:'Opacity',min:0,max:100,u:'%'},{d:'eyebrowShadowBlur',t:'range',l:'Blur',min:0,max:60,u:'px'},{d:'eyebrowShadowY',t:'range',l:'Offset',min:0,max:30,u:'px'}]],
+  ['Position',[{d:'eyebrowShiftX',p:'mobileEyebrowShiftX',t:'range',l:'Move left / right',min:-300,max:300,u:'px'},{d:'eyebrowShiftY',p:'mobileEyebrowShiftY',t:'range',l:'Move up / down',min:-300,max:300,u:'px'},{d:'gapEyebrow',p:'mobileGapEyebrow',t:'range',l:'Space below',min:0,max:50,u:'px'}]]
+ ]},
+ heading:{name:'Heading',hint:'The big title',groups:[
+  ['Text',[{d:'heading',t:'area',l:'Heading'}]],
+  ['Font',[{d:'headingFont',t:'font',l:'Font'},{d:'headingWeight',t:'weight',l:'Weight'},{d:'headingColor',t:'color',l:'Colour'},{d:'headingSize',p:'mobileHeadingSize',t:'range',l:'Size',min:8,max:120,u:'px'},{d:'headingLineHeight',t:'range',l:'Line height',min:.7,max:2.4,step:.05},{d:'headingLetterSpacing',p:'mobileHeadingLetterSpacing',t:'range',l:'Letter spacing',min:-5,max:30,step:.5,u:'px'}]],
+  ['Position',[{d:'headingShiftX',p:'mobileHeadingShiftX',t:'range',l:'Move left / right',min:-300,max:300,u:'px'},{d:'headingShiftY',p:'mobileHeadingShiftY',t:'range',l:'Move up / down',min:-300,max:300,u:'px'},{d:'gapHeading',p:'mobileGapHeading',t:'range',l:'Space below',min:0,max:50,u:'px'}]]
+ ]},
+ sub:{name:'Small text',hint:'The line(s) under the heading (sub-heading)',groups:[
+  ['Text',[{d:'subheading',t:'area',l:'Small text'}]],
+  ['Font',[{d:'bodyFont',t:'font',l:'Font'},{d:'bodyWeight',t:'weight',l:'Weight'},{d:'subColor',t:'color',l:'Colour'},{d:'subSize',p:'mobileSubSize',t:'range',l:'Size',min:8,max:80,u:'px'},{d:'subLineHeight',t:'range',l:'Line height',min:.7,max:2.8,step:.05},{d:'subLetterSpacing',p:'mobileSubLetterSpacing',t:'range',l:'Letter spacing',min:-5,max:30,step:.5,u:'px'}]],
+  ['Position',[{d:'subShiftX',p:'mobileSubShiftX',t:'range',l:'Move left / right',min:-300,max:300,u:'px'},{d:'subShiftY',p:'mobileSubShiftY',t:'range',l:'Move up / down',min:-300,max:300,u:'px'},{d:'gapSub',p:'mobileGapSub',t:'range',l:'Space below',min:0,max:60,u:'px'}]]
+ ]},
+ button:{name:'Button',hint:'The red button',groups:[
+  ['Text & link',[{d:'buttonText',t:'text',l:'Button text'},{d:'buttonUrl',t:'url',l:'Link'},{d:'buttonNewTab',t:'check',l:'Open in a new tab'}]],
+  ['Font',[{d:'buttonFont',t:'font',l:'Font'},{d:'buttonWeight',t:'weight',l:'Weight'},{d:'buttonFontSize',p:'mobileButtonFontSize',t:'range',l:'Size',min:8,max:60,u:'px'},{d:'buttonLetterSpacing',p:'mobileButtonLetterSpacing',t:'range',l:'Letter spacing',min:-5,max:30,step:.5,u:'px'}]],
+  ['Colours',[{d:'buttonColor',t:'color',l:'Text colour'},{d:'buttonBgEnabled',t:'check',l:'Show background'},{d:'buttonBg',t:'color',l:'Background colour'},{d:'buttonOpacity',t:'range',l:'Background opacity',min:0,max:100,u:'%'}]],
+  ['Shape',[{d:'buttonPadX',t:'range',l:'Padding left/right',min:0,max:60,u:'px'},{d:'buttonHeight',t:'range',l:'Height',min:28,max:80,u:'px'},{d:'buttonRadius',t:'range',l:'Corner radius',min:0,max:40,u:'px'},{d:'buttonWidth',p:'mobileButtonWidth',t:'range',l:'Width (0 = fit text)',min:0,max:600,step:10,u:'px'}]],
+  ['Hover',[{d:'buttonHoverEnabled',t:'check',l:'Change colour on hover'},{d:'buttonHoverBg',t:'color',l:'Hover background'},{d:'buttonHoverColor',t:'color',l:'Hover text'}]],
+  ['Shadow',[{d:'buttonShadowEnabled',t:'check',l:'Add drop shadow'},{d:'buttonShadowColor',t:'color',l:'Shadow colour'},{d:'buttonShadowOpacity',t:'range',l:'Opacity',min:0,max:100,u:'%'},{d:'buttonShadowBlur',t:'range',l:'Blur',min:0,max:60,u:'px'},{d:'buttonShadowY',t:'range',l:'Offset',min:0,max:30,u:'px'}]],
+  ['Position',[{d:'buttonShiftX',p:'mobileButtonShiftX',t:'range',l:'Move left / right',min:-300,max:300,u:'px'},{d:'buttonShiftY',p:'mobileButtonShiftY',t:'range',l:'Move up / down',min:-300,max:300,u:'px'}]]
+ ]},
+ content:{name:'Text box',hint:'Everything together: label, heading, small text and button',groups:[
+  ['Phone shortcut',[{t:'phonePlace'}]],
+  ['Placement',[{d:'contentSide',p:'mobileContentSide',t:'seg',o:LR,l:'Box position'},{d:'contentAlign',p:'mobileContentAlign',t:'seg',o:TB,l:'Vertical'},{d:'textAlign',p:'mobileTextAlign',t:'seg',o:LR,l:'Text alignment'},{d:'contentWidth',p:'mobileContentWidth',t:'range',l:'Box width',min:120,max:1300,step:10,u:'px'},{d:'contentPadding',p:'mobileContentPadding',t:'range',l:'Space from edge',min:0,max:140,step:2,u:'px'},{d:'contentShiftX',p:'mobileContentShiftX',t:'range',l:'Move left / right',min:-400,max:400,u:'px'},{d:'contentShiftY',p:'mobileContentShiftY',t:'range',l:'Move up / down',min:-400,max:400,u:'px'},{d:'showContent',p:'mobileShowContent',t:'check',l:'Show text'}]],
+  ['Background panel',[{d:'contentBgEnabled',p:'mobileContentBgEnabled',t:'check',l:'Show a panel behind the text'},{d:'contentBgColor',p:'mobileContentBgColor',t:'color',l:'Colour'},{d:'contentBgOpacity',p:'mobileContentBgOpacity',t:'range',l:'Opacity',min:0,max:100,u:'%'},{d:'contentBgPadding',p:'mobileContentBgPadding',t:'range',l:'Padding',min:0,max:80,step:2,u:'px'},{d:'contentBgRadius',p:'mobileContentBgRadius',t:'range',l:'Corner radius',min:0,max:40,u:'px'}]],
+  ['Panel shadow',[{d:'contentBgShadowEnabled',p:'mobileContentBgShadowEnabled',t:'check',l:'Add drop shadow'},{d:'contentBgShadowColor',p:'mobileContentBgShadowColor',t:'color',l:'Shadow colour'},{d:'contentBgShadowOpacity',p:'mobileContentBgShadowOpacity',t:'range',l:'Opacity',min:0,max:100,u:'%'},{d:'contentBgShadowBlur',p:'mobileContentBgShadowBlur',t:'range',l:'Blur',min:0,max:80,step:2,u:'px'},{d:'contentBgShadowY',p:'mobileContentBgShadowY',t:'range',l:'Offset',min:0,max:40,u:'px'}]]
+ ]},
+ bg:{name:'Background',hint:'Pictures, colour, overlay and gradient',groups:[
+  ['Pictures',[{t:'imgs'},{d:'altText',t:'text',l:'Picture description (alt text, for Google)'}]],
+  ['Picture position',[{d:'desktopFit',t:'select',o:[['width','100% width (designed banners)'],['cover','Fill / crop'],['contain','Fit whole picture'],['custom','Custom width %']],l:'Desktop sizing'},{d:'desktopX',t:'range',l:'Desktop: left / right',min:0,max:100,u:'%'},{d:'desktopY',t:'range',l:'Desktop: up / down',min:0,max:100,u:'%'},{d:'desktopZoom',t:'range',l:'Desktop: zoom (custom)',min:50,max:200,u:'%'},{d:'mobileX',t:'range',l:'Phone: left / right',min:-20,max:120,u:'%'},{d:'mobileY',t:'range',l:'Phone: up / down',min:-20,max:120,u:'%'},{d:'mobileWidth',t:'range',l:'Phone: picture width',min:30,max:200,u:'%'},{d:'desktopAttachment',t:'select',o:[['scroll','Scroll (normal)'],['fixed','Fixed (parallax)']],l:'Scrolling'}]],
+  ['Click anywhere on banner',[{d:'desktopBgLink',p:'mobileBgLink',t:'urlpair',l:'Banner link'},{d:'desktopBgNewTab',p:'mobileBgNewTab',t:'check',l:'Open in a new tab'}]],
+  ['Colour & overlay',[{d:'bgColor',t:'color',l:'Base colour (behind the picture)'},{d:'overlayType',t:'select',o:[['none','Off'],['color','Colour'],['image','Image']],l:'Overlay'},{d:'overlayColor',t:'color',l:'Overlay colour'},{d:'overlayImage',t:'url',l:'Overlay image URL'},{d:'overlayOpacity',t:'range',l:'Overlay opacity',min:0,max:100,u:'%'},{d:'overlayBlendMode',t:'select',o:BLENDS.map(function(b){return [b,b]}),l:'Blend mode'}]],
+  ['Gradient (shading behind the text)',[{t:'gradient'}]]
+ ]}
+};
+var SLIDER=[['Size',[{d:'desktopHeight',t:'number',l:'Desktop height (px)'},{d:'mobileHeight',t:'number',l:'Phone height (px)'},{d:'mobileBreakpoint',t:'number',l:'Switch to phone layout at (px wide or less)'}]],
+ ['Corners',[{d:'bannerRadius',t:'number',l:'Corner radius, desktop (px)'},{d:'mobileBannerRadius',t:'number',l:'Corner radius, phone (px), blank = same as desktop'}]],
+ ['Autoplay',[{d:'autoplay',t:'number',l:'Time per slide (ms)'},{d:'pauseHover',t:'check',l:'Pause when the mouse is on it'}]],
+ ['Arrows & dashes',[{d:'arrowBg',t:'color',l:'Arrow background'},{d:'arrowBgOpacity',t:'range',l:'Arrow background opacity',min:0,max:100,u:'%'},{d:'arrowIconColor',t:'color',l:'Arrow icon'},{d:'arrowBorderColor',t:'color',l:'Arrow border'},{d:'arrowBorderOpacity',t:'range',l:'Arrow border opacity',min:0,max:100,u:'%'},{d:'dashColor',t:'color',l:'Dash / progress colour'}]],
+ ['Website',[{d:'resetHostPadding',t:'check',l:'Remove Magento page padding (full-width pages)'}]]];
+var SLIDER_KEYS=['desktopHeight','mobileHeight','mobileBreakpoint','bannerRadius','mobileBannerRadius','autoplay','pauseHover','arrowBg','arrowBgOpacity','arrowIconColor','arrowBorderColor','arrowBorderOpacity','dashColor','resetHostPadding'];
+
+var active=0, sel='content', mode='piece', links={}, openG={};
+function $(id){return document.getElementById(id)}
+function S(){return SLIDES[active]}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+function rgb(h){h=String(h||'#000').replace('#','');if(h.length===3)h=h.split('').map(function(c){return c+c}).join('');var n=parseInt(h,16)||0;return (n>>16&255)+','+(n>>8&255)+','+(n&255)}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.x);toast.x=setTimeout(function(){t.style.display='none'},2000)}
+function dirty(){$('st').textContent='Unsaved changes'}
+function gcss(g){if(!g||g.type==='off')return 'transparent';var st=g.stops.slice().sort(function(a,b){return a.pos-b.pos}).map(function(s){return 'rgba('+rgb(s.color)+','+s.opacity+') '+s.pos+'%'}).join(', ');return g.type==='radial'?'radial-gradient(circle at '+g.radialX+'% '+g.radialY+'%, '+st+')':'linear-gradient('+g.angle+'deg, '+st+')'}
+function M(s,d,p,phone){return phone&&p&&s[p]!=null?s[p]:s[d]}
+
+// ---------- banner renderer (same output idea as Copy embed code; one slide, one screen size) ----------
+function bannerHTML(s,phone){
+  var W=phone?PW:DW,H=phone?(s.mobileHeight||620):(s.desktopHeight||490);
+  var r=phone?(s.mobileBannerRadius!=null?s.mobileBannerRadius:s.bannerRadius):s.bannerRadius;
+  var bg;
+  if(phone){bg='background-image:url(\''+(s.mobileImage||s.desktopImage)+'\');background-size:'+s.mobileWidth+'% auto;background-position:'+s.mobileX+'% '+s.mobileY+'%;'}
+  else{var sz=s.desktopFit==='width'?'100% auto':(s.desktopFit==='contain'?'contain':(s.desktopFit==='custom'?s.desktopZoom+'% auto':'cover'));bg='background-image:url(\''+s.desktopImage+'\');background-size:'+sz+';background-position:'+s.desktopX+'% '+s.desktopY+'%;'}
+  var ov='';if(s.overlayType==='color')ov='display:block;background:'+s.overlayColor+';';else if(s.overlayType==='image'&&s.overlayImage)ov='display:block;background:url(\''+s.overlayImage+'\') center/cover;';
+  if(ov)ov+='opacity:'+s.overlayOpacity/100+';mix-blend-mode:'+s.overlayBlendMode+';';
+  var g=phone?(s.mobileGradient||s.gradient):s.gradient;
+  var side=M(s,'contentSide','mobileContentSide',phone),just=side==='right'?'flex-end':(side==='center'?'center':'flex-start');
+  var al=M(s,'contentAlign','mobileContentAlign',phone),pad=M(s,'contentPadding','mobileContentPadding',phone);
+  var show=phone?s.mobileShowContent!==false:s.showContent!==false;
+  var cbOn=M(s,'contentBgEnabled','mobileContentBgEnabled',phone);
+  var cb=cbOn?'background:rgba('+rgb(M(s,'contentBgColor','mobileContentBgColor',phone))+','+M(s,'contentBgOpacity','mobileContentBgOpacity',phone)/100+');padding:'+M(s,'contentBgPadding','mobileContentBgPadding',phone)+'px;border-radius:'+M(s,'contentBgRadius','mobileContentBgRadius',phone)+'px;':'';
+  if(M(s,'contentBgShadowEnabled','mobileContentBgShadowEnabled',phone))cb+='box-shadow:0 '+M(s,'contentBgShadowY','mobileContentBgShadowY',phone)+'px '+M(s,'contentBgShadowBlur','mobileContentBgShadowBlur',phone)+'px rgba('+rgb(M(s,'contentBgShadowColor','mobileContentBgShadowColor',phone))+','+M(s,'contentBgShadowOpacity','mobileContentBgShadowOpacity',phone)/100+');';
+  var cw=M(s,'contentWidth','mobileContentWidth',phone);
+  function sh(x,y){return 'transform:translate('+M(s,x,'mobile'+x.charAt(0).toUpperCase()+x.slice(1),phone)+'px,'+M(s,y,'mobile'+y.charAt(0).toUpperCase()+y.slice(1),phone)+'px);'}
+  var h='<div id="root" style="position:relative;width:'+W+'px;height:'+H+'px;overflow:hidden;background:'+(s.bgColor||'#0a0a0a')+';border-radius:'+(r||0)+'px;font-family:Inter,sans-serif">'+
+   '<div data-el="bg" style="position:absolute;inset:0;background-repeat:no-repeat;'+bg+'"></div>'+
+   '<div style="position:absolute;inset:0;pointer-events:none;display:none;'+ov+'"></div>'+
+   '<div data-el="bg" style="position:absolute;inset:0;background:'+gcss(g)+'"></div>'+
+   '<div style="position:relative;z-index:4;display:flex;height:100%;max-width:1360px;margin:auto;justify-content:'+just+';align-items:'+al+';padding:0 '+pad+'px'+(phone?' 60px':'')+';pointer-events:none">'+
+   '<div data-el="content" style="pointer-events:auto;'+(show?'':'display:none;')+'width:min('+cw+'px,'+(phone?96:98)+'%);color:#fff;text-align:'+M(s,'textAlign','mobileTextAlign',phone)+';'+sh('contentShiftX','contentShiftY')+cb+'">';
+  if(s.eyebrow)h+='<span data-el="eyebrow" style="display:inline-block;line-height:1.05;background:'+(s.eyebrowBgEnabled===false?'transparent':'rgba('+rgb(s.eyebrowBg)+','+s.eyebrowOpacity/100+')')+';color:'+s.eyebrowColor+';padding:'+s.eyebrowPadY+'px '+s.eyebrowPadX+'px;border-radius:'+s.eyebrowRadius+'px;font-family:\''+s.eyebrowFont+'\',sans-serif;font-weight:'+s.eyebrowWeight+';font-size:'+M(s,'eyebrowSize','mobileEyebrowSize',phone)+'px;letter-spacing:'+M(s,'eyebrowLetterSpacing','mobileEyebrowLetterSpacing',phone)+'px;margin-bottom:'+M(s,'gapEyebrow','mobileGapEyebrow',phone)+'px;'+sh('eyebrowShiftX','eyebrowShiftY')+(s.eyebrowShadowEnabled?'box-shadow:0 '+s.eyebrowShadowY+'px '+s.eyebrowShadowBlur+'px rgba('+rgb(s.eyebrowShadowColor)+','+s.eyebrowShadowOpacity/100+');':'')+'">'+esc(s.eyebrow)+'</span>';
+  if(s.heading)h+='<div data-el="heading" style="color:'+s.headingColor+';font-family:\''+s.headingFont+'\',sans-serif;font-weight:'+s.headingWeight+';font-size:'+M(s,'headingSize','mobileHeadingSize',phone)+'px;line-height:'+s.headingLineHeight+';letter-spacing:'+M(s,'headingLetterSpacing','mobileHeadingLetterSpacing',phone)+'px;margin-bottom:'+M(s,'gapHeading','mobileGapHeading',phone)+'px;text-shadow:0 2px 18px rgba(0,0,0,.4);'+sh('headingShiftX','headingShiftY')+'">'+esc(s.heading).replace(/\n/g,'<br>')+'</div>';
+  if(s.subheading)h+='<div data-el="sub" style="color:'+s.subColor+';font-family:\''+s.bodyFont+'\',sans-serif;font-weight:'+s.bodyWeight+';font-size:'+M(s,'subSize','mobileSubSize',phone)+'px;line-height:'+s.subLineHeight+';letter-spacing:'+M(s,'subLetterSpacing','mobileSubLetterSpacing',phone)+'px;margin-bottom:'+M(s,'gapSub','mobileGapSub',phone)+'px;'+sh('subShiftX','subShiftY')+'">'+esc(s.subheading).replace(/\n/g,'<br>')+'</div>';
+  if(s.buttonText){var bw=M(s,'buttonWidth','mobileButtonWidth',phone);h+='<a data-el="button" class="btn" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;line-height:1;background:'+(s.buttonBgEnabled===false?'transparent':'rgba('+rgb(s.buttonBg)+','+s.buttonOpacity/100+')')+';color:'+s.buttonColor+';padding:0 '+s.buttonPadX+'px;min-height:'+s.buttonHeight+'px;border-radius:'+s.buttonRadius+'px;font-family:\''+s.buttonFont+'\',sans-serif;font-weight:'+s.buttonWeight+';font-size:'+M(s,'buttonFontSize','mobileButtonFontSize',phone)+'px;letter-spacing:'+M(s,'buttonLetterSpacing','mobileButtonLetterSpacing',phone)+'px;width:'+(bw>0?bw+'px':'auto')+';'+sh('buttonShiftX','buttonShiftY')+(s.buttonShadowEnabled?'box-shadow:0 '+s.buttonShadowY+'px '+s.buttonShadowBlur+'px rgba('+rgb(s.buttonShadowColor)+','+s.buttonShadowOpacity/100+');':'')+'">'+esc(s.buttonText)+'</a>';
+   if(s.buttonHoverEnabled)h+='<style>.btn:hover{background:'+s.buttonHoverBg+'!important;color:'+s.buttonHoverColor+'!important}</style>';}
+  h+='</div></div>';
+  var s0=SLIDES[0],ab='background:rgba('+rgb(s0.arrowBg)+','+s0.arrowBgOpacity/100+');border:1px solid rgba('+rgb(s0.arrowBorderColor)+','+s0.arrowBorderOpacity/100+');color:'+s0.arrowIconColor+';';
+  var arw='position:absolute;z-index:7;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:28px/1 Arial;'+ab;
+  if(SLIDES.length>1){
+    h+=phone?'<div style="'+arw+'bottom:18px;right:82px">&#8249;</div><div style="'+arw+'bottom:18px;right:26px">&#8250;</div>':'<div style="'+arw+'top:50%;left:20px;transform:translateY(-50%)">&#8249;</div><div style="'+arw+'top:50%;right:20px;transform:translateY(-50%)">&#8250;</div>';
+    h+='<div style="position:absolute;left:'+(phone?26:64)+'px;bottom:24px;z-index:6;display:flex;gap:6px">'+SLIDES.map(function(_,i){return '<i style="width:34px;height:3px;border-radius:2px;background:'+(i===active?s0.dashColor:'rgba(255,255,255,.3)')+'"></i>'}).join('')+'</div>';
+  }
+  return h+'</div>';
+}
+
+// ---------- previews (iframes so fonts and sizes are real) ----------
+var frames={};
+function setupFrame(id,phone){
+  var f=$(id),d=f.contentDocument;
+  d.open();d.write('<!doctype html><html><head><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family='+FONTS.map(function(x){return x.replace(/ /g,'+')+':wght@300;400;500;600;700;800;900'}).join('&family=')+'&display=swap"><style>html,body{margin:0;overflow:hidden;background:transparent}[data-el]{cursor:pointer}.sel{outline:2px solid #2f5bea!important;outline-offset:2px}[data-el]:hover{outline:1px dashed #8aa4ff;outline-offset:2px}[data-el="bg"]:hover{outline:none}.dragging{cursor:grabbing!important}</style></head><body><div id="host"></div></body></html>');d.close();
+  frames[id]={f:f,d:d,phone:phone};
+  var drag=null;
+  d.addEventListener('mousedown',function(e){
+    var el=e.target.closest('[data-el]');if(!el)return;e.preventDefault();
+    var k=el.getAttribute('data-el');select(k==='bg'?'bg':k);
+    if(k==='bg')return;
+    var pre={eyebrow:'eyebrow',heading:'heading',sub:'sub',button:'button',content:'content'}[k];
+    var xk=pre+'ShiftX',yk=pre+'ShiftY';if(phone){xk='mobile'+xk.charAt(0).toUpperCase()+xk.slice(1);yk='mobile'+yk.charAt(0).toUpperCase()+yk.slice(1)}
+    drag={x:e.clientX,y:e.clientY,ox:+S()[xk]||0,oy:+S()[yk]||0,xk:xk,yk:yk,moved:false};d.body.classList.add('dragging');
+  });
+  d.addEventListener('mousemove',function(e){if(!drag)return;var dx=Math.round(e.clientX-drag.x),dy=Math.round(e.clientY-drag.y);if(Math.abs(dx)+Math.abs(dy)>2)drag.moved=true;S()[drag.xk]=drag.ox+dx;S()[drag.yk]=drag.oy+dy;
+    if(!phone)unlinkFor(drag.xk);renderOne(id);});
+  d.addEventListener('mouseup',function(){if(!drag)return;d.body.classList.remove('dragging');if(drag.moved){dirty();renderSide()}drag=null});
+}
+function unlinkFor(){}
+function renderOne(id){var fr=frames[id];fr.d.getElementById('host').innerHTML=bannerHTML(S(),fr.phone);var x=fr.d.querySelectorAll('[data-el="'+sel+'"]');x.forEach(function(n){if(sel!=='bg')n.classList.add('sel')})}
+function scaleFrames(){
+  var s=S(),stage=document.querySelector('.stage');var avail=stage.clientWidth-36-24-PW-26-24;
+  var sc=Math.min(1,Math.max(.4,avail/DW)),dh=s.desktopHeight||490,ph=s.mobileHeight||620;
+  $('dFrame').style.width=DW+'px';$('dFrame').style.height=dh+'px';$('dFrame').style.transform='scale('+sc+')';
+  $('dBox').style.width=Math.round(DW*sc)+'px';$('dBox').style.height=Math.round(dh*sc)+'px';
+  $('pFrame').style.width=PW+'px';$('pFrame').style.height=ph+'px';$('pBox').style.width=PW+'px';$('pBox').style.height=ph+'px';
+  $('dLbl').textContent=DW+' × '+dh+(sc<1?' · shown at '+Math.round(sc*100)+'%':'')+' · homepage hero';
+  $('pLbl').textContent=PW+' × '+ph+' · real phone width';
+}
+function renderPreviews(){scaleFrames();renderOne('dFrame');renderOne('pFrame')}
+
+// ---------- slides rail ----------
+function renderRail(){
+  $('slides').innerHTML=SLIDES.map(function(s,i){
+    var same=!s.mobileImage||s.mobileImage===s.desktopImage;
+    return '<div class="sl'+(i===active?' on':'')+'" data-i="'+i+'"><div class="th" style="background-image:url(\''+s.desktopImage+'\')"><b>'+(i+1)+'</b></div><div class="t">'+esc(s.eyebrow+' · '+s.heading)+'</div>'+(same?'<div class="w">⚠ No phone picture</div>':'')+
+    '<div class="tools"><button data-a="up" title="Move up">↑</button><button data-a="down" title="Move down">↓</button><button data-a="dup">Duplicate</button><button data-a="del">Delete</button></div></div>';
+  }).join('');
+  $('sliderBtn').classList.toggle('on',mode==='slider');
+}
+
+// ---------- right panel ----------
+function isLinked(c){var k=c.d;if(links[k]===undefined){var s=S();links[k]=JSON.stringify(s[c.d])===JSON.stringify(s[c.p])}return links[k]}
+function ctl(c){
+  var s=S(),h='';
+  if(c.t==='phonePlace')return '<div class="f"><span class="lb">Where the text sits on the phone</span><div class="seg" data-place><button data-v="over">On the picture</button><button data-v="under">Under the picture</button></div><p style="font-size:11.5px;color:var(--muted);margin-top:5px">"Under the picture" puts the text in the bottom part and resets the 120–176px nudges your slides use today.</p></div>';
+  if(c.t==='imgs'){var same=!s.mobileImage||s.mobileImage===s.desktopImage;
+    return (same?'<div class="warn"><b>No phone picture.</b> Phones get the wide desktop picture squeezed into a tall screen. Add a tall phone picture.</div>':'')+
+    '<div class="f"><label>Desktop picture URL</label><input type="url" data-k="desktopImage" value="'+esc(s.desktopImage)+'"><div class="thumb" style="background-image:url(\''+esc(s.desktopImage)+'\')"></div></div>'+
+    '<div class="f"><label>Phone picture URL</label><input type="url" data-k="mobileImage" value="'+esc(s.mobileImage)+'"><div class="thumb" style="height:110px;width:70px;background-image:url(\''+esc(s.mobileImage||s.desktopImage)+'\')"></div></div>';}
+  if(c.t==='gradient')return gradUI();
+  var dual=!!c.p,lk=dual&&isLinked(c);
+  function input(k){var v=s[k];
+    if(c.t==='range')return '<div class="rng"><input type="range" data-k="'+k+'" min="'+c.min+'" max="'+c.max+'" step="'+(c.step||1)+'" value="'+(v==null?0:v)+'"><input type="number" data-k="'+k+'" step="'+(c.step||1)+'" value="'+(v==null?'':v)+'"><small>'+(c.u||'')+'</small></div>';
+    if(c.t==='color')return '<div class="col"><input type="color" data-k="'+k+'" value="'+esc(v||'#000000')+'"><code>'+esc(v)+'</code></div>';
+    if(c.t==='seg')return '<div class="seg">'+c.o.map(function(o){return '<button data-k="'+k+'" data-v="'+o[0]+'" class="'+(v===o[0]?'on':'')+'">'+o[1]+'</button>'}).join('')+'</div>';
+    if(c.t==='check')return '<label class="chk" style="margin:0"><input type="checkbox" data-k="'+k+'"'+(v!==false&&v?' checked':'')+'> '+(dual?'':esc(c.l))+'</label>';
+    if(c.t==='urlpair')return '<input type="url" data-k="'+k+'" value="'+esc(v)+'" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:12.5px">';
+    return '';}
+  if(dual){
+    h='<div class="f dual"><div class="dh"><span class="lb">'+esc(c.l)+'</span><button class="link'+(lk?' on':'')+'" data-link="'+c.d+'" data-p="'+c.p+'" title="When linked, Phone follows Desktop">🔗 '+(lk?'Phone follows Desktop':'Separate')+'</button></div>'+
+      '<div class="dv"><span>Desktop</span>'+input(c.d)+'</div><div class="dv'+(lk?' off':'')+'"><span>Phone</span>'+input(c.p)+'</div></div>';
+    return h;}
+  var v=s[c.d];
+  if(c.t==='text'||c.t==='url')return '<div class="f"><label>'+esc(c.l)+'</label><input type="'+(c.t==='url'?'url':'text')+'" data-k="'+c.d+'" value="'+esc(v)+'"></div>';
+  if(c.t==='area')return '<div class="f"><label>'+esc(c.l)+'</label><textarea data-k="'+c.d+'">'+esc(v)+'</textarea></div>';
+  if(c.t==='number')return '<div class="f"><label>'+esc(c.l)+'</label><input type="text" inputmode="numeric" data-k="'+c.d+'" data-num value="'+(v==null?'':v)+'"></div>';
+  if(c.t==='check')return '<label class="chk"><input type="checkbox" data-k="'+c.d+'"'+(v?' checked':'')+'> '+esc(c.l)+'</label>';
+  if(c.t==='font'||c.t==='weight'||c.t==='select'){var o=c.t==='font'?FONTS.map(function(x){return [x,x]}):(c.t==='weight'?WEIGHTS:c.o);
+    return '<div class="f"><label>'+esc(c.l)+'</label><select data-k="'+c.d+'">'+o.map(function(x){return '<option value="'+x[0]+'"'+(String(v)===String(x[0])?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>';}
+  return '<div class="f"><label>'+esc(c.l)+'</label>'+input(c.d)+'</div>';
+}
+var gDev='d';
+function gradUI(){
+  var s=S(),key=gDev==='d'?'gradient':'mobileGradient';if(!s[key])s[key]=JSON.parse(JSON.stringify(s.gradient));var g=s[key];
+  var h='<div class="f"><div class="seg" data-gdev><button data-v="d" class="'+(gDev==='d'?'on':'')+'">Desktop gradient</button><button data-v="p" class="'+(gDev==='p'?'on':'')+'">Phone gradient</button></div></div>'+
+   '<div class="f"><label>Type</label><select data-g="type"><option value="off"'+(g.type==='off'?' selected':'')+'>Off</option><option value="linear"'+(g.type==='linear'?' selected':'')+'>Linear</option><option value="radial"'+(g.type==='radial'?' selected':'')+'>Radial</option></select></div>';
+  if(g.type!=='off'){
+    h+='<div class="gbar"><i style="background:'+gcss({type:'linear',angle:90,stops:g.stops})+'"></i></div><div class="stops"><div class="stop" style="font-size:11px;color:var(--muted)"><span>Colour</span><span>Opacity %</span><span>Position %</span><span></span></div>'+
+      g.stops.map(function(st,i){return '<div class="stop"><input type="color" data-st="'+i+'" data-sk="color" value="'+st.color+'"><input type="number" data-st="'+i+'" data-sk="opacity" min="0" max="100" value="'+Math.round(st.opacity*100)+'"><input type="number" data-st="'+i+'" data-sk="pos" min="0" max="100" value="'+st.pos+'"><button class="x" data-strm="'+i+'" title="Remove">×</button></div>'}).join('')+
+      '</div><button class="mini" data-stadd>+ Add colour stop</button>';
+    if(g.type==='linear')h+='<div class="f" style="margin-top:10px"><label>Angle</label><div class="rng"><input type="range" data-g="angle" min="0" max="360" value="'+g.angle+'"><input type="number" data-g="angle" value="'+g.angle+'"><small>°</small></div></div>';
+    else h+='<div class="f" style="margin-top:10px"><label>Centre left / right</label><div class="rng"><input type="range" data-g="radialX" min="0" max="100" value="'+g.radialX+'"><input type="number" data-g="radialX" value="'+g.radialX+'"><small>%</small></div></div><div class="f"><label>Centre up / down</label><div class="rng"><input type="range" data-g="radialY" min="0" max="100" value="'+g.radialY+'"><input type="number" data-g="radialY" value="'+g.radialY+'"><small>%</small></div></div>';
+  }
+  h+='<button class="mini" data-gcopy style="margin-top:8px">Copy from '+(gDev==='d'?'Phone':'Desktop')+' gradient</button>';
+  return h;
+}
+function renderSide(){
+  var sideEl=$('side'),h;
+  if(mode==='slider'){
+    h='<div class="who"><div class="row1"><div><h2>Slider settings</h2><div class="sub">Applies to all slides in this slider</div></div></div></div>';
+    SLIDER.forEach(function(gp){h+='<details class="grp" open><summary>'+gp[0]+'</summary><div class="gb">'+gp[1].map(ctl).join('')+'</div></details>'});
+  }else{
+    var P=PIECES[sel];
+    h='<div class="who"><div class="row1"><div><h2>'+P.name+'</h2><div class="sub">Slide '+(active+1)+' · '+P.hint+'</div></div><button class="allbtn" id="applyAll">Apply to all slides</button></div><div class="chips">'+
+      Object.keys(PIECES).map(function(k){return '<button data-pick="'+k+'" class="'+(k===sel?'on':'')+'">'+PIECES[k].name+'</button>'}).join('')+'</div></div>';
+    P.groups.forEach(function(gp,i){var id=sel+i,o=openG[id]!==undefined?openG[id]:(i<3);
+      h+='<details class="grp" data-g="'+id+'"'+(o?' open':'')+'><summary>'+gp[0]+'</summary><div class="gb">'+gp[1].map(ctl).join('')+'</div></details>'});
+  }
+  var top=sideEl.scrollTop;sideEl.innerHTML=h;sideEl.scrollTop=top;
+  var place=sideEl.querySelector('[data-place]');if(place){var under=+S().mobileHeadingShiftY>100||S().mobileContentAlign==='flex-end';place.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',(b.getAttribute('data-v')==='under')===under)})}
+}
+function setVal(k,v){
+  var s=S();s[k]=v;
+  // linked: desktop key changes also set the phone key
+  Object.keys(PIECES).forEach(function(p){PIECES[p].groups.forEach(function(g){g[1].forEach(function(c){if(c.p&&c.d===k&&links[c.d])s[c.p]=v})})});
+  if(SLIDER_KEYS.indexOf(k)>=0)SLIDES.forEach(function(x){x[k]=v});
+  dirty();
+}
+function select(k){mode='piece';sel=k;renderRail();renderSide();renderPreviews()}
+
+// ---------- events ----------
+$('side').addEventListener('input',function(e){
+  var t=e.target,k=t.getAttribute('data-k');
+  if(k){var v=t.type==='checkbox'?t.checked:t.value;
+    if(t.type==='range'||t.type==='number'||t.hasAttribute('data-num'))v=v===''?null:+v;
+    setVal(k,v);
+    var twin=t.parentNode.querySelectorAll('[data-k="'+k+'"]');twin.forEach(function(x){if(x!==t&&x.type!=='checkbox')x.value=v==null?'':v});
+    if(t.type==='color'){var c=t.parentNode.querySelector('code');if(c)c.textContent=v}
+    if(links[k]!==undefined&&links[k]){var p=t.closest('.dual');if(p){var ph=p.querySelectorAll('.dv')[1];ph.querySelectorAll('[data-k]').forEach(function(x){if(x.type==='checkbox')x.checked=v;else x.value=v})}}
+    if(k==='desktopImage'||k==='mobileImage'){renderRail();}
+    renderPreviews();return;}
+  var gk=t.getAttribute('data-g');var s=S(),key=gDev==='d'?'gradient':'mobileGradient';
+  if(gk){s[key][gk]=gk==='type'?t.value:+t.value;dirty();if(gk==='type')renderSide();else t.parentNode.querySelectorAll('[data-g="'+gk+'"]').forEach(function(x){if(x!==t)x.value=t.value});renderPreviews();return}
+  var st=t.getAttribute('data-st');
+  if(st!=null){var sk=t.getAttribute('data-sk'),v2=sk==='color'?t.value:+t.value;if(sk==='opacity')v2=v2/100;s[key].stops[+st][sk]=v2;dirty();var bar=$('side').querySelector('.gbar i');if(bar)bar.style.background=gcss({type:'linear',angle:90,stops:s[key].stops});renderPreviews()}
+});
+$('side').addEventListener('click',function(e){
+  var t=e.target;
+  var pick=t.closest('[data-pick]');if(pick){select(pick.getAttribute('data-pick'));return}
+  var sg=t.closest('.seg button[data-k]');if(sg){setVal(sg.getAttribute('data-k'),sg.getAttribute('data-v'));renderSide();renderPreviews();return}
+  var ln=t.closest('[data-link]');if(ln){var d=ln.getAttribute('data-link'),p=ln.getAttribute('data-p');links[d]=!links[d];if(links[d])S()[p]=JSON.parse(JSON.stringify(S()[d]));dirty();renderSide();renderPreviews();return}
+  var pl=t.closest('[data-place] button');if(pl){var s=S();if(pl.getAttribute('data-v')==='under'){['Eyebrow','Heading','Sub','Button'].forEach(function(n){s['mobile'+n+'ShiftY']=0;s['mobile'+n+'ShiftX']=0});s.mobileContentAlign='flex-end';s.mobileContentShiftY=0;s.mobileY=0;s.mobileContentSide='center';s.mobileTextAlign='center';s.mobileGradient={type:'linear',angle:0,radialX:0,radialY:50,stops:[{pos:0,color:'#000000',opacity:.95},{pos:45,color:'#000000',opacity:.85},{pos:60,color:'#000000',opacity:0},{pos:100,color:'#000000',opacity:0}]};toast('Phone: text moved under the picture')}
+    else{s.mobileContentAlign='center';toast('Phone: text on the picture')}dirty();renderSide();renderPreviews();return}
+  var gd=t.closest('[data-gdev] button');if(gd){gDev=gd.getAttribute('data-v');renderSide();return}
+  var s2=S(),key=gDev==='d'?'gradient':'mobileGradient';
+  if(t.closest('[data-stadd]')){s2[key].stops.push({pos:100,color:'#000000',opacity:0});dirty();renderSide();renderPreviews();return}
+  var rm=t.closest('[data-strm]');if(rm){if(s2[key].stops.length>2){s2[key].stops.splice(+rm.getAttribute('data-strm'),1);dirty();renderSide();renderPreviews()}return}
+  if(t.closest('[data-gcopy]')){var other=gDev==='d'?'mobileGradient':'gradient';s2[key]=JSON.parse(JSON.stringify(s2[other]||s2.gradient));dirty();renderSide();renderPreviews();return}
+  if(t.id==='applyAll'){var keys=[];PIECES[sel].groups.forEach(function(g){g[1].forEach(function(c){if(['text','area','url'].indexOf(c.t)<0&&c.d){keys.push(c.d);if(c.p)keys.push(c.p)}})});
+    if(sel==='bg')keys=keys.filter(function(k){return ['altText','desktopBgLink','mobileBgLink'].indexOf(k)<0}).concat(['gradient','mobileGradient']);
+    SLIDES.forEach(function(x,i){if(i!==active)keys.forEach(function(k){x[k]=JSON.parse(JSON.stringify(S()[k]))})});dirty();toast(PIECES[sel].name+' style copied to all '+SLIDES.length+' slides (text and links not touched)');return}
+});
+$('side').addEventListener('toggle',function(e){var g=e.target.getAttribute&&e.target.getAttribute('data-g');if(g)openG[g]=e.target.open},true);
+$('slides').addEventListener('click',function(e){
+  var card=e.target.closest('.sl');if(!card)return;var i=+card.getAttribute('data-i'),a=e.target.getAttribute('data-a');
+  if(a==='up'&&i>0){SLIDES.splice(i-1,0,SLIDES.splice(i,1)[0]);active=i-1;dirty()}
+  else if(a==='down'&&i<SLIDES.length-1){SLIDES.splice(i+1,0,SLIDES.splice(i,1)[0]);active=i+1;dirty()}
+  else if(a==='dup'){SLIDES.splice(i+1,0,JSON.parse(JSON.stringify(SLIDES[i])));active=i+1;dirty()}
+  else if(a==='del'){if(SLIDES.length>1&&confirm('Delete slide '+(i+1)+'?')){SLIDES.splice(i,1);active=Math.max(0,i-1);dirty()}}
+  else active=i;
+  links={};if(mode==='slider')mode='piece';renderRail();renderSide();renderPreviews();
+});
+$('addSl').onclick=function(){var n=JSON.parse(JSON.stringify(SLIDES[active]));n.eyebrow='NEW';n.heading='New slide heading';n.subheading='';SLIDES.push(n);active=SLIDES.length-1;links={};dirty();renderRail();renderSide();renderPreviews()};
+$('sliderBtn').onclick=function(){mode=mode==='slider'?'piece':'slider';renderRail();renderSide()};
+$('saveBtn').onclick=function(){$('st').textContent='All changes saved';toast('Saved')};
+$('moreBtn').onclick=function(e){e.stopPropagation();$('more').classList.toggle('open')};
+$('whyBtn').onclick=function(){$('whyM').classList.add('open')};
+$('sites').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$('sites').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});toast(b.textContent+' version (same as today)')});
+document.addEventListener('click',function(e){if(!e.target.closest('#more'))$('more').classList.remove('open');var t=e.target.closest('[data-t]');if(t){toast(t.getAttribute('data-t'));$('more').classList.remove('open')}if(e.target.closest('[data-close]'))$('whyM').classList.remove('open')});
+window.addEventListener('resize',renderPreviews);
+
+setupFrame('dFrame',false);setupFrame('pFrame',true);
+renderRail();renderSide();renderPreviews();
+</script>
+</body>
+</html>
