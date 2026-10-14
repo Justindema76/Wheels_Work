@@ -1,31 +1,34 @@
-<!-- WHEELS HOMEPAGE · 3 POPULAR PRODUCTS · CSS: product card rows (your original styling). Goes in: the HTML Code element in the Popular Products row. Repo file: Homepage-Redesign/3 POPULAR PRODUCTS/POPULAR-PRODUCTS-CSS.html -->
+<!-- WHEELS HOMEPAGE · 3 POPULAR PRODUCTS · CSS: PART 1 original card styling + PART 2 compact Popular Products cards (the live look). Goes in: the HTML Code element in the Popular Products row. Repo file: Homepage-Redesign/3 POPULAR PRODUCTS/POPULAR-PRODUCTS-CSS.html -->
+<!-- PART 1: your ORIGINAL style, unchanged in what it does. It also styles the other product rows
+     and every red Page Builder button on the homepage — keep it. -->
 <style>
-
 /* ===================================
    PRODUCT ROW
 =================================== */
-
 .product-items.widget-product-grid{
     display:flex !important;
     flex-wrap:nowrap !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
     gap:12px !important;
     padding-bottom:12px !important;
-    -webkit-overflow-scrolling:touch;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scroll-behavior:auto !important;
+    touch-action:pan-x !important;
+    -webkit-overflow-scrolling:touch !important;
 }
-
-.product-items.widget-product-grid .product-item{
+.product-items.widget-product-grid > .product-item{
     flex:0 0 220px !important;
     width:220px !important;
     max-width:220px !important;
+}
+.product-items.widget-product-grid .auto-slider-clone{
+    pointer-events:auto !important;
 }
 
 /* scrollbar */
 .product-items.widget-product-grid::-webkit-scrollbar{
     height:8px;
 }
-
 .product-items.widget-product-grid::-webkit-scrollbar-thumb{
     background:#cfcfcf;
     border-radius:20px;
@@ -34,58 +37,42 @@
 /* ===================================
    CARD
 =================================== */
-
 .product-item-info{
-    background:#fff !important;
-    border:1px solid #e5e5e5 !important;
-
-    border-radius:10px !important;
-    padding:10px !important;
-    height:100% !important;
     width:100% !important;
-margin: 5px;
-
-}
-.product-item-info{
+    height:100% !important;
+    margin:5px;
+    padding:10px !important;
     background:#fff !important;
     border:1px solid #e5e5e5 !important;
     border-radius:10px !important;
-    padding:10px !important;
-    height:100% !important;
-    width:100% !important;
-
     transition:all .25s ease !important;
 }
-
 .product-item-info:hover{
     transform:translateY(-4px) !important;
     box-shadow:0 8px 20px rgba(0,0,0,.10) !important;
 }
+
 /* ===================================
    SKU
 =================================== */
-
 .product-sku{
+    margin-bottom:0 !important;
     font-size:11px !important;
     color:#888 !important;
     text-transform:uppercase !important;
-    margin-bottom:0px !important;
 }
 
 /* ===================================
    TITLE
 =================================== */
 .product-item-name{
-    font-size:12px !important;
-    line-height:1.1 !important;
-
     min-height:68px !important;
     max-height:68px !important;
-
-    overflow:hidden !important;
     margin-bottom:12px !important;
+    overflow:hidden !important;
+    font-size:12px !important;
+    line-height:1.1 !important;
 }
-
 .product-item-name a{
     color:#222 !important;
     text-decoration:none !important;
@@ -94,15 +81,13 @@ margin: 5px;
 /* ===================================
    IMAGE
 =================================== */
-
 .image-section{
-margin-top: 12px;
+    margin-top:12px;
+    margin-bottom:8px !important;
+    padding:8px !important;
     background:#f8f8f8 !important;
     border-radius:8px !important;
-    padding:8px !important;
-    margin-bottom:8px !important;
 }
-
 .image-section img{
     width:100% !important;
     height:auto !important;
@@ -112,28 +97,23 @@ margin-top: 12px;
 /* ===================================
    PRICE
 =================================== */
-
 .price-box{
     margin-top:6px !important;
     margin-bottom:6px !important;
 }
-
 .price{
     font-size:14px !important;
     font-weight:700 !important;
     line-height:1.2 !important;
 }
-
 .old-price .price{
     font-size:11px !important;
 }
-
 .special-price{
     font-size:12px !important;
-    white-space:nowrap !important;
     line-height:1.1 !important;
+    white-space:nowrap !important;
 }
-
 .special-price .price{
     color:#d71920 !important;
     font-size:14px !important;
@@ -141,55 +121,17 @@ margin-top: 12px;
 }
 
 /* ===================================
-   BUTTON
+   BUTTONS
 =================================== */
 .action.tocart{
     width:100% !important;
     min-height:40px !important;
-
     background:#d71920 !important;
     border:1px solid #d71920 !important;
-    color:#fff !important;
-
     border-radius:6px !important;
-
+    color:#fff !important;
     font-size:13px !important;
     font-weight:700 !important;
-}
-
-
-
-/* ===================================
-   HIDE STUFF
-=================================== */
-.product-reviews-summary,
-.product-reviews-main,
-.short-description,
-.towishlist,
-.tocompare{
-    display:none !important;
-
-}
-
-/* ===================================
-   MOBILE
-=================================== */
-
-@media (max-width:768px){
-
-    .product-items.widget-product-grid .product-item{
-        flex:0 0 260px !important;
-        width:260px !important;
-        max-width:260px !important;
-    }
-
-    .product-item-name{
-        font-size:13px !important;
-    }
-
-    .price{
-        font-size:15px !important;
-    }
 }
 .pagebuilder-button-primary{
     background:#E41E26 !important;
@@ -197,42 +139,107 @@ margin-top: 12px;
     border-radius:8px !important;
     color:#fff !important;
 }
-.product-items.widget-product-grid{
-    scroll-behavior:auto !important;
-    -webkit-overflow-scrolling:touch !important;
-    touch-action:pan-x !important;
+
+/* ===================================
+   HIDE STUFF
+=================================== */
+.product-reviews-summary,
+.product-reviews-main,
+.short-description,
+.short-discription,
+.towishlist,
+.tocompare{
+    display:none !important;
 }
 
-.product-items.widget-product-grid .auto-slider-clone{
-    pointer-events:auto !important;
-}
-</style>
-<style>
-.product-items.widget-product-grid{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
-    scroll-behavior:auto !important;
-    -webkit-overflow-scrolling:touch !important;
-    touch-action:pan-x !important;
-}
-
-.product-items.widget-product-grid > .product-item{
-    flex:0 0 220px !important;
-}
-
+/* ===================================
+   MOBILE
+=================================== */
 @media (max-width:768px){
-    .product-items.widget-product-grid{
-        display:flex !important;
-        flex-wrap:nowrap !important;
-        overflow-x:auto !important;
-    }
-
     .product-items.widget-product-grid > .product-item{
         flex:0 0 260px !important;
         width:260px !important;
         max-width:260px !important;
     }
+    .product-item-name{
+        font-size:13px !important;
+    }
+    .price{
+        font-size:15px !important;
+    }
 }
+</style>
+
+<!-- PART 2: compact cards — ONLY affects the Popular Products element (.homepage-popular-products). -->
+<style>
+/* =====================================================
+   POPULAR PRODUCTS — compact card, no cart button (whole card links to the product)
+   Drop-in replacement for the old <style>. Works with your
+   auto-slider script as-is. Scoped to .homepage-popular-products
+   (the class already on the Products element) so nothing else
+   on the page changes.
+===================================================== */
+.homepage-popular-products{--r:#d9161e;--rd:#b30f16;--ink:#141414;--muted:#777;--line:#e6e6e6}
+
+/* ---------- row ---------- */
+.homepage-popular-products .product-items.widget-product-grid{display:flex !important;flex-wrap:nowrap !important;gap:10px !important;margin:0 !important;padding:2px 0 8px !important;overflow-x:auto !important;overflow-y:hidden !important;scroll-behavior:auto !important;touch-action:pan-x !important;-webkit-overflow-scrolling:touch !important;scrollbar-width:none}
+.homepage-popular-products .product-items.widget-product-grid::-webkit-scrollbar{display:none}
+.homepage-popular-products .product-items.widget-product-grid > .product-item{flex:0 0 160px !important;width:160px !important;max-width:160px !important;margin:0 !important;padding:0 !important}
+.homepage-popular-products .auto-slider-clone{pointer-events:auto !important}
+
+/* ---------- card ---------- */
+.homepage-popular-products .product-item-info{width:100% !important;height:100% !important;margin:0 !important;padding:0 !important;background:#fff !important;border:1px solid var(--line) !important;border-radius:10px !important;overflow:hidden !important;box-shadow:none !important;transform:none !important;transition:border-color .15s !important}
+.homepage-popular-products .product-item-info:hover{border-color:var(--ink) !important;box-shadow:none !important;transform:none !important}
+.homepage-popular-products .product-card{position:relative !important;display:flex !important;flex-direction:column !important;height:100% !important;padding:0 !important}
+
+/* ---------- image (shown first) ---------- */
+.homepage-popular-products .image-section{order:-1 !important;margin:0 !important;padding:8px !important;background:#fff !important;border-radius:0 !important;border-bottom:1px solid #f0f0f0 !important}
+.homepage-popular-products .product-image-container{display:block !important;width:100% !important}
+.homepage-popular-products .image-section img{display:block !important;width:100% !important;height:auto !important;aspect-ratio:1 !important;object-fit:contain !important}
+
+/* ---------- badge on the image ---------- */
+.homepage-popular-products .offer-tag{position:absolute !important;top:6px !important;left:6px !important;z-index:1 !important;margin:0 !important}
+.homepage-popular-products .lable-tag{display:inline-block !important;background:var(--r) !important;color:#fff !important;font-size:9.5px !important;font-weight:700 !important;line-height:1.2 !important;letter-spacing:.02em !important;text-transform:none !important;padding:2px 5px !important;border-radius:3px !important}
+
+/* ---------- text ---------- */
+.homepage-popular-products .info-section{margin:0 !important;padding:7px 9px 0 !important;text-align:left !important}
+.homepage-popular-products .product-sku{margin:0 !important;font-size:10px !important;color:var(--muted) !important;letter-spacing:.03em !important;text-transform:uppercase !important}
+.homepage-popular-products .product-sku span{color:var(--muted) !important}
+.homepage-popular-products .product-item-name{min-height:0 !important;max-height:none !important;margin:1px 0 0 !important;overflow:visible !important;font-size:12.5px !important;line-height:1.25 !important;font-weight:600 !important;text-transform:none !important}
+.homepage-popular-products .product-item-name a{color:var(--ink) !important;text-decoration:none !important;display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important;min-height:2.5em}
+.homepage-popular-products .product-item-name a:hover{color:var(--r) !important}
+
+/* ---------- price (bottom of card) ---------- */
+.homepage-popular-products .cart-section{display:flex !important;align-items:flex-end !important;justify-content:space-between !important;gap:6px !important;margin-top:auto !important;padding:6px 9px 9px !important}
+.homepage-popular-products .price-section{min-width:0 !important;margin:0 !important}
+.homepage-popular-products .price-box{margin:0 !important;display:block !important;line-height:1 !important}
+.homepage-popular-products .price-label{display:block !important;font-size:10.5px !important;color:var(--muted) !important;margin:0 0 2px !important;text-transform:none !important}
+.homepage-popular-products .price{font-size:15px !important;font-weight:700 !important;line-height:1.1 !important;color:var(--ink) !important;white-space:nowrap !important}
+.homepage-popular-products .price-suffix{font-size:10.5px !important;color:var(--muted) !important}
+.homepage-popular-products .old-price .price{font-size:10.5px !important;font-weight:500 !important;color:var(--muted) !important;text-decoration:line-through !important}
+.homepage-popular-products .special-price .price{color:var(--r) !important}
+/* no Add to Cart on the card — most products need options, so the whole card links to the product page */
+.homepage-popular-products .button-section{display:none !important}
+.homepage-popular-products .product-item-name a::after{content:"";position:absolute;inset:0;z-index:2}
+.homepage-popular-products .cart-section{position:relative !important;padding-right:30px !important}
+.homepage-popular-products .cart-section::after{content:"\2192";position:absolute;right:9px;bottom:8px;color:var(--r);font-weight:700;font-size:16px;line-height:1;transition:transform .15s}
+.homepage-popular-products .product-item-info:hover .cart-section::after{transform:translateX(3px)}
+
+/* ---------- hide ---------- */
+.homepage-popular-products .product-reviews-summary,
+.homepage-popular-products .product-reviews-main,
+.homepage-popular-products .short-description,
+.homepage-popular-products .short-discription,
+.homepage-popular-products .actions-secondary,
+.homepage-popular-products .towishlist,
+.homepage-popular-products .tocompare{display:none !important}
+
+/* ---------- theme fixes (found on the live site) ---------- */
+.homepage-popular-products .product-item .product-item-name{padding:0 !important}
+.homepage-popular-products .product-item .product-item-name a{display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important}
+.homepage-popular-products .product-item .product-sku{line-height:1.3 !important}
+.homepage-popular-products .product-item .offer-tag{width:auto !important;max-width:calc(100% - 12px) !important}
+.homepage-popular-products .product-item .lable-tag{white-space:nowrap !important}
+.homepage-popular-products .product-item .product-setup{margin:-4px 0 0 !important;padding:0 9px 8px !important;font-size:10px !important;line-height:1.2 !important;color:var(--muted) !important}
+
 </style>
