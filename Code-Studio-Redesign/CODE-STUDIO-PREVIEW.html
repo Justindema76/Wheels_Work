@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Studio Redesign</title>
+<!-- CODE STUDIO REDESIGN · PREVIEW ONLY (not the real plugin). Shows a simpler editor: desktop + phone previews side by side at real size,
+     3 simple tabs (Text / Images / Look), phone layout choice, warnings, EN/FR/US, and one Publish button.
+     Uses the real Home-page-slider banners from wheelsauto.com (Oct 14 2026). Repo file: Code-Studio-Redesign/CODE-STUDIO-PREVIEW.html -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141414;--ink2:#3a3a3a;--muted:#707070;--line:#e4e4e7;--bg:#f4f4f5;--panel:#fff;--blue:#2f5bea;--blue-d:#1f45c4;--red:#d9161e;--ok:#15803d;--warn:#b45309;--warn-bg:#fff7ed}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font:14px/1.45 Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+
+/* top bar */
+.top{height:58px;background:#111;color:#fff;display:flex;align-items:center;gap:14px;padding:0 16px;position:sticky;top:0;z-index:20}
+.top .back{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#bbb}
+.top .name{font-weight:700;font-size:15px}
+.top .saved{font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:6px}
+.top .saved::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e}
+.sites{display:flex;background:#222;border-radius:9px;padding:3px;margin-left:12px}
+.sites button{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:7px;font-weight:600;font-size:13px;color:#cfcfcf}
+.sites button.on{background:#fff;color:#111}
+.sites i{width:7px;height:7px;border-radius:50%;background:#22c55e;font-style:normal}
+.sites i.todo{background:#f59e0b}
+.top .sp{flex:1}
+.tbtn{height:36px;padding:0 14px;border-radius:8px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+.tbtn.ghost{color:#ddd;border:1px solid #3a3a3a}
+.tbtn.primary{background:var(--blue);color:#fff}
+.menu{position:relative}
+.menu .pop{position:absolute;right:0;top:44px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.18);padding:6px;min-width:230px;display:none}
+.menu.open .pop{display:block}
+.pop button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:6px;font-size:13.5px}
+.pop small{display:block;color:var(--muted);font-size:12px}
+
+/* layout */
+.app{display:grid;grid-template-columns:230px minmax(0,1fr) 360px;height:calc(100vh - 58px)}
+.rail{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px}
+.stage{overflow:auto;padding:22px}
+.side{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto}
+
+/* slides rail */
+.rail h3,.side h3{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.slide{border:2px solid transparent;border-radius:10px;padding:6px;margin-bottom:10px;cursor:pointer;background:var(--bg)}
+.slide.on{border-color:var(--blue);background:#eef2ff}
+.slide .th{height:74px;border-radius:6px;background:#ccc center/cover no-repeat;position:relative}
+.slide .th b{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:1px 7px;border-radius:10px}
+.slide .t{font-size:12.5px;font-weight:600;margin:6px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide .w{font-size:11.5px;color:var(--warn);margin:0 2px;display:flex;gap:5px;align-items:center}
+.slide .ok{font-size:11.5px;color:var(--ok);margin:0 2px}
+.slide .tools{display:flex;gap:4px;margin-top:4px}
+.slide .tools button{font-size:11.5px;color:var(--muted);padding:2px 6px;border-radius:5px}
+.addbtn{width:100%;border:1.5px dashed #c4c4c8;border-radius:10px;padding:10px;color:var(--muted);font-weight:600}
+
+/* stage */
+.previews{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start}
+.pv{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.pv .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pv .hd b{font-size:13.5px}
+.pv .hd span{font-size:12px;color:var(--muted)}
+.frame{position:relative;overflow:hidden;background:#000;border-radius:4px}
+.phone .frame{border-radius:16px;box-shadow:0 0 0 7px #1d1d1f}
+.note{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--ink2)}
+.note b{color:var(--ink)}
+
+/* banner render (same markup idea for both sizes) */
+.bn{position:absolute;inset:0;font-family:Inter,sans-serif;color:#fff}
+.bn .img{position:absolute;inset:0;background-repeat:no-repeat;background-size:cover}
+.bn .shade{position:absolute;inset:0}
+.bn .txt{position:absolute;display:flex;flex-direction:column;gap:12px}
+.bn .eb{align-self:flex-start;background:var(--red);font:700 13px/1 Oswald,sans-serif;letter-spacing:.08em;padding:6px 10px;text-transform:uppercase}
+.bn .hd2{font:700 40px/1.05 Oswald,sans-serif;text-transform:none;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.bn .sb{font-size:15px;line-height:1.45;white-space:pre-line;opacity:.95}
+.bn .bt{align-self:flex-start;background:var(--red);color:#fff;font:700 15px/1 Oswald,sans-serif;letter-spacing:.06em;padding:14px 26px;text-transform:uppercase;text-decoration:none}
+.bn.center .txt{align-items:center;text-align:center}
+.bn.center .eb,.bn.center .bt{align-self:center}
+.bn.right .txt{align-items:flex-end;text-align:right}
+.bn.right .eb,.bn.right .bt{align-self:flex-end}
+.bn .dots{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+.bn .dots i{width:26px;height:3px;background:rgba(255,255,255,.35)}
+.bn .dots i.on{background:var(--red)}
+.bn.light{color:var(--ink)}
+.bn.light .hd2{text-shadow:none}
+
+/* right panel */
+.tabs{display:flex;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}
+.tabs button{flex:1;padding:14px 0 12px;font-weight:600;font-size:13.5px;color:var(--muted);border-bottom:2px solid transparent}
+.tabs button.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tp{display:none;padding:18px}
+.tp.on{display:block}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px}
+.fld label small{font-weight:400;color:var(--muted)}
+.fld input[type=text],.fld textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:#fff;font-size:13.5px}
+.fld textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:8px}
+.check{display:flex;gap:8px;align-items:center;font-size:13px}
+.seg{display:flex;background:var(--bg);border-radius:9px;padding:3px;gap:3px}
+.seg button{flex:1;padding:8px 6px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cards button{border:2px solid var(--line);border-radius:10px;padding:8px;text-align:left;font-size:12px;font-weight:600}
+.cards button.on{border-color:var(--blue);background:#eef2ff}
+.cards .mini{height:70px;border-radius:5px;margin-bottom:6px;position:relative;overflow:hidden;background:#555}
+.mini .p{position:absolute;left:0;right:0;top:0;height:55%;background:#9ca3af}
+.mini .k{position:absolute;left:0;right:0;bottom:0;height:45%;background:#141414}
+.mini .ln{position:absolute;left:10px;right:30px;height:5px;background:#fff;border-radius:2px}
+.imgbox{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.imgbox .pic{height:120px;background:#ddd center/cover no-repeat;position:relative;cursor:crosshair}
+.imgbox .pic .fp{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px var(--blue),0 2px 6px rgba(0,0,0,.4)}
+.imgbox .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:12px;color:var(--muted)}
+.imgbox .bar button{color:var(--blue);font-weight:600}
+.warn{background:var(--warn-bg);border:1px solid #fed7aa;color:#7c2d12;border-radius:9px;padding:10px 12px;font-size:12.5px;margin-bottom:14px}
+.warn b{color:#7c2d12}
+.good{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;border-radius:9px;padding:10px 12px;font-size:12.5px;margin-bottom:14px}
+.adv{border-top:1px solid var(--line);margin-top:6px;padding-top:12px}
+.adv summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink2)}
+.swatches{display:flex;gap:8px}
+.swatches button{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.swatches button.on{box-shadow:0 0 0 2px var(--blue)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.open{display:flex}
+.modal .box{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:24px;max-height:90vh;overflow:auto}
+.modal h2{font-size:19px;margin-bottom:6px}
+.modal p{color:var(--ink2);font-size:13.5px;margin-bottom:12px}
+.modal ul{margin:0 0 14px 18px;font-size:13.5px;color:var(--ink2)}
+.modal li{margin:6px 0}
+.modal .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.modal .acts button{height:38px;padding:0 16px;border-radius:8px;font-weight:600}
+.modal .acts .p{background:var(--blue);color:#fff}
+.modal .acts .g{border:1px solid var(--line)}
+.sitechk{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.sitechk label{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13.5px}
+.sitechk label span{margin-left:auto;font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;font-size:13.5px;display:none;z-index:60}
+
+@media (hover:hover){
+  .tbtn.ghost:hover{background:#222}
+  .tbtn.primary:hover{background:var(--blue-d)}
+  .pop button:hover{background:var(--bg)}
+  .slide:hover{border-color:#c7d2fe}
+  .slide .tools button:hover{background:#e4e4e7;color:var(--ink)}
+  .seg button:hover{color:var(--blue)}
+}
+@media (max-width:1100px){
+  .app{grid-template-columns:200px minmax(0,1fr);height:auto}
+  .side{grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}
+}
+@media (max-width:700px){
+  .app{grid-template-columns:1fr}
+  .rail{display:flex;gap:10px;overflow-x:auto}
+  .rail h3,.addbtn{display:none}
+  .slide{min-width:150px}
+  .top{flex-wrap:wrap;height:auto;padding:10px 16px}
+  .top .sp{display:none}
+  .sites{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="back" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div><div class="name">Home-page-slider</div><div class="saved" id="saved">All changes saved</div></div>
+  <div class="sites" id="sites">
+    <button data-l="en" class="on"><i></i>English · CA</button>
+    <button data-l="fr"><i class="todo" id="frDot"></i>Français · CA</button>
+    <button data-l="us"><i></i>USA</button>
+  </div>
+  <div class="sp"></div>
+  <button class="tbtn ghost" id="why">What's new?</button>
+  <div class="menu" id="more">
+    <button class="tbtn ghost" id="moreBtn">More ▾</button>
+    <div class="pop">
+      <button data-t="Embed code copied (only needed for a new spot on the site)">Copy embed code<small>Only for placing it somewhere new</small></button>
+      <button data-t="Project duplicated">Duplicate project</button>
+      <button data-t="Import window would open">Import old code / project</button>
+    </div>
+  </div>
+  <button class="tbtn primary" id="publishBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Publish to website</button>
+</header>
+
+<div class="app">
+  <aside class="rail">
+    <h3>Slides</h3>
+    <div id="slides"></div>
+    <button class="addbtn" id="addSlide">+ Add slide</button>
+  </aside>
+
+  <main class="stage">
+    <div class="previews">
+      <div class="pv desk">
+        <div class="hd"><b>Desktop</b><span>Homepage hero · 893 × 490 · exactly as on the website</span></div>
+        <div class="frame" id="deskFrame"></div>
+      </div>
+      <div class="pv phone">
+        <div class="hd"><b>Phone</b><span>345 × 550 · real phone width on wheelsauto.com</span></div>
+        <div class="frame" id="phoneFrame"></div>
+      </div>
+    </div>
+    <div class="note"><b>Both previews are always on screen, at the real size the website uses.</b> What you see here is what customers see. No more Desktop/Mobile switch, no guessing.</div>
+  </main>
+
+  <aside class="side">
+    <div class="tabs" id="tabs">
+      <button data-p="text" class="on">Text</button>
+      <button data-p="images">Images</button>
+      <button data-p="look">Look</button>
+    </div>
+
+    <section class="tp on" data-p="text">
+      <div id="langNote"></div>
+      <div class="fld"><label>Red label <small>(e.g. 25% OFF)</small></label><input type="text" data-k="eyebrow"></div>
+      <div class="fld"><label>Heading</label><textarea data-k="heading"></textarea></div>
+      <div class="fld"><label>Small text <small>(optional)</small></label><textarea data-k="sub"></textarea></div>
+      <div class="row">
+        <div class="fld" style="flex:1"><label>Button</label><input type="text" data-k="btn"></div>
+      </div>
+      <div class="fld"><label>Button link</label><input type="text" data-k="url"></div>
+      <label class="check"><input type="checkbox" id="newtab"> Open link in a new tab</label>
+    </section>
+
+    <section class="tp" data-p="images">
+      <div id="imgWarn"></div>
+      <div class="fld">
+        <label>Desktop picture <small>· click the picture to choose what stays in view</small></label>
+        <div class="imgbox"><div class="pic" id="dPic"><span class="fp" id="dFp"></span></div><div class="bar"><span>Recommended 1800 × 980</span><button data-t="Media library would open">Change</button></div></div>
+      </div>
+      <div class="fld">
+        <label>Phone picture <small>· tall picture for phones</small></label>
+        <div class="imgbox"><div class="pic" id="mPic"><span class="fp" id="mFp"></span></div><div class="bar"><span id="mInfo">Recommended 800 × 620</span><button data-t="Media library would open">Change</button></div></div>
+      </div>
+    </section>
+
+    <section class="tp" data-p="look">
+      <div class="fld">
+        <label>Phone layout</label>
+        <div class="cards" id="phoneLayout">
+          <button data-v="stack"><div class="mini"><div class="p"></div><div class="k"></div><div class="ln" style="bottom:22px"></div><div class="ln" style="bottom:12px;right:50px"></div></div>Photo on top, text below<br><small style="color:var(--ok);font-weight:600">Recommended · always readable</small></button>
+          <button data-v="over"><div class="mini" style="background:#6b7280"><div class="ln" style="bottom:22px"></div><div class="ln" style="bottom:12px;right:50px"></div></div>Text over the photo<br><small style="color:var(--muted)">Only for calm photos</small></button>
+        </div>
+      </div>
+      <div class="fld">
+        <label>Desktop text position</label>
+        <div class="seg" id="align"><button data-v="left">Left</button><button data-v="center">Center</button><button data-v="right">Right</button></div>
+      </div>
+      <div class="fld">
+        <label>Heading size</label>
+        <div class="seg" id="size"><button data-v="s">Small</button><button data-v="m">Medium</button><button data-v="l">Large</button></div>
+      </div>
+      <div class="fld">
+        <label>Text area colour</label>
+        <div class="swatches" id="theme">
+          <button data-v="dark" style="background:#141414" title="Dark"></button>
+          <button data-v="red" style="background:#b30f16" title="Red"></button>
+          <button data-v="light" style="background:#ffffff" title="White"></button>
+        </div>
+      </div>
+      <details class="adv">
+        <summary>Advanced (fonts, colours, spacing)</summary>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:8px">Hidden by default. The everyday settings above cover 95% of banners. The old version showed ~150 settings at once, with X/Y nudges on every piece, which break on other screen sizes.</p>
+      </details>
+    </section>
+  </aside>
+</div>
+
+<div class="modal" id="pubModal"><div class="box">
+  <h2>Publish to website</h2>
+  <p>Updates the banner on the website straight away. No copying or pasting code into Magento.</p>
+  <div class="sitechk">
+    <label><input type="checkbox" checked> English · CA <span>wheelsauto.com/ca-en</span></label>
+    <label><input type="checkbox" checked id="frChk"> Français · CA <span id="frState">2 slides not translated yet</span></label>
+    <label><input type="checkbox" checked> USA <span>wheelsauto.com/us</span></label>
+  </div>
+  <div id="pubWarn"></div>
+  <div class="acts"><button class="g" data-close>Cancel</button><button class="p" id="doPublish">Publish now</button></div>
+</div></div>
+
+<div class="modal" id="whyModal"><div class="box">
+  <h2>What's different from the current Code Studio</h2>
+  <ul>
+    <li><b>Publish instead of copy &amp; paste.</b> Today every change means Copy embed code, then paste into Magento for each site. If someone forgets, the website shows an old version. Publish updates all 3 sites in one click.</li>
+    <li><b>Previews you can trust.</b> Today the Mobile canvas is 390px wide, but on wheelsauto.com phones the banner is 345px, so pictures crop differently. Here both previews use the website's real sizes, side by side.</li>
+    <li><b>Phone picture warnings.</b> Today a slide can quietly use the desktop picture on phones (the Podiums slide does). Here you get a warning on the slide and in Images.</li>
+    <li><b>Phone layout choice.</b> "Photo on top, text below" keeps text readable on any photo.</li>
+    <li><b>3 simple tabs instead of 6.</b> Text, Images and Look. Fine-tuning lives under Advanced.</li>
+    <li><b>Desktop and phone stay linked.</b> Today phone copies desktop once and then drifts. Here text and style are shared, and only the phone picture and phone layout are separate.</li>
+    <li><b>Clear EN / FR / USA status.</b> An orange dot means the French text still needs translating.</li>
+    <li><b>A short top bar.</b> One main button (Publish). Everything else is under More.</li>
+  </ul>
+  <div class="acts"><button class="p" data-close>Got it</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var IMG='https://wheelsauto.com/media/wysiwyg/Banner-Images/';
+var slides=[
+  {d:IMG+'Modern_Automotive_Display_Catalog_Collage.png',m:IMG+'Modern_Showroom_Display_Catalog_1.png',dfx:50,dfy:50,mfx:50,mfy:30,layout:'stack',align:'left',size:'m',theme:'dark',newtab:false,
+   t:{en:{eyebrow:'25% OFF',heading:'Vehicle Floor Display Stands, Retractable Banner Stands & Literature/Brochure Stands',sub:'(Online Orders Only)\n*Offer Valid Until Oct 30, 2026*',btn:'SHOP NOW',url:'https://wheelsauto.com/ca-en/on-sale-now.html'},
+      fr:{eyebrow:'25 % DE RABAIS',heading:'Présentoirs de plancher pour véhicules, supports de bannières rétractables et présentoirs à brochures',sub:'(Commandes en ligne seulement)\n*Offre valide jusqu\'au 30 oct. 2026*',btn:'MAGASINER',url:'https://wheelsauto.com/ca-fr/on-sale-now.html'}}},
+  {d:IMG+'ChatGPT_Image_Oct_2_2026_12_00_42_PM.png',m:'',dfx:50,dfy:50,mfx:50,mfy:40,layout:'stack',align:'left',size:'l',theme:'dark',newtab:false,
+   t:{en:{eyebrow:'10% OFF',heading:'Vehicle Display Podiums',sub:'*Offer Valid While Quantities Last*',btn:'SHOP NOW',url:'https://wheelsauto.com/ca-en/showroom-marketing-displays/vehicle-display-stands/vehicle-display-podiums.html'},fr:null}},
+  {d:IMG+'6th_Email_Blast_-_desktop.jpg',m:IMG+'6th_Email_Blast_-_MOBILE.jpg',dfx:50,dfy:50,mfx:50,mfy:20,layout:'stack',align:'right',size:'m',theme:'dark',newtab:true,
+   t:{en:{eyebrow:'CATALOGUE 2026',heading:'Discover new products, fresh ideas & trusted dealership essentials',sub:'',btn:'DOWNLOAD',url:'https://heyzine.com/flip-book/78661a3df5.html'},fr:null}}
+];
+var active=0,lang='en';
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function txt(s){var l=lang==='fr'?'fr':'en';return s.t[l]||s.t.en}
+function needsFr(s){return !s.t.fr}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.x);toast.x=setTimeout(function(){t.style.display='none'},2200)}
+function saved(){var s=$('saved');s.textContent='Saving…';clearTimeout(saved.x);saved.x=setTimeout(function(){s.textContent='All changes saved'},600)}
+
+var THEME={dark:'#141414',red:'#b30f16',light:'#ffffff'};
+var SIZE={s:[32,24],m:[40,28],l:[50,34]};
+
+function banner(s,W,H,phone){
+  var c=txt(s),th=s.theme,dark=th!=='light',sz=SIZE[s.size];
+  var cls='bn '+(phone?'center':s.align)+(dark?'':' light');
+  var h='<div class="'+cls+'" style="width:'+W+'px;height:'+H+'px">';
+  var img=phone?(s.m||s.d):s.d,fx=phone?s.mfx:s.dfx,fy=phone?s.mfy:s.dfy;
+  if(phone&&s.layout==='stack'){
+    h+='<div class="img" style="bottom:auto;height:46%;background-image:url(\''+img+'\');background-position:'+fx+'% '+fy+'%"></div>';
+    h+='<div class="shade" style="top:46%;background:'+THEME[th]+'"></div>';
+    h+='<div class="txt" style="left:20px;right:20px;top:calc(46% + 18px);gap:10px">';
+  }else if(phone){
+    h+='<div class="img" style="background-image:url(\''+img+'\');background-position:'+fx+'% '+fy+'%"></div>';
+    h+='<div class="shade" style="background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 75%)"></div>';
+    h+='<div class="txt" style="left:20px;right:20px;bottom:40px;gap:10px">';
+  }else{
+    var g=s.align==='right'?'270deg':(s.align==='center'?'0deg':'90deg');
+    var col=dark?(th==='red'?'179,15,22':'0,0,0'):'255,255,255';
+    h+='<div class="img" style="background-image:url(\''+img+'\');background-position:'+fx+'% '+fy+'%"></div>';
+    h+='<div class="shade" style="background:'+(s.align==='center'?'rgba('+col+',.55)':'linear-gradient('+g+',rgba('+col+',.88) 0%,rgba('+col+',.7) 38%,rgba('+col+',0) 68%)')+'"></div>';
+    var pos=s.align==='right'?'right:56px;':(s.align==='center'?'left:120px;right:120px;':'left:56px;');
+    h+='<div class="txt" style="'+pos+'top:50%;transform:translateY(-50%);max-width:'+(s.align==='center'?'none':'440px')+'">';
+  }
+  var hs=phone?sz[1]:sz[0];
+  if(c.eyebrow)h+='<span class="eb">'+esc(c.eyebrow)+'</span>';
+  if(c.heading)h+='<div class="hd2" style="font-size:'+hs+'px">'+esc(c.heading)+'</div>';
+  if(c.sub)h+='<div class="sb" style="font-size:'+(phone?13.5:15)+'px">'+esc(c.sub)+'</div>';
+  if(c.btn)h+='<a class="bt" href="#" style="'+(phone?'padding:12px 22px;font-size:14px':'')+'">'+esc(c.btn)+'</a>';
+  h+='</div><div class="dots">'+slides.map(function(_,i){return '<i class="'+(i===active?'on':'')+'"></i>'}).join('')+'</div></div>';
+  return h;
+}
+function renderPreviews(){
+  var s=slides[active];
+  var stage=document.querySelector('.stage'),avail=stage.clientWidth-44-375-30-24;
+  var sc=Math.min(1,Math.max(.45,avail/893)),W=893,H=490;
+  var df=$('deskFrame');df.style.width=Math.round(W*sc)+'px';df.style.height=Math.round(H*sc)+'px';
+  df.innerHTML='<div style="transform:scale('+sc+');transform-origin:0 0">'+banner(s,W,H,false)+'</div>';
+  document.querySelector('.desk .hd span').textContent='Homepage hero · 893 × 490'+(sc<1?' (shown at '+Math.round(sc*100)+'%)':'')+' · exactly as on the website';
+  var pf=$('phoneFrame');pf.style.width='345px';pf.style.height='550px';pf.innerHTML=banner(s,345,550,true);
+}
+function renderRail(){
+  $('slides').innerHTML=slides.map(function(s,i){
+    var c=txt(s),warns=[];
+    if(!s.m)warns.push('Phone picture missing');
+    if(lang==='fr'&&needsFr(s))warns.push('Not translated');
+    return '<div class="slide'+(i===active?' on':'')+'" data-i="'+i+'"><div class="th" style="background-image:url(\''+s.d+'\')"><b>'+(i+1)+'</b></div>'+
+      '<div class="t">'+esc(c.eyebrow+' · '+c.heading)+'</div>'+
+      (warns.length?warns.map(function(w){return '<div class="w">⚠ '+w+'</div>'}).join(''):'<div class="ok">✓ Ready</div>')+
+      '<div class="tools"><button data-a="up">↑</button><button data-a="down">↓</button><button data-a="dup">Duplicate</button><button data-a="del">Delete</button></div></div>';
+  }).join('');
+  $('frDot').className=slides.some(needsFr)?'todo':'';
+}
+function loadFields(){
+  var s=slides[active];
+  if(lang==='fr'&&needsFr(s)){
+    $('langNote').innerHTML='<div class="warn"><b>Not translated yet.</b> The French site shows English until you translate this slide.<br><button style="color:#7c2d12;font-weight:700;text-decoration:underline;margin-top:6px" id="doTr">Translate from English</button></div>';
+    $('doTr').onclick=function(){var e=s.t.en;s.t.fr={eyebrow:e.eyebrow.replace('OFF','DE RABAIS'),heading:'(FR) '+e.heading,sub:e.sub,btn:e.btn==='DOWNLOAD'?'TÉLÉCHARGER':'MAGASINER',url:e.url.replace('/ca-en/','/ca-fr/')};saved();all();toast('Translated. Check the French wording.')};
+  }else if(lang==='us'){
+    $('langNote').innerHTML='<div class="good">USA uses the English text. Only the links change to /us/ automatically when you publish.</div>';
+  }else $('langNote').innerHTML='';
+  var c=txt(s);
+  document.querySelectorAll('[data-k]').forEach(function(f){f.value=c[f.getAttribute('data-k')]||''});
+  $('newtab').checked=s.newtab;
+  // images
+  $('dPic').style.backgroundImage='url(\''+s.d+'\')';$('dFp').style.left=s.dfx+'%';$('dFp').style.top=s.dfy+'%';
+  $('mPic').style.backgroundImage=s.m?'url(\''+s.m+'\')':'url(\''+s.d+'\')';$('mPic').style.opacity=s.m?1:.45;
+  $('mFp').style.left=s.mfx+'%';$('mFp').style.top=s.mfy+'%';
+  $('mInfo').textContent=s.m?'Recommended 800 × 620':'Using the desktop picture';
+  $('imgWarn').innerHTML=s.m?'':'<div class="warn"><b>No phone picture.</b> Phones are showing the wide desktop picture, squeezed into a tall screen. That\'s what happened on the Podiums slide. Add a tall phone picture.</div>';
+  // look
+  mark('phoneLayout',s.layout);mark('align',s.align);mark('size',s.size);mark('theme',s.theme);
+}
+function mark(id,v){document.querySelectorAll('#'+id+' [data-v]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===v)})}
+function all(){renderRail();loadFields();renderPreviews()}
+
+// events
+$('slides').addEventListener('click',function(e){
+  var card=e.target.closest('.slide');if(!card)return;var i=+card.getAttribute('data-i'),a=e.target.getAttribute('data-a');
+  if(a==='up'&&i>0){slides.splice(i-1,0,slides.splice(i,1)[0]);active=i-1;saved()}
+  else if(a==='down'&&i<slides.length-1){slides.splice(i+1,0,slides.splice(i,1)[0]);active=i+1;saved()}
+  else if(a==='dup'){slides.splice(i+1,0,JSON.parse(JSON.stringify(slides[i])));active=i+1;saved()}
+  else if(a==='del'){if(slides.length>1&&confirm('Delete slide '+(i+1)+'?')){slides.splice(i,1);active=Math.max(0,i-1);saved()}}
+  else active=i;
+  all();
+});
+$('addSlide').onclick=function(){slides.push({d:slides[0].d,m:'',dfx:50,dfy:50,mfx:50,mfy:40,layout:'stack',align:'left',size:'m',theme:'dark',newtab:false,t:{en:{eyebrow:'NEW',heading:'New slide heading',sub:'',btn:'SHOP NOW',url:'#'},fr:null}});active=slides.length-1;saved();all()};
+document.querySelectorAll('[data-k]').forEach(function(f){f.addEventListener('input',function(){var s=slides[active];var l=lang==='fr'?'fr':'en';if(!s.t[l])s.t[l]=JSON.parse(JSON.stringify(s.t.en));s.t[l][f.getAttribute('data-k')]=f.value;saved();renderRail();renderPreviews()})});
+$('newtab').onchange=function(){slides[active].newtab=this.checked;saved()};
+function seg(id,key){document.querySelectorAll('#'+id+' [data-v]').forEach(function(b){b.onclick=function(){slides[active][key]=b.getAttribute('data-v');saved();mark(id,slides[active][key]);renderPreviews()}})}
+seg('phoneLayout','layout');seg('align','align');seg('size','size');seg('theme','theme');
+function focusPick(pic,kx,ky){$(pic).addEventListener('click',function(e){var r=this.getBoundingClientRect();var s=slides[active];s[kx]=Math.round((e.clientX-r.left)/r.width*100);s[ky]=Math.round((e.clientY-r.top)/r.height*100);saved();loadFields();renderPreviews()})}
+focusPick('dPic','dfx','dfy');focusPick('mPic','mfx','mfy');
+$('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var p=b.getAttribute('data-p');document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('.tp').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-p')===p)})});
+$('sites').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;lang=b.getAttribute('data-l');document.querySelectorAll('#sites button').forEach(function(x){x.classList.toggle('on',x===b)});all()});
+$('moreBtn').onclick=function(e){e.stopPropagation();$('more').classList.toggle('open')};
+document.addEventListener('click',function(e){if(!e.target.closest('#more'))$('more').classList.remove('open');var t=e.target.closest('[data-t]');if(t){toast(t.getAttribute('data-t'));$('more').classList.remove('open')}if(e.target.closest('[data-close]'))document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open')})});
+$('publishBtn').onclick=function(){
+  var n=slides.filter(needsFr).length,miss=slides.filter(function(s){return !s.m}).length;
+  $('frState').textContent=n?(n+' slide'+(n>1?'s':'')+' not translated yet'):'wheelsauto.com/ca-fr';
+  $('pubWarn').innerHTML=miss?'<div class="warn"><b>'+miss+' slide'+(miss>1?'s have':' has')+' no phone picture.</b> You can still publish. Phones will show the desktop picture.</div>':'';
+  $('pubModal').classList.add('open');
+};
+$('doPublish').onclick=function(){$('pubModal').classList.remove('open');toast('Published. The website updates within a minute.')};
+$('why').onclick=function(){$('whyModal').classList.add('open')};
+window.addEventListener('resize',renderPreviews);
+all();
+</script>
+</body>
+</html>
