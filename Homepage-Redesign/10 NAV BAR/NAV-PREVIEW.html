@@ -34,7 +34,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* header */
 .head{background:#fff;border-bottom:1px solid var(--line)}
-.head .wrap{display:flex;align-items:center;gap:24px;height:84px}
+.head .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px) minmax(0,1fr);align-items:center;gap:24px;height:84px}
+.head .logo{justify-self:start}
+.head .search{width:100%}
+.head .acts{justify-self:end}
 .logo img{display:block;height:52px;width:auto}
 .search{flex:1;display:flex;max-width:560px;height:46px;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
 .search input{flex:1;border:0;padding:0 16px;font:inherit;font-size:15px;outline:0;min-width:0}
@@ -107,7 +110,7 @@ nav.bar .row{display:flex;align-items:stretch;justify-content:center;height:54px
 
 /* phones / tablets */
 @media (max-width:1023px){
-  .head .wrap{flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px;gap:12px}
+  .head .wrap{display:flex;flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px;gap:12px}
   .logo img{height:40px}
   .burger{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--line);border-radius:8px}
   .acts .store{display:none}
