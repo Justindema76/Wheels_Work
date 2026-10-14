@@ -8,19 +8,20 @@
      A = works with your current menu (WeltPixel Navigation Links) using CSS only.
      B = "Shop All Products" mega menu like the first design. Needs a developer to change the theme header. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/jiy5xhw.css"><!-- soleil: your site font (Adobe Fonts kit from wheelsauto.com) -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{--red:#d9161e;--red-d:#b30f16;--ink:#141414;--ink2:#2a2a2a;--muted:#6b6b6b;--line:#e6e6e6;--bg2:#f5f5f4}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Barlow,system-ui,sans-serif;color:var(--ink);background:#fff;font-size:15px}
+body{font-family:soleil,sans-serif;color:var(--ink);background:#fff;font-size:15px}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .wrap{max-width:1320px;margin:0 auto;padding:0 20px}
-.cond{font-family:"Barlow Condensed",Barlow,sans-serif;text-transform:uppercase}
+.cond{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase}
 
 /* preview switch (not part of the design) */
 .pv{background:#fffbe6;border-bottom:1px solid #eadf9f;font-size:14px}
-.pv .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:10px;padding-bottom:10px}
+.pv .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;text-align:center;padding-top:10px;padding-bottom:10px}
 .pv b{margin-right:4px}
 .pv button{border:1px solid #c9bd76;background:#fff;border-radius:6px;padding:6px 12px;font-weight:600}
 .pv button.on{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -47,45 +48,45 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ===== A: category bar + full-width dropdown ===== */
 .navA{background:#fff;border-bottom:1px solid var(--line);position:relative}
-.navA .bar{display:flex;align-items:stretch;justify-content:space-between;height:54px}
-.navA .top{display:flex;align-items:center;padding:0 10px;font-weight:600;font-size:14.5px;line-height:1.15;text-align:center;border-bottom:3px solid transparent;margin-bottom:-1px}
+.navA .bar{display:flex;align-items:stretch;justify-content:center;gap:6px;height:54px}
+.navA .top{display:flex;align-items:center;justify-content:center;padding:0 12px;font-weight:400;font-size:14px;line-height:1.15;text-align:center;border-bottom:3px solid transparent;margin-bottom:-1px}
 .navA .top.sale{color:var(--red)}
 .navA .panel{position:absolute;left:0;right:0;top:100%;background:#fff;border-top:3px solid var(--red);box-shadow:0 22px 40px rgba(0,0,0,.14);display:none;z-index:20}
 .navA .item.open .panel{display:block}
 .navA .item.open .top{border-bottom-color:var(--red);color:var(--red)}
-.navA .panel .wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:36px;padding-top:28px;padding-bottom:30px}
+.navA .panel .wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:36px;max-width:1240px;padding-top:28px;padding-bottom:30px}
 .navA .intro{border-right:1px solid var(--line);padding-right:28px}
 .navA .intro h3{font-size:30px;line-height:1;margin-bottom:12px}
 .navA .intro p{color:var(--muted);font-size:14px;line-height:1.45;margin-bottom:18px}
 .allbtn{display:inline-block;border-bottom:3px solid var(--red);font:800 17px/1 "Barlow Condensed";letter-spacing:.02em;text-transform:uppercase;padding-bottom:3px}
 .navA .cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px 28px}
-.navA .col h4{font-size:15px;font-weight:700;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
-.navA .col li{list-style:none;padding:4px 0;font-size:14px;color:#3b3b3b}
+.navA .col h4{font-size:14px;font-weight:600;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.navA .col li{list-style:none;padding:4px 0;font-size:13.5px;color:#3b3b3b}
 .navA .col li.more a{color:var(--red);font-weight:600}
 
 /* ===== B: Shop All mega menu ===== */
 .navB{background:#fff;border-bottom:1px solid var(--line);position:relative}
-.navB .bar{display:flex;align-items:stretch;height:52px;gap:4px}
-.shopall{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:0 20px;font-weight:700;font-size:15px}
+.navB .bar{display:flex;align-items:stretch;justify-content:center;height:52px;gap:4px}
+.shopall{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:0 20px;font-weight:600;font-size:14px}
 .shopall.on{background:var(--red)}
 .quick{display:flex;align-items:stretch;overflow:hidden}
-.quick a{display:flex;align-items:center;padding:0 13px;font-weight:600;font-size:14.5px;white-space:nowrap;border-bottom:3px solid transparent}
-.navB .right{margin-left:auto;display:flex;align-items:center}
-.navB .right a{padding:0 12px;font-weight:700;font-size:14.5px}
+.quick a{display:flex;align-items:center;padding:0 13px;font-weight:400;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
+.navB .right{display:flex;align-items:center}
+.navB .right a{padding:0 12px;font-weight:600;font-size:14px}
 .navB .right a.deal{color:var(--red)}
 .mega{position:absolute;left:0;right:0;top:100%;background:#fff;box-shadow:0 22px 40px rgba(0,0,0,.14);border-top:3px solid var(--red);display:none;z-index:20}
 .mega.open{display:block}
-.mega .wrap{display:grid;grid-template-columns:270px minmax(0,1fr) 280px;min-height:430px}
+.mega .wrap{display:grid;grid-template-columns:270px minmax(0,1fr) 280px;min-height:430px;max-width:1240px}
 .mcats{border-right:1px solid var(--line);padding:12px 0}
-.mcats button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:10px 18px 10px 0;font-weight:600;font-size:15px;color:var(--ink2)}
+.mcats button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:10px 18px 10px 0;font-weight:400;font-size:14px;color:var(--ink2)}
 .mcats button.on{color:var(--red)}
 .mcats button.on::after{content:"\203A";font-size:22px;line-height:1}
 .msubs{padding:24px 34px}
 .msubs .hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}
 .msubs h3{font-size:30px;line-height:1}
 .msubs .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 26px}
-.msubs h4{font-size:15px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-.msubs li{list-style:none;padding:3px 0;font-size:14px;color:#3b3b3b}
+.msubs h4{font-size:14px;font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.msubs li{list-style:none;padding:3px 0;font-size:13.5px;color:#3b3b3b}
 .mfeat{border-left:1px solid var(--line);padding:24px 0 24px 24px}
 .promo{background:var(--red);color:#fff;border-radius:10px;padding:22px}
 .promo small{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;opacity:.9}
