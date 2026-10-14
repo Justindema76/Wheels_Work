@@ -40,7 +40,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .search input{flex:1;border:0;padding:0 16px;font:inherit;font-size:15px;outline:0;min-width:0}
 .search button{background:var(--red);color:#fff;width:54px;display:flex;align-items:center;justify-content:center}
 .acts{margin-left:auto;display:flex;align-items:center;gap:22px;font-weight:600;font-size:14px;white-space:nowrap}
-.acts .store{border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.flag{width:20px;height:auto;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.12);flex:none}
+.menu{position:relative}
+.mbtn{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:8px;font-weight:600;font-size:14px}
+.store .mbtn{border:1px solid var(--line)}
+.mbtn .car{transition:transform .15s}
+.menu.open .mbtn{background:var(--bg2)}
+.menu.open .mbtn .car{transform:rotate(180deg)}
+.pop{position:absolute;top:calc(100% + 8px);right:0;min-width:230px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.14);padding:8px;display:none;z-index:60}
+.store .pop{left:0;right:auto}
+.menu.open .pop{display:block}
+.pop a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-weight:400;font-size:14px;color:var(--ink2)}
+.pop a svg{color:#777;flex:none}
+.pop a.cur{font-weight:600;color:var(--ink)}
+.pop .tick{margin-left:auto;color:var(--red);font-weight:700}
+.pop .hi{padding:10px 12px 12px;margin-bottom:6px;border-bottom:1px solid var(--line);font-weight:700;font-size:15px}
+.pop .hi small{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:2px}
+.pop .grp{margin:6px 0;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pop .grp span{display:block;padding:2px 12px 4px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pop .grp a{font-weight:600;color:var(--red)}
+.pop .grp a svg{color:var(--red)}
+.pop a.out{color:var(--red)}
+.pop a.out svg{color:var(--red)}
+@media (hover:hover){.pop a:hover{background:var(--bg2);color:var(--ink)}.pop .grp a:hover,.pop a.out:hover{color:var(--red-d)}.mbtn:hover{background:var(--bg2)}}
 .acts .cart{position:relative;display:flex}
 .acts .cart i{position:absolute;top:-8px;right:-10px;background:var(--red);color:#fff;font-style:normal;font-size:11px;font-weight:700;border-radius:20px;min-width:19px;height:19px;display:flex;align-items:center;justify-content:center}
 .burger{display:none}
@@ -88,7 +110,10 @@ nav.bar .row{display:flex;align-items:stretch;justify-content:center;height:54px
   .head .wrap{flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px;gap:12px}
   .logo img{height:40px}
   .burger{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--line);border-radius:8px}
-  .acts .store,.acts .acct{display:none}
+  .acts .store{display:none}
+  .acts .acct .mbtn{font-size:0;gap:0;padding:0 8px}
+  .acts .acct .mbtn svg{width:22px;height:22px}
+  .acts .acct .mbtn .car{display:none}
   .search{order:5;flex-basis:100%;max-width:none}
   nav.bar{display:none}
 }
@@ -104,7 +129,7 @@ nav.bar .row{display:flex;align-items:stretch;justify-content:center;height:54px
 </head>
 <body>
 
-<div class="pv"><div class="wrap"><b>Preview:</b><span style="flex-basis:auto">Click <b>Shop All Products</b> (or the menu button on a phone). Hover or click a department, then a subcategory.</span></div></div>
+<div class="pv"><div class="wrap"><b>Preview:</b><span style="flex-basis:auto">Click <b>Shop All Products</b> (or the menu button on a phone). Hover or click a department, then a subcategory. Also try the <b>CA / EN</b> and <b>My Account</b> dropdowns.</span></div></div>
 
 <div class="util"><div class="wrap">Welcome to our new website! Save <span class="code">10% on 10</span> &nbsp;·&nbsp; <b>Chat with us</b> for friendly support!</div></div>
 
@@ -113,8 +138,26 @@ nav.bar .row{display:flex;align-items:stretch;justify-content:center;height:54px
   <a class="logo" href="#"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"></a>
   <form class="search" onsubmit="return false"><input placeholder="Search by keywords or SKU..."><button aria-label="Search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button></form>
   <div class="acts">
-    <span class="store">CA / EN</span>
-    <a class="acct" href="#">My Account</a>
+    <div class="menu store" id="storeMenu">
+      <button class="mbtn" aria-haspopup="true"><svg class="flag" viewBox="0 0 30 15" aria-hidden="true"><rect width="30" height="15" fill="#fff"/><rect width="7.5" height="15" fill="#d52b1e"/><rect x="22.5" width="7.5" height="15" fill="#d52b1e"/><path fill="#d52b1e" d="M15 3.2l.9 1.7 1-.5-.4 2.4 1.3-1.2.3.8 1.5-.3-.5 1.6.7.3-2.4 2 .2.8-2.3-.3.1 2.5h-.8l.1-2.5-2.3.3.2-.8-2.4-2 .7-.3-.5-1.6 1.5.3.3-.8 1.3 1.2-.4-2.4 1 .5z"/></svg>CA / EN <svg class="car" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="pop">
+        <a class="cur" href="https://wheelsauto.com/ca-en/"><svg class="flag" viewBox="0 0 30 15" aria-hidden="true"><rect width="30" height="15" fill="#fff"/><rect width="7.5" height="15" fill="#d52b1e"/><rect x="22.5" width="7.5" height="15" fill="#d52b1e"/><path fill="#d52b1e" d="M15 3.2l.9 1.7 1-.5-.4 2.4 1.3-1.2.3.8 1.5-.3-.5 1.6.7.3-2.4 2 .2.8-2.3-.3.1 2.5h-.8l.1-2.5-2.3.3.2-.8-2.4-2 .7-.3-.5-1.6 1.5.3.3-.8 1.3 1.2-.4-2.4 1 .5z"/></svg>Canada · English<span class="tick">✓</span></a>
+        <a href="https://wheelsauto.com/ca-fr/"><svg class="flag" viewBox="0 0 30 15" aria-hidden="true"><rect width="30" height="15" fill="#fff"/><rect width="7.5" height="15" fill="#d52b1e"/><rect x="22.5" width="7.5" height="15" fill="#d52b1e"/><path fill="#d52b1e" d="M15 3.2l.9 1.7 1-.5-.4 2.4 1.3-1.2.3.8 1.5-.3-.5 1.6.7.3-2.4 2 .2.8-2.3-.3.1 2.5h-.8l.1-2.5-2.3.3.2-.8-2.4-2 .7-.3-.5-1.6 1.5.3.3-.8 1.3 1.2-.4-2.4 1 .5z"/></svg>Canada · Français</a>
+        <a href="https://wheelsauto.com/us/"><svg class="flag" viewBox="0 0 30 16" aria-hidden="true"><rect width="30" height="16" fill="#fff"/><g fill="#b22234"><rect width="30" height="1.23"/><rect y="2.46" width="30" height="1.23"/><rect y="4.92" width="30" height="1.23"/><rect y="7.38" width="30" height="1.23"/><rect y="9.85" width="30" height="1.23"/><rect y="12.31" width="30" height="1.23"/><rect y="14.77" width="30" height="1.23"/></g><rect width="12" height="8.6" fill="#3c3b6e"/></svg>United States</a>
+      </div>
+    </div>
+    <div class="menu acct" id="acctMenu">
+      <button class="mbtn" aria-haspopup="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>My Account <svg class="car" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="pop">
+        <div class="hi">Hi, Justin<small>Wheel's Automotive</small></div>
+        <a href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>My Dashboard</a>
+        <a href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h8"/></svg>My Orders</a>
+        <a href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.4-9.3-9A5 5 0 0 1 12 6a5 5 0 0 1 9.3 6C19 16.6 12 21 12 21z"/></svg>My Wish List</a>
+        <a href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>Address Book</a>
+        <div class="grp"><span>Your company</span><a href="https://wheelsauto.com/ca-en/rafih"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>Rafih Auto Group Products</a></div>
+        <a class="out" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l-5-5 5-5M5 12h11"/></svg>Sign Out</a>
+      </div>
+    </div>
     <a class="cart" href="#" aria-label="Cart"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/></svg><i>1</i></a>
   </div>
 </div></header>
@@ -144,8 +187,11 @@ var deps=TREE.filter(function(t){return t.c.length&&t.n!=='OEM Programs'}),cur=-
 
 /* panel 1: departments */
 var h='<div class="ph"><h3>Shop All Products</h3>'+X+'</div><div class="sec">Popular</div>'+
+  '<a class="lnk" href="'+BASE+'new-arrival.html">New Arrivals</a>'+
   '<a class="lnk sale" href="'+BASE+'on-sale-now.html">On Sale Now</a>'+
   '<a class="lnk" href="'+BASE+'oem-programs.html">OEM Programs</a>'+
+  '<div class="rule"></div><div class="sec">Dealer Group Programs</div>'+
+  '<a class="lnk" href="'+BASE+'rafih">Rafih Auto Group</a>'+
   '<div class="rule"></div><div class="sec">Departments</div>';
 deps.forEach(function(t,i){h+='<a class="lnk arrow" data-i="'+i+'" href="'+BASE+t.u+'">'+esc(t.n)+'</a>'});
 p1.innerHTML=h;
@@ -187,7 +233,12 @@ drawer.addEventListener('click',function(e){
   var b=e.target.closest('.back');
   if(b){var pn=b.closest('.pnl');pn.classList.remove('show');if(pn===p2){p3.classList.remove('show');cur=-1;mark(p1,'data-i',-1)}else{curSub=-1;mark(p2,'data-j',-1)}}
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeMenu();closePops()}});
+/* store + account dropdowns */
+var pops=document.querySelectorAll('.menu');
+function closePops(){pops.forEach(function(m){m.classList.remove('open')})}
+pops.forEach(function(m){m.querySelector('.mbtn').addEventListener('click',function(e){e.stopPropagation();var o=!m.classList.contains('open');closePops();m.classList.toggle('open',o)})});
+document.addEventListener('click',function(e){if(!e.target.closest('.menu'))closePops()});
 
 document.getElementById('quick').innerHTML=['Flags & Banners','License & Name Plates','Mirror Tags & Hangers','Dealership Marketing','OEM Programs','On Sale Now'].map(function(n){var t=TREE.filter(function(x){return x.n===n})[0];return '<a'+(n==='On Sale Now'?' class="sale"':'')+' href="'+BASE+t.u+'">'+esc(n)+'</a>'}).join('');
 </script>
