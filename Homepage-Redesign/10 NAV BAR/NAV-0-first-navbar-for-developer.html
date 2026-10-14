@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Header + Navbar — for developer</title>
+<!--
+  WHEELS · HEADER + NAVBAR (design "A · Showroom")
+  Three parts: 1) top bar  2) logo / search / account  3) navbar ("Shop All Products" + quick links)
+  Developer: rebuild this in the theme header (Magento_Theme/templates/html/topmenu.phtml + header).
+  "Shop All Products" should open the existing mega menu. Quick links are plain category links.
+  Content width 1320px to match the site width.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.wh-head{--r:#d9161e;--rd:#b30f16;--ink:#141414;font-family:Barlow,system-ui,sans-serif;color:var(--ink)}
+.wh-head *{box-sizing:border-box;margin:0;padding:0}
+.wh-head a{color:inherit;text-decoration:none}
+.wh-wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+
+/* 1 · top bar */
+.wh-util{background:var(--ink);color:#ccc;font-size:13.5px}
+.wh-util .wh-wrap{display:flex;justify-content:space-between;align-items:center;height:36px;gap:16px}
+.wh-util b{color:#fff}
+.wh-code{background:var(--r);color:#fff;font-weight:700;padding:2px 7px;border-radius:4px}
+.wh-util nav{display:flex;gap:6px;align-items:center}
+.wh-util nav a:hover{color:#fff}
+
+/* 2 · logo / search / account */
+.wh-main{background:#fff;border-bottom:1px solid #e6e6e6}
+.wh-main .wh-wrap{display:flex;align-items:center;gap:28px;height:78px}
+.wh-logo img{height:44px;width:auto;display:block}
+.wh-search{flex:1;display:flex;height:48px;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.wh-search input{flex:1;border:0;padding:0 16px;font:inherit;font-size:16px;outline:none;min-width:0}
+.wh-search button{width:56px;border:0;background:var(--r);color:#fff;cursor:pointer;display:grid;place-items:center}
+.wh-search button:hover{background:var(--rd)}
+.wh-acts{display:flex;gap:22px;font-weight:600;font-size:14.5px;white-space:nowrap}
+.wh-acts a:hover{color:var(--r)}
+
+/* 3 · navbar */
+.wh-nav{background:#fff;border-bottom:1px solid #e6e6e6}
+.wh-nav .wh-wrap{display:flex;align-items:stretch;height:50px}
+.wh-shopall{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:0;padding:0 18px;cursor:pointer;font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:.02em}
+.wh-shopall:hover{background:var(--r)}
+.wh-q{display:flex;align-items:center;padding:0 14px;font-weight:600;font-size:15px;white-space:nowrap;box-shadow:inset 0 -3px 0 transparent;transition:box-shadow .15s}
+.wh-q:hover{box-shadow:inset 0 -3px 0 var(--r)}
+.wh-nav .wh-right{margin-left:auto;display:flex}
+.wh-nav .wh-right .wh-q.deal{color:var(--r)}
+
+/* phones */
+@media(max-width:1100px){.wh-q:nth-of-type(n+6){display:none}}
+@media(max-width:760px){
+  .wh-wrap{padding:0 16px}
+  .wh-util nav{display:none}
+  .wh-main .wh-wrap{flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px;gap:12px}
+  .wh-logo img{height:36px}
+  .wh-acts{margin-left:auto;gap:16px}
+  .wh-search{order:3;flex-basis:100%;height:46px}
+  .wh-nav .wh-wrap{padding:0}
+  .wh-shopall{flex:1;justify-content:center}
+  .wh-q{display:none}
+  .wh-nav .wh-right .wh-q.deal{display:flex}
+}
+</style>
+</head>
+<body style="margin:0">
+
+<header class="wh-head">
+  <!-- 1 · top bar -->
+  <div class="wh-util"><div class="wh-wrap">
+    <span>New customer? 10% off with <span class="wh-code">WELCOME10</span></span>
+    <nav><a href="tel:18004658831"><b>1 (800) 465-8831</b></a> · <a href="https://wheelsauto.com/ca-en/quick-quote/">Quick Quote</a> · <a href="https://heyzine.com/flip-book/78661a3df5.html">Catalogue</a></nav>
+  </div></div>
+
+  <!-- 2 · logo / search / account -->
+  <div class="wh-main"><div class="wh-wrap">
+    <a class="wh-logo" href="https://wheelsauto.com/ca-en/"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheels Automotive Dealer Supplies"></a>
+    <form class="wh-search" action="https://wheelsauto.com/ca-en/catalogsearch/result/" method="get">
+      <input type="search" name="q" placeholder="Search by product name or SKU" aria-label="Search">
+      <button type="submit" aria-label="Search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+    </form>
+    <div class="wh-acts">
+      <a href="#">↻ Reorder</a>
+      <a href="https://wheelsauto.com/ca-en/customer/account/">Account</a>
+      <a href="https://wheelsauto.com/ca-en/checkout/cart/">Cart (2)</a>
+    </div>
+  </div></div>
+
+  <!-- 3 · navbar -->
+  <div class="wh-nav"><div class="wh-wrap">
+    <button class="wh-shopall" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Shop All Products</button>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/vehicle-advertising-display.html">Windshield Decals</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/200ye-200gy-genuine-versa-tag-key-tags.html">Key Tags</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/license-name-plates/plate-frames.html">Plate Frames</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/mirror-tags-hangers.html">Mirror Tags</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/flags-more.html">Flags</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/indoor-outdoor-displays.html">Sale Events</a>
+    <a class="wh-q" href="https://wheelsauto.com/ca-en/oem-products.html">OEM Programs</a>
+  </div></div>
+</header>
+
+</body>
+</html>
