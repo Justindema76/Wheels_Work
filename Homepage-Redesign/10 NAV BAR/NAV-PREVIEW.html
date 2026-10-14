@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Nav Preview</title>
+<!-- WHEELS · NAV BAR PREVIEW: 2 styles of the header + dropdown menu, filled with your real categories and subcategories (from wheelsauto.com/ca-en, Oct 14 2026).
+     A = works with your current menu (WeltPixel Navigation Links) using CSS only.
+     B = "Shop All Products" mega menu like the first design. Needs a developer to change the theme header. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--red-d:#b30f16;--ink:#141414;--ink2:#2a2a2a;--muted:#6b6b6b;--line:#e6e6e6;--bg2:#f5f5f4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Barlow,system-ui,sans-serif;color:var(--ink);background:#fff;font-size:15px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1320px;margin:0 auto;padding:0 20px}
+.cond{font-family:"Barlow Condensed",Barlow,sans-serif;text-transform:uppercase}
+
+/* preview switch (not part of the design) */
+.pv{background:#fffbe6;border-bottom:1px solid #eadf9f;font-size:14px}
+.pv .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:10px;padding-bottom:10px}
+.pv b{margin-right:4px}
+.pv button{border:1px solid #c9bd76;background:#fff;border-radius:6px;padding:6px 12px;font-weight:600}
+.pv button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pv span{color:#6b5f1a;flex-basis:100%}
+
+/* top bar */
+.util{background:var(--ink);color:#cfcfcf;font-size:13.5px}
+.util .wrap{display:flex;justify-content:center;align-items:center;height:36px;gap:8px;text-align:center}
+.util b{color:#fff}
+.util .code{background:var(--red);color:#fff;padding:2px 8px;border-radius:4px;font-weight:700}
+
+/* header */
+.head{background:#fff;border-bottom:1px solid var(--line)}
+.head .wrap{display:flex;align-items:center;gap:24px;height:84px}
+.logo img{display:block;height:52px;width:auto}
+.search{flex:1;display:flex;max-width:560px;height:46px;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.search input{flex:1;border:0;padding:0 16px;font:inherit;font-size:15px;outline:0;min-width:0}
+.search button{background:var(--red);color:#fff;width:54px;display:flex;align-items:center;justify-content:center}
+.acts{margin-left:auto;display:flex;align-items:center;gap:22px;font-weight:600;font-size:14px;white-space:nowrap}
+.acts .store{border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.acts .cart{position:relative;display:flex}
+.acts .cart i{position:absolute;top:-8px;right:-10px;background:var(--red);color:#fff;font-style:normal;font-size:11px;font-weight:700;border-radius:20px;min-width:19px;height:19px;display:flex;align-items:center;justify-content:center}
+.burger{display:none}
+
+/* ===== A: category bar + full-width dropdown ===== */
+.navA{background:#fff;border-bottom:1px solid var(--line);position:relative}
+.navA .bar{display:flex;align-items:stretch;justify-content:space-between;height:54px}
+.navA .top{display:flex;align-items:center;padding:0 10px;font-weight:600;font-size:14.5px;line-height:1.15;text-align:center;border-bottom:3px solid transparent;margin-bottom:-1px}
+.navA .top.sale{color:var(--red)}
+.navA .panel{position:absolute;left:0;right:0;top:100%;background:#fff;border-top:3px solid var(--red);box-shadow:0 22px 40px rgba(0,0,0,.14);display:none;z-index:20}
+.navA .item.open .panel{display:block}
+.navA .item.open .top{border-bottom-color:var(--red);color:var(--red)}
+.navA .panel .wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:36px;padding-top:28px;padding-bottom:30px}
+.navA .intro{border-right:1px solid var(--line);padding-right:28px}
+.navA .intro h3{font-size:30px;line-height:1;margin-bottom:12px}
+.navA .intro p{color:var(--muted);font-size:14px;line-height:1.45;margin-bottom:18px}
+.allbtn{display:inline-block;border-bottom:3px solid var(--red);font:800 17px/1 "Barlow Condensed";letter-spacing:.02em;text-transform:uppercase;padding-bottom:3px}
+.navA .cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px 28px}
+.navA .col h4{font-size:15px;font-weight:700;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.navA .col li{list-style:none;padding:4px 0;font-size:14px;color:#3b3b3b}
+.navA .col li.more a{color:var(--red);font-weight:600}
+
+/* ===== B: Shop All mega menu ===== */
+.navB{background:#fff;border-bottom:1px solid var(--line);position:relative}
+.navB .bar{display:flex;align-items:stretch;height:52px;gap:4px}
+.shopall{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:0 20px;font-weight:700;font-size:15px}
+.shopall.on{background:var(--red)}
+.quick{display:flex;align-items:stretch;overflow:hidden}
+.quick a{display:flex;align-items:center;padding:0 13px;font-weight:600;font-size:14.5px;white-space:nowrap;border-bottom:3px solid transparent}
+.navB .right{margin-left:auto;display:flex;align-items:center}
+.navB .right a{padding:0 12px;font-weight:700;font-size:14.5px}
+.navB .right a.deal{color:var(--red)}
+.mega{position:absolute;left:0;right:0;top:100%;background:#fff;box-shadow:0 22px 40px rgba(0,0,0,.14);border-top:3px solid var(--red);display:none;z-index:20}
+.mega.open{display:block}
+.mega .wrap{display:grid;grid-template-columns:270px minmax(0,1fr) 280px;min-height:430px}
+.mcats{border-right:1px solid var(--line);padding:12px 0}
+.mcats button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:10px 18px 10px 0;font-weight:600;font-size:15px;color:var(--ink2)}
+.mcats button.on{color:var(--red)}
+.mcats button.on::after{content:"\203A";font-size:22px;line-height:1}
+.msubs{padding:24px 34px}
+.msubs .hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}
+.msubs h3{font-size:30px;line-height:1}
+.msubs .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 26px}
+.msubs h4{font-size:15px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.msubs li{list-style:none;padding:3px 0;font-size:14px;color:#3b3b3b}
+.mfeat{border-left:1px solid var(--line);padding:24px 0 24px 24px}
+.promo{background:var(--red);color:#fff;border-radius:10px;padding:22px}
+.promo small{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px;opacity:.9}
+.promo h5{font:800 34px/1 "Barlow Condensed";text-transform:uppercase;margin:8px 0 10px}
+.promo p{font-size:14px;line-height:1.4;margin-bottom:16px}
+.promo a{display:inline-block;background:#fff;color:var(--ink);font-weight:700;padding:9px 14px;border-radius:6px;font-size:14px}
+.mfeat .help{margin-top:16px;font-size:14px;line-height:1.5;color:var(--muted)}
+.mfeat .help b{color:var(--ink)}
+
+@media (hover:hover){
+  .search button:hover{background:var(--red-d)}
+  .navA .top:hover{color:var(--red)}
+  .navA .col h4 a:hover,.navA .col li a:hover,.msubs li a:hover,.msubs h4 a:hover{color:var(--red);text-decoration:underline}
+  .allbtn:hover{color:var(--red);border-bottom-color:var(--ink)}
+  .shopall:hover{background:var(--red)}
+  .quick a:hover{border-bottom-color:var(--red)}
+  .mcats button:hover{color:var(--red)}
+  .promo a:hover{background:var(--ink);color:#fff}
+}
+
+/* ===== phones / tablets: one menu for both styles ===== */
+.mob{display:none}
+@media (max-width:1023px){
+  .head .wrap{flex-wrap:wrap;height:auto;padding-top:12px;padding-bottom:12px;gap:12px}
+  .logo img{height:40px}
+  .burger{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--line);border-radius:8px}
+  .acts .store,.acts .acct{display:none}
+  .search{order:5;flex-basis:100%;max-width:none}
+  .navA,.navB{display:none}
+  .mob.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50}
+  .mob .sheet{background:#fff;width:min(88vw,380px);height:100%;overflow-y:auto}
+  .mob .mh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--ink);color:#fff;font-weight:700}
+  .mob .mh button{color:#fff;font-size:26px;line-height:1}
+  .mob details{border-bottom:1px solid var(--line)}
+  .mob summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-weight:700;font-size:16px;cursor:pointer}
+  .mob summary::-webkit-details-marker{display:none}
+  .mob summary::after{content:"+";font-size:22px;color:var(--red);font-weight:600}
+  .mob details[open] > summary::after{content:"\2212"}
+  .mob details details summary{padding:11px 16px 11px 28px;font-size:15px;font-weight:600}
+  .mob ul{padding:0 16px 10px 40px}
+  .mob li{list-style:none;padding:7px 0;font-size:14.5px;color:#3b3b3b}
+  .mob .all{display:block;padding:10px 16px 12px 28px;color:var(--red);font-weight:700}
+  .mob .plain{display:block;padding:14px 16px;font-weight:700;font-size:16px;border-bottom:1px solid var(--line)}
+  .mob .plain.sale{color:var(--red)}
+}
+@media (max-width:600px){
+  .util .wrap{font-size:12.5px;height:auto;padding-top:7px;padding-bottom:7px}
+}
+</style>
+</head>
+<body>
+
+<div class="pv"><div class="wrap">
+  <b>Preview:</b>
+  <button data-style="A" class="on">A · Category bar (CSS only)</button>
+  <button data-style="B">B · Shop All mega menu (needs developer)</button>
+  <span id="pvNote">Hover a category to open its dropdown. On a phone, tap the menu button.</span>
+</div></div>
+
+<div class="util"><div class="wrap">Welcome to our new website! Save <span class="code">10% on 10</span> &nbsp;·&nbsp; <b>Chat with us</b> for friendly support!</div></div>
+
+<header class="head"><div class="wrap">
+  <button class="burger" id="burger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  <a class="logo" href="#"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"></a>
+  <form class="search" onsubmit="return false"><input placeholder="Search by keywords or SKU..."><button aria-label="Search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button></form>
+  <div class="acts">
+    <span class="store">CA / EN</span>
+    <a class="acct" href="#">My Account</a>
+    <a class="cart" href="#" aria-label="Cart"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/></svg><i>1</i></a>
+  </div>
+</div></header>
+
+<nav class="navA" id="navA"><div class="wrap bar" id="barA"></div></nav>
+
+<nav class="navB" id="navB" style="display:none">
+  <div class="wrap bar">
+    <button class="shopall" id="shopall"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Shop All Products</button>
+    <div class="quick" id="quickB"></div>
+    <div class="right"><a href="#">OEM Programs</a><a class="deal" href="#">On Sale Now</a></div>
+  </div>
+  <div class="mega" id="mega"><div class="wrap">
+    <div class="mcats" id="mcats"></div>
+    <div class="msubs" id="msubs"></div>
+    <div class="mfeat">
+      <div class="promo"><small>Dealer deal</small><h5>Save 10% on 10</h5><p>Mix &amp; match eligible products and save when you buy 10 or more.</p><a href="#">Shop the deal</a></div>
+      <p class="help"><b>Need it fast?</b> Rush service is available on most custom orders. Just ask.</p>
+    </div>
+  </div></div>
+</nav>
+
+<div class="mob" id="mob"><div class="sheet" id="sheet"></div></div>
+
+<div class="wrap" style="padding-top:60px;padding-bottom:300px;color:#9a9a9a">(page content)</div>
+
+<script>
+var BASE='https://wheelsauto.com/ca-en/';
+var TREE=[{"n":"Dealership Marketing","u":"dealership-marketing.html","c":[{"n":"Key Tags","u":"dealership-marketing/key-tags.html","c":["Metal Key Tags","Plastic & Acrylic Key Tags","Leather & Polyurethane Key Tags","Wristband Key Tags","Multi-Tool Keychains","Flashlight Key Tags"]},{"n":"Apparel","u":"dealership-marketing/apparel.html","c":["Hats & Toques","Jackets","Shirts & Sweaters","Long & Short Tees"]},{"n":"Customer Appreciation","u":"dealership-marketing/customer-appreciation.html","c":["Golf Accessories","Umbrellas","Bags & Totes","Lanyards","Electronic Accessories","Tools"]},{"n":"Desk Accessories","u":"dealership-marketing/desk-accessories.html","c":["Note Pads & Padfolios","Presentation Folders","Pens","Counter Mats & Mouse Pads","Laser Engraved Crystal Awards"]},{"n":"Drinkware","u":"dealership-marketing/drinkware.html","c":["Mugs","Cups & Tumblers","Disposable Cups & Lids"]},{"n":"Cards","u":"dealership-marketing/cards.html","c":["Business Cards","Thank You Cards","Loyalty Cards","Postcards","Tent Cards","Coupons & Service Take Aways"]},{"n":"Auto & Tech","u":"dealership-marketing/auto.html","c":["Folios","Air Fresheners","First Aid & Emergency Kits","Windshield Sun Shades"]}]},{"n":"Vehicle Advertising & Display","u":"vehicle-advertising-display.html","c":[{"n":"Windshield Decals","u":"vehicle-advertising-display/windshield-decals.html","c":["Sale & Promotion Decals","Vehicle Status Decals","Lettering & Custom Decals","Corner-Cals & Topper Decals","Windshield Identification Stickers"]},{"n":"Vehicle Signs & Displays","u":"vehicle-advertising-display/vehicle-signs-displays.html","c":["Gigantic Numbers & Letters","Rooftop Signs","Under Hood Signs","Large Coroplast Signs & Kits"]},{"n":"Custom Dealership Decals","u":"vehicle-advertising-display/custom-dealership-decals.html","c":["Custom Domed Decals","Custom Silhouette Decal","Custom Shaped Full Colour Decals"]},{"n":"Windshield Kits & Accessories","u":"vehicle-advertising-display/windshield-window-accessories.html","c":["Windshield Pricing Kits","Windshield Markers","Cleaning Supplies"]},{"n":"Vehicle Information Holders","u":"vehicle-advertising-display/window-information-holders.html","c":["Dashboard Information Displays","Information Sheets & Inserts","Magic Cling Decals & Information Holders"]}]},{"n":"Flags & Banners","u":"flags-more.html","c":[{"n":"Dealership Flags","u":"flags-more/dealership-flags.html","c":["Duro-Colour Sublimated Flags","Tri-Panel Dealership Flags","Full Colour Digital Print Dealership Flags","Tri-Panel OEM Dealership Flags","Standard Dealership Action Flags","Dealership Flag Hardware","Canadian Flags"]},{"n":"Flag Hardware","u":"flags-more/dealership-flag-hardware.html","c":["Flagmaster Hardware","Flagpoles","Mounting Brackets & Stands","Roto Master Hardware","Bow Flag Hardware","Blade Flag Hardware","Swooper Flag Hardware"]},{"n":"Specialty Flags","u":"flags-more/specialty-flags.html","c":["Swooper Flags & Accessories","Bow Flags & Accessories","Blade Flags & Accessories","Clip-on Window Flags","Antenna Flags"]},{"n":"Banners & Hardware","u":"flags-more/banners.html","c":["Reusable Windshield Banners","Full Colour Vinyl Banners","Banners for Banner Display Stand","Boulevard Banners & Hardware","Outdoor Durable Banner Stand"]}]},{"n":"License & Name Plates","u":"license-name-plates.html","c":[{"n":"License Plate Accessories","u":"license-name-plates/licence-plate-accessories.html","c":["Fasteners","Magnetic Plate Holders","License Plate Pouches","Plate Security"]},{"n":"License Plate Frames & Covers","u":"license-name-plates/license-plate-frames-covers.html","c":["Digitally Printed Plate Frames & Covers","Screen Printed Plate Frames & Covers","Chrome Plate Frames","Metal Plate Frames","Raised Plate Frames","Motorcycle Plate Frames & Covers","License Plate Frames","Lexan Plate Covers"]},{"n":"License Plate Signs","u":"license-name-plates/plate-signs.html","c":["Slogan & Year Plates","Custom Printed Plate Signs","Embossed Metal Plate Signs","Motorcycle Plate Signs","Plate Cover Designer"]},{"n":"Dealer Nameplates","u":"license-name-plates/nameplates.html","c":["Flexible Chrome Style Nameplates","Metal Chrome Style Nameplates","ABS Plastic Chrome Style Nameplates","3D Plastic Nameplates"]}]},{"n":"Showroom Marketing & Displays","u":"showroom-marketing-displays.html","c":[{"n":"Vehicle Display Stands","u":"indoor-showroom-displays/vehicle-display-stands.html","c":["Vehicle Display Podiums","Vehicle Floor Display Stands"]},{"n":"Promotional Displays","u":"indoor-showroom-displays/promotiona-banner-displays.html","c":["Retractable Banner Stands","Literature & Brochure Stands","Showroom Specials Boards","Countertop Sign Holders","Table Covers"]},{"n":"Posters & Showroom Signs","u":"indoor-showroom-displays/posters-showroom-signs.html","c":["Sale Event Posters","Slogan Event Posters","Tire Pricing Signs"]},{"n":"Showroom Equipment & Accessories","u":"indoor-showroom-displays/showroom-equipment-accessories.html","c":["Belt Barriers","Accessories & Hardware","Promo & Sales Tools"]}]},{"n":"Outdoor Display Solutions","u":"indoor-outdoor-displays.html","c":[{"n":"Flags, Pennants & Bows","u":"indoor-outdoor-displays/antenna-flags-pennants-streamers.html","c":["Pennants","Antenna Flags","Bows","Flag Hoodies"]},{"n":"Balloons & Accessories","u":"indoor-outdoor-displays/bows-streamers.html","c":["Balloons","Balloon Kits","Balloon Accessories","Balloon Kit Replacement Parts"]},{"n":"Outdoor Signs & Banners","u":"indoor-outdoor-displays/outdoor-lawn-pole-signs.html","c":["Coroplast Pole Signs","Coroplast Lot Signs","Lawn & Wind Signs","Kwikie Outdoor Sale Event Kits","Window Jazz Showroom Window Graphics"]},{"n":"Inflatables & Tents","u":"indoor-outdoor-displays/outdoor-displays.html","c":["Inflatables & Air Dancers","Pop Up Tents","Power Blowers"]},{"n":"Outdoor Display Stands","u":"indoor-outdoor-displays/outdoor-display-stands.html","c":["Promotional Sign Hardware","Lawn & Ground Sign Hardware"]},{"n":"Co-ordinated Sale Event Items","u":"indoor-outdoor-displays/co-ordinated-sale-event-items.html","c":["Black Friday Sales Event","Pre-Owned Sales Event","Supersale Sales Event","Red Hot Sales Event","Canada Day Sales Event","Sale-a-Thon Sales Event"]}]},{"n":"Mirror Tags & Hangers","u":"mirror-tags-hangers.html","c":[{"n":"Dry-Erase Reusable Mirror Signs & Tags","u":"mirror-tags-hangers/reusable-mirror-tags.html","c":["Mirror Hanger Signs","Dry Erase Reusable Mirror Tags","Hold & Sold Mirror Hanger Signs","Window Jazz Reusable Mirror Hanger Signs"]},{"n":"Service Mirror Tags","u":"mirror-tags-hangers/service-mirror-tags.html","c":["Coroplast Pricer Kit Mirror Hanger Signs","Custom Service Hangers","Dry Erase Markers","Stock Service Hangers"]},{"n":"Paper Mirror Tags","u":"mirror-tags-hangers/paper-mirror-tags.html","c":["Custom Paper Mirror Tags","Kwikie Sale Event Rearview Mirror Tags","Red or Green Paper Mirror Tags"]}]},{"n":"Service & Lot Solutions","u":"service-lot-solutions.html","c":[{"n":"Inventory Control & Key Management Systems","u":"service-lot-solutions/key-inventory-accessories.html","c":["Paper Key Tags","Plastic Key Tags","Key Management Systems","Key Management System Accessories","Keyper Systems & Accessories","Cobra Systems & Accessories"]},{"n":"Auto Utility Products & Tools","u":"service-lot-solutions/tools.html","c":["Pressure Gauges","Flashlights","Winter Products","Automotive Tools","Faraday Security Pouches"]},{"n":"Parking & Lot Solutions","u":"service-lot-solutions/parking-lot-solutions.html","c":["Bollards & Pole Covers","Lot Signs & Decals","Ramps","Floor Mats & Protectors"]},{"n":"Service Accessories","u":"service-lot-solutions/service-accessories.html","c":["Garage Accessories","Tire Service","Oil Change","Forms & Contracts"]},{"n":"Cleaning & Repair Supplies","u":"service-lot-solutions/cleaning-repair-supplies.html","c":["Cleaning Supplies","Repair Supplies","Paint Gauges"]}]},{"n":"OEM Programs","u":"oem-programs.html","c":[{"n":"Hyundai","u":"oem-programs/hyundai.html","c":[]}]},{"n":"On Sale Now","u":"on-sale-now.html","c":[]}];
+var BLURB={"Dealership Marketing":"Branded key tags, apparel, drinkware and customer appreciation gifts.","Vehicle Advertising & Display":"Windshield decals, vehicle signs and information holders that move inventory.","Flags & Banners":"Dealership flags, specialty flags, banners and all the hardware.","License & Name Plates":"Plate frames, covers, signs and dealer nameplates.","Showroom Marketing & Displays":"Display stands, posters and showroom equipment.","Outdoor Display Solutions":"Pennants, balloons, inflatables, lot signs and sale event kits.","Mirror Tags & Hangers":"Reusable, service and paper mirror tags.","Service & Lot Solutions":"Key management, lot supplies, tools and service accessories.","OEM Programs":"Approved OEM program products."};
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function slug(s){return s.toLowerCase().replace(/&/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function subUrl(l1,name){return BASE+l1.u}
+function listHTML(l1,max){var h='',i;for(i=0;i<l1.c.length&&i<max;i++)h+='<li><a href="'+subUrl(l1,l1.c[i])+'">'+esc(l1.c[i])+'</a></li>';if(l1.c.length>max)h+='<li class="more"><a href="'+BASE+l1.u+'">+ '+(l1.c.length-max)+' more</a></li>';return h}
+
+/* A */
+var barA=document.getElementById('barA'),hA='';
+TREE.forEach(function(t,i){
+  hA+='<div class="item" data-i="'+i+'"><a class="top'+(t.n==='On Sale Now'?' sale':'')+'" href="'+BASE+t.u+'">'+esc(t.n).replace(/ (&amp;|Advertising|Marketing|Display|Tags|Lot|Programs|Sale|Name)/,'<br>$1')+'</a>';
+  if(t.c.length){
+    hA+='<div class="panel"><div class="wrap"><div class="intro"><h3 class="cond">'+esc(t.n)+'</h3><p>'+(BLURB[t.n]||'')+'</p><a class="allbtn" href="'+BASE+t.u+'">Shop all</a></div><div class="cols">';
+    t.c.forEach(function(l1){hA+='<div class="col"><h4><a href="'+BASE+l1.u+'">'+esc(l1.n)+'</a></h4><ul>'+listHTML(l1,6)+'</ul></div>'});
+    hA+='</div></div></div>';
+  }
+  hA+='</div>';
+});
+barA.innerHTML=hA;
+var items=barA.querySelectorAll('.item'),tA;
+function closeA(){for(var k=0;k<items.length;k++)items[k].classList.remove('open')}
+for(var k=0;k<items.length;k++)(function(it){
+  it.style.display='flex';
+  it.addEventListener('mouseenter',function(){clearTimeout(tA);closeA();if(it.querySelector('.panel'))it.classList.add('open')});
+  it.addEventListener('mouseleave',function(){tA=setTimeout(closeA,120)});
+})(items[k]);
+
+/* B */
+var mcats=document.getElementById('mcats'),msubs=document.getElementById('msubs'),hB='';
+TREE.forEach(function(t,i){if(t.c.length)hB+='<button data-i="'+i+'">'+esc(t.n)+'</button>'});
+mcats.innerHTML=hB;
+function showB(i){
+  var t=TREE[i],b=mcats.querySelectorAll('button'),h='';
+  for(var j=0;j<b.length;j++)b[j].classList.toggle('on',+b[j].getAttribute('data-i')===i);
+  h='<div class="hd"><h3 class="cond">'+esc(t.n)+'</h3><a class="allbtn" href="'+BASE+t.u+'">Shop all</a></div><div class="grid">';
+  t.c.forEach(function(l1){h+='<div><h4><a href="'+BASE+l1.u+'">'+esc(l1.n)+'</a></h4><ul>'+listHTML(l1,6)+'</ul></div>'});
+  msubs.innerHTML=h+'</div>';
+}
+mcats.addEventListener('mouseover',function(e){var b=e.target.closest('button');if(b)showB(+b.getAttribute('data-i'))});
+mcats.addEventListener('click',function(e){var b=e.target.closest('button');if(b)showB(+b.getAttribute('data-i'))});
+showB(0);
+document.getElementById('quickB').innerHTML=['Flags & Banners','License & Name Plates','Mirror Tags & Hangers','Dealership Marketing'].map(function(n){var t=TREE.filter(function(x){return x.n===n})[0];return '<a href="'+BASE+t.u+'">'+esc(n)+'</a>'}).join('');
+var mega=document.getElementById('mega'),shopall=document.getElementById('shopall');
+shopall.addEventListener('click',function(){var o=mega.classList.toggle('open');shopall.classList.toggle('on',o)});
+document.addEventListener('click',function(e){if(!e.target.closest('#navB')){mega.classList.remove('open');shopall.classList.remove('on')}});
+
+/* phone menu */
+var sh='<div class="mh">Shop All Products<button id="mclose" aria-label="Close">&times;</button></div>';
+TREE.forEach(function(t){
+  if(!t.c.length){sh+='<a class="plain'+(t.n==='On Sale Now'?' sale':'')+'" href="'+BASE+t.u+'">'+esc(t.n)+'</a>';return}
+  sh+='<details><summary>'+esc(t.n)+'</summary><a class="all" href="'+BASE+t.u+'">Shop all '+esc(t.n)+'</a>';
+  t.c.forEach(function(l1){sh+=l1.c.length?'<details><summary>'+esc(l1.n)+'</summary><ul>'+listHTML(l1,99)+'</ul></details>':'<a class="all" style="color:inherit;font-weight:600" href="'+BASE+l1.u+'">'+esc(l1.n)+'</a>'});
+  sh+='</details>';
+});
+var mob=document.getElementById('mob');document.getElementById('sheet').innerHTML=sh;
+document.getElementById('burger').addEventListener('click',function(){mob.classList.add('open')});
+mob.addEventListener('click',function(e){if(e.target===mob||e.target.id==='mclose')mob.classList.remove('open')});
+
+/* preview switch */
+var notes={A:'Hover a category to open its dropdown. On a phone, tap the menu button. Style A can be done with CSS on your current menu.',B:'Click "Shop All Products" and hover the categories on the left. Style B needs a developer to change the theme header.'};
+document.querySelectorAll('.pv button').forEach(function(b){b.addEventListener('click',function(){
+  var s=b.getAttribute('data-style');
+  document.querySelectorAll('.pv button').forEach(function(x){x.classList.toggle('on',x===b)});
+  document.getElementById('navA').style.display=s==='A'?'':'none';
+  document.getElementById('navB').style.display=s==='B'?'':'none';
+  document.getElementById('pvNote').textContent=notes[s];
+})});
+document.getElementById('pvNote').textContent=notes.A;
+</script>
+</body>
+</html>
