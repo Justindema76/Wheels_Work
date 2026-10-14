@@ -1,4 +1,4 @@
-<!-- ===== WHEELS · "VIEW ALL" BUTTONS (solid red, black on hover) =====
+<!-- ===== WHEELS · "VIEW ALL" BUTTONS (bold underline: black text + red line, hover red text + black line) =====
      Styles the Page Builder buttons on the homepage that sit on their own under a section
      (View All under Popular Products, On Sale Now, etc.). Buttons inside cards/columns are NOT touched.
      Paste at the end of your Site Styles HTML Code element (or any HTML Code element on the homepage).
@@ -6,18 +6,19 @@
      FRENCH: next to each English Buttons element add a French one ("Voir tout", same link) and give them
      CSS classes (Advanced → CSS Classes):  lang-en  on the English one,  lang-fr  on the French one. -->
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&display=swap');
+/* VIEW ALL: bold black text, red underline. Hover: red text, black underline */
 .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-primary,
 .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-secondary{
-  display:inline-flex !important;align-items:center !important;justify-content:center !important;
-  min-width:0 !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:14px 32px !important;
-  background:#d9161e !important;border:2px solid #d9161e !important;border-radius:6px !important;box-shadow:none !important;
-  color:#fff !important;font:700 14px/1 Barlow,system-ui,sans-serif !important;letter-spacing:.06em !important;text-transform:uppercase !important;text-decoration:none !important;
-  transition:background-color .15s,border-color .15s !important}
+  display:inline-block !important;width:auto !important;min-width:0 !important;height:auto !important;min-height:0 !important;margin:0 !important;
+  padding:0 0 3px !important;background:none !important;border:0 !important;border-bottom:3px solid #d9161e !important;border-radius:0 !important;box-shadow:none !important;
+  color:#141414 !important;font:800 20px/1 "Barlow Condensed",Barlow,system-ui,sans-serif !important;letter-spacing:.02em !important;text-transform:uppercase !important;text-decoration:none !important;
+  transition:color .15s,border-color .15s !important}
 .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-primary span,
 .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-secondary span{color:inherit !important;font:inherit !important;letter-spacing:inherit !important;text-transform:inherit !important}
 @media(hover:hover){
   .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-primary:hover,
-  .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-secondary:hover{background:#141414 !important;border-color:#141414 !important;color:#fff !important}
+  .cms-index-index [data-content-type="buttons"]:not([data-content-type="column"] [data-content-type="buttons"]) .pagebuilder-button-secondary:hover{color:#d9161e !important;border-bottom-color:#141414 !important;background:none !important}
 }
 
 /* LANGUAGE / SITE SWITCH (English on ca-en + us, French on ca-fr) */
