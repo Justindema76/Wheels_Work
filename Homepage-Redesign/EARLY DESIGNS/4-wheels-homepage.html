@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Homepage</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--red-d:#b30f16;--ink:#141414;--neon:#d7ff1f;--bg:#0e0e0e;--card:#181818;--line:#262626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Barlow,system-ui,sans-serif;background:var(--bg);color:#fff;font-size:15px}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
+.cond{font-family:"Barlow Condensed",Barlow,sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+.ico{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ================= HEADER (dark, both modes) ================= */
+.util{background:var(--red);font-size:13px;font-weight:600}
+.util .wrap{display:flex;justify-content:space-between;align-items:center;height:32px}
+.util nav{display:flex;gap:18px}
+.hdr{display:flex;align-items:center;gap:26px;height:76px}
+.hdr .logo{height:42px}
+.search{flex:1;display:flex;height:46px;background:#1c1c1c;border:1px solid #333;border-radius:40px;overflow:hidden}
+.search input{flex:1;background:none;border:0;color:#fff;padding:0 20px;font:inherit;outline:none;min-width:0}
+.search input::placeholder{color:#888}
+.search button{background:var(--red);width:40px;height:38px;border-radius:40px;margin:3px;display:grid;place-items:center}
+.acts{display:flex;gap:22px;font-size:13.5px;font-weight:600;color:#ddd}
+.acts a{display:flex;align-items:center;gap:7px}
+.nav{border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f}
+.nav .wrap{display:flex;height:48px;align-items:center;gap:4px}
+.shopall{border:1px solid #444;border-radius:30px;padding:7px 16px;font-weight:700;display:flex;gap:8px;align-items:center;font-size:14px;margin-right:8px}
+.nav a.q{padding:7px 12px;font-weight:600;font-size:14px;color:#bbb;white-space:nowrap;border-radius:20px}
+.nav a.q:hover{color:#fff;background:#1c1c1c}
+.nav .right{margin-left:auto;display:flex}
+.nav .right a{padding:7px 12px;font-weight:700;font-size:14px}
+.nav .right a.deal{color:var(--red)}
+
+/* ================= HERO (the one you liked) ================= */
+.hero{position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 30%,#3a0a0c 0%,#0e0e0e 60%);padding:70px 0 64px}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#1b1b1b 1px,transparent 1px),linear-gradient(90deg,#1b1b1b 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(90deg,transparent 30%,#000 90%);-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 90%)}
+.hero .wrap{position:relative}
+.kick{color:var(--red);font-weight:800;letter-spacing:.2em;font-size:13px;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(48px,8vw,100px);line-height:.86;margin-bottom:20px}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p{font-size:18px;color:#bbb;max-width:520px;margin-bottom:28px}
+.btn{display:inline-flex;align-items:center;height:50px;padding:0 26px;border-radius:40px;font-weight:700}
+.btn.r{background:var(--red)}.btn.o{border:1px solid #555}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.stats{display:flex;gap:44px;margin-top:40px}
+.stats b{display:block;font-family:"Barlow Condensed";font-size:34px;line-height:1}
+.stats span{color:#888;font-size:13.5px}
+
+/* ================= LOWER PAGE (light / dark) ================= */
+main{--t:#141414;--t2:#555;--sf:#f5f5f4;--bd:#ececea;--pg:#fff;--link:var(--red);background:var(--pg);color:var(--t);padding:8px 0 50px}
+main.dark{--t:#fff;--t2:#a5a5a5;--sf:#181818;--bd:#262626;--pg:#0e0e0e}
+.sec{padding:44px 0 0}
+.shd{text-align:center;font-size:30px;margin-bottom:22px}
+.cap{text-align:center;margin-top:12px}
+.cap h3{font-size:20px;font-weight:700;margin-bottom:4px}
+.cap p{color:var(--t2);font-size:14.5px;margin-bottom:6px}
+.cap a,.lk{color:var(--link);font-weight:700;font-size:14.5px}
+.cap a::after,.lk::after{content:" ›"}
+
+/* ---- BLOCK 1: wide offer banner ---- */
+.ob{border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.ob-top{background:#000;color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.ob-top h2{font-size:42px;line-height:1}
+.ob-top .code{font-family:"Barlow Condensed";font-weight:800;font-size:22px;border:2px dashed var(--red);color:#fff;padding:4px 14px;border-radius:6px;white-space:nowrap}
+.ob-bot{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;background:var(--sf);padding:14px 22px}
+.ob-bot .l b{display:block;color:var(--red);font-family:"Barlow Condensed";font-size:24px;line-height:1;text-transform:uppercase}
+.ob-bot .l span{font-family:"Barlow Condensed";font-weight:800;font-size:40px;line-height:1;text-transform:uppercase}
+.ob-bot .l span em{font-style:normal;color:var(--red)}
+.ob-offers{display:flex;background:var(--red);color:#fff;border:2px solid #000;border-radius:4px}
+.ob-offers div{padding:10px 26px;text-align:center;position:relative}
+.ob-offers div+div{border-left:1px solid rgba(0,0,0,.35)}
+.ob-offers div+div::before{content:"+";position:absolute;left:-13px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;background:#000;font-weight:800;font-size:15px;display:grid;place-items:center;line-height:1}
+.ob-offers b{display:block;font-family:"Barlow Condensed";font-size:34px;line-height:1;text-transform:uppercase}
+.ob-offers span{font-size:12.5px;font-weight:600}
+
+/* ---- BLOCK 2: two feature blocks ---- */
+.fx2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fx{display:grid;grid-template-columns:1fr 1fr 1fr;aspect-ratio:2/1;overflow:hidden;border-radius:4px}
+.fx .p{position:relative;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.fx .sign{background:#efefed;justify-content:center;align-items:center;color:#141414}
+.fx .sign .box{border:7px solid var(--red);padding:14px 10px;text-align:center;background:#fff;width:100%}
+.fx .sign .box b{display:block;font-family:"Barlow Condensed";font-weight:800;font-size:clamp(22px,2.6vw,40px);line-height:.9;text-transform:uppercase}
+.fx .sign .box i{display:inline-block;font-style:normal;background:var(--red);color:#fff;font-family:"Barlow Condensed";font-weight:800;font-size:clamp(20px,2.3vw,34px);padding:2px 12px;margin-top:6px;clip-path:polygon(10% 0,100% 0,100% 100%,10% 100%,0 50%)}
+.fx .sign small{font-family:"Barlow Condensed";font-weight:800;font-size:clamp(18px,2vw,28px);text-transform:uppercase;margin-top:12px}
+.fx .red{background:var(--red)}.fx .blk{background:#2b2b2b}
+.fx .p .ph{position:absolute;top:14px;left:14px;right:14px;aspect-ratio:1;max-height:62%;margin:0 auto;background:#fff;border-radius:6px;overflow:hidden}
+.fx .p .ph img{width:100%;height:100%;object-fit:cover}
+.fx .p .ph.ic{display:grid;place-items:center;color:#141414}
+.fx .p .ph.ic .ico{width:46%;height:46%;stroke-width:1.4}
+.fx .tagnew{display:inline-block;background:var(--neon);color:#000;font-weight:800;font-size:10px;padding:2px 6px;margin-bottom:4px;align-self:flex-start}
+.fx .p .s{font-family:"Barlow Condensed";font-weight:700;font-size:clamp(15px,1.5vw,20px);line-height:1;color:#fff}
+.fx .p .pr{font-family:"Barlow Condensed";font-weight:800;font-size:clamp(30px,3.4vw,48px);line-height:.95;color:#fff}
+.fx .p .pr sup{font-size:.5em}
+.fx .p .was{font-family:"Barlow Condensed";font-weight:700;font-size:clamp(13px,1.3vw,17px);color:#fff;opacity:.9}
+
+/* ---- BLOCK 3: four black deal tiles ---- */
+.dt4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dt{background:#000;color:#fff;aspect-ratio:1.6/1;padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;border-radius:2px}
+.dt .t{position:relative;z-index:1;max-width:62%}
+.dt .t b{display:block;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;font-size:clamp(15px,1.5vw,21px);line-height:1}
+.dt .t .big{font-size:clamp(46px,5vw,72px);line-height:.85;margin:2px 0}
+.dt .t .big sup{font-size:.45em;vertical-align:top}
+.dt .th{position:absolute;right:-14px;bottom:-14px;width:52%;aspect-ratio:1;border-radius:50%;background:#fff;overflow:hidden;border:4px solid var(--red)}
+.dt .th img{width:100%;height:100%;object-fit:cover}
+.dt .th.ic{display:grid;place-items:center;color:#141414}
+.dt .th.ic .ico{width:50%;height:50%;stroke-width:1.4}
+
+/* ---- BLOCK 4: category grid (liked) ---- */
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:20px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;gap:22px;font-weight:700;font-size:16px;line-height:1.2;transition:.15s}
+.cat .ico{width:40px;height:40px;color:var(--red);stroke-width:1.7}
+.cat:hover{border-color:var(--t);transform:translateY(-2px)}
+.cat.all{background:var(--red);border-color:var(--red);color:#fff;font-family:"Barlow Condensed";text-transform:uppercase;font-size:26px;line-height:1;justify-content:flex-start}
+
+/* ---- BLOCK 5: six colour squares ---- */
+.sq6{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.sq{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px;color:#fff;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;line-height:.92;position:relative;overflow:hidden}
+.sq .a{font-size:clamp(26px,2.8vw,42px)}
+.sq .b{font-size:clamp(18px,2vw,30px)}
+.sq .chip{background:var(--red);color:#fff;padding:2px 12px;margin:4px 0;font-size:clamp(18px,2vw,28px);clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%)}
+.sq .ico{width:34%;height:34%;margin-bottom:8px;stroke-width:1.6}
+.sq small{font-family:Barlow;font-weight:600;text-transform:none;font-size:13px;margin-top:8px;opacity:.85}
+.sq.c1{background:#2b2b2b}
+.sq.c2{background:var(--red)}
+.sq.c3{background:var(--neon);color:#000}
+.sq.c4{background:#000;border:2px solid var(--red)}
+.sq.c5{background:#fff;color:#141414;border:2px solid #141414}
+.sq.c6{background:#6e0b0f}
+.sq6 .cap{margin-top:8px}
+
+/* ---- strip ---- */
+.strip{margin-top:44px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--sf)}
+.strip .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.strip .s{display:flex;gap:14px;align-items:center;padding:18px;border-right:1px solid var(--bd)}
+.strip .s:last-child{border-right:0}
+.strip .s .ico{color:var(--red);width:30px;height:30px}
+.strip b{display:block;font-size:15px}
+.strip span{font-size:13px;color:var(--t2)}
+footer{padding:30px 0;color:#777;font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+/* ---- light/dark switch (preview only) ---- */
+.mode{position:fixed;right:18px;bottom:18px;z-index:90;display:flex;background:#fff;border-radius:30px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-weight:700;font-size:13.5px}
+.mode button{padding:8px 16px;border-radius:30px;color:#141414}
+.mode button.on{background:var(--red);color:#fff}
+
+/* ---- block labels (preview only) ---- */
+.lbl{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a6d00;background:#fff3b0;padding:3px 8px;border-radius:4px;margin-bottom:10px}
+body.nolabels .lbl{display:none}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1100px){
+  .fx2{grid-template-columns:1fr}
+  .dt4{grid-template-columns:repeat(2,1fr)}
+  .cats{grid-template-columns:repeat(3,1fr)}
+  .sq6{grid-template-columns:repeat(3,1fr)}
+  .ob-bot{grid-template-columns:1fr}
+  .acts .t{display:none}
+  .nav a.q:nth-child(n+6){display:none}
+}
+@media(max-width:700px){
+  .wrap{padding:0 16px}
+  .util nav{display:none}
+  .hdr{flex-wrap:wrap;height:auto;padding:12px 0;gap:12px}
+  .hdr .logo{height:34px}
+  .acts{margin-left:auto;gap:16px}
+  .search{order:3;flex-basis:100%}
+  .nav a.q,.nav .right a:not(.deal){display:none}
+  .hero{padding:44px 0}
+  .stats{gap:24px;flex-wrap:wrap}
+  .ob-top{flex-direction:column;align-items:flex-start}
+  .ob-top h2{font-size:32px}
+  .ob-bot .l span{font-size:30px}
+  .ob-offers{flex-direction:column}
+  .ob-offers div+div{border-left:0;border-top:1px solid rgba(0,0,0,.35)}
+  .ob-offers div+div::before{left:50%;top:-12px;transform:translateX(-50%)}
+  .dt4{grid-template-columns:1fr}
+  .cats,.sq6{grid-template-columns:repeat(2,1fr);gap:12px}
+  .cat{min-height:120px;padding:16px}
+  .strip .wrap{grid-template-columns:1fr}
+  .strip .s{border-right:0;border-bottom:1px solid var(--bd)}
+  .mode{bottom:12px;right:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="util"><div class="wrap"><span>New customer? Take 10% off your first order — code WELCOME10</span><nav><a href="#">Quick Quote</a><a href="#">Catalogue</a><a href="#">CA / EN</a></nav></div></div>
+<header>
+  <div class="wrap hdr">
+    <img class="logo" src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheels Automotive Dealer Supplies">
+    <form class="search" onsubmit="return false"><input placeholder="What does your dealership need? Search or enter a SKU"><button aria-label="Search"><svg class="ico" style="width:18px;height:18px;stroke-width:2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button></form>
+    <div class="acts">
+      <a href="#"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="t">1 (800) 465-8831</span></a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.3L3 16M3 21v-5h5"/></svg><span class="t">Quick Order</span></a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="t">Account</span></a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="t">Cart</span></a>
+    </div>
+  </div>
+  <div class="nav"><div class="wrap">
+    <button class="shopall"><svg class="ico" style="width:18px;height:18px;stroke-width:2.4" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Shop All</button>
+    <a class="q" href="#">Windshield Decals</a><a class="q" href="#">Key Tags</a><a class="q" href="#">Plate Frames</a><a class="q" href="#">Mirror Tags</a><a class="q" href="#">Flags</a><a class="q" href="#">Sale Events</a><a class="q" href="#">OEM Programs</a>
+    <div class="right"><a href="#">Custom Printing</a><a class="deal" href="#">Deals</a></div>
+  </div></div>
+</header>
+
+<section class="hero"><div class="wrap">
+  <div class="kick">Wheels Automotive Dealer Supplies</div>
+  <h1 class="cond">Move more <em>metal.</em></h1>
+  <p>Everything that gets a car from trade-in to sold — stock numbers, key tags, plate frames, flags and lot displays. Shipped across Canada.</p>
+  <div class="btns"><a class="btn r" href="#">Shop All Products →</a><a class="btn o" href="#">Request a Quote</a></div>
+  <div class="stats"><div><b>9</b><span>Departments</span></div><div><b>10% off</b><span>On 10+ units</span></div><div><b>Free</b><span>Proof on custom</span></div></div>
+</div></section>
+
+<main id="lower">
+
+  <!-- ============ BLOCK 1 · OFFER BANNER ============ -->
+  <section class="sec"><div class="wrap">
+    <span class="lbl">Block 1 · Offer banner</span>
+    <a class="ob" href="#" style="display:block">
+      <div class="ob-top"><h2 class="cond">New to Wheels? Save 10%*</h2><span class="code">CODE: WELCOME10</span></div>
+      <div class="ob-bot">
+        <div class="l"><b>For new dealership accounts only</b><span>10% off <em>now</em> + savings <em>every order</em></span></div>
+        <div class="ob-offers">
+          <div><b>10% off</b><span>Your first order</span></div>
+          <div><b>10% off</b><span>When you buy 10+</span></div>
+          <div><b>Free proof</b><span>On custom printing</span></div>
+        </div>
+      </div>
+    </a>
+  </div></section>
+
+  <!-- ============ BLOCK 2 · TWO FEATURE BLOCKS ============ -->
+  <section class="sec"><div class="wrap">
+    <span class="lbl">Block 2 · Two feature blocks</span>
+    <div class="fx2">
+      <div>
+        <a class="fx" href="#">
+          <div class="p sign"><div class="box"><b>Front-line</b><i>READY</i></div><small>Shop now</small></div>
+          <div class="p red"><div class="ph"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/h/chatgpt_image_sep_13_2026_11_00_28_pm.png" alt=""></div><span class="tagnew">10% ON 10</span><span class="s">Stock numbers from</span><span class="pr">$8<sup>95</sup></span><span class="was">Pack of 12</span></div>
+          <div class="p blk"><div class="ph"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/w/s/wsaa-wswn-tag-car.png" alt=""></div><span class="tagnew">10% ON 10</span><span class="s">Mirror tags from</span><span class="pr">$16<sup>95</sup></span><span class="was">Red &amp; green</span></div>
+        </a>
+        <div class="cap"><h3>Get Every Car Lot-Ready</h3><p>Stock numbers, mirror tags and stock cards. Save 10% when you buy 10.</p><a href="#">Shop Used Car Prep</a></div>
+      </div>
+      <div>
+        <a class="fx" href="#">
+          <div class="p sign"><div class="box"><b>Your name</b><i>ON IT</i></div><small>Custom</small></div>
+          <div class="p blk"><div class="ph"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/a/c/acfn_1_3.jpg" alt=""></div><span class="s">Nameplates as low as</span><span class="pr">$2<sup>09</sup></span><span class="was">Chrome O.E.M. style</span></div>
+          <div class="p red"><div class="ph"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/l/p/lpf-ford-escape.png" alt=""></div><span class="s">Plate frames from</span><span class="pr">$1<sup>55</sup></span><span class="was">Screen printed</span></div>
+        </a>
+        <div class="cap"><h3>Put Your Dealership on Every Car</h3><p>Custom nameplates, plate frames and decals. Approve a proof before anything prints.</p><a href="#">Shop Custom Printing</a></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ============ BLOCK 3 · FOUR DEAL TILES ============ -->
+  <section class="sec"><div class="wrap">
+    <span class="lbl">Block 3 · Four deal tiles</span>
+    <div class="dt4">
+      <div><a class="dt" href="#"><div class="t"><b>Save</b><b class="big">10<sup>%</sup></b><b>on vehicle display podiums</b></div><div class="th ic"><svg class="ico" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="7" rx="1"/><path d="M12 10v9M8 21h8"/></svg></div></a><div class="cap"><a href="#">10% off Display Podiums</a></div></div>
+      <div><a class="dt" href="#"><div class="t"><b>Save</b><b class="big">10<sup>%</sup></b><b>when you buy 10+ window flags</b></div><div class="th"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/3/0/30208-canada-window-flag.png" alt=""></div></a><div class="cap"><a href="#">Shop Window Flags</a></div></div>
+      <div><a class="dt" href="#"><div class="t"><b>Key tags</b><b class="big">$20</b><b>soft clear tags with inserts</b></div><div class="th"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/q/sqkt-images-keys.png" alt=""></div></a><div class="cap"><a href="#">Shop Key Tags</a></div></div>
+      <div><a class="dt" href="#"><div class="t"><b>Lock it down</b><b class="big" style="font-size:clamp(34px,3.6vw,52px)">Key mgmt</b><b>cabinets, tags &amp; ID</b></div><div class="th ic"><svg class="ico" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M15 8l2 2"/></svg></div></a><div class="cap"><a href="#">Explore Key Management</a></div></div>
+    </div>
+  </div></section>
+
+  <!-- ============ BLOCK 4 · CATEGORY GRID ============ -->
+  <section class="sec"><div class="wrap">
+    <span class="lbl">Block 4 · Category grid</span>
+    <h2 class="shd cond">Shop by Category</h2>
+    <div class="cats" id="cats"></div>
+  </div></section>
+
+  <!-- ============ BLOCK 5 · SIX COLOUR SQUARES ============ -->
+  <section class="sec"><div class="wrap">
+    <span class="lbl">Block 5 · Six colour squares</span>
+    <h2 class="shd cond">Shop More at Wheels</h2>
+    <div class="sq6">
+      <div><a class="sq c1" href="#"><span class="a">Wheels</span><span class="chip">DEALS</span><span class="b">Under $10</span></a><div class="cap"><a href="#">Deals Under $10</a></div></div>
+      <div><a class="sq c2" href="#"><span class="b">Just</span><span class="a">Arrived</span><small>New this month</small></a><div class="cap"><a href="#">New Products</a></div></div>
+      <div><a class="sq c3" href="#"><span class="a">Stock</span><span class="a">Numbers</span><small>Fluorescent decals</small></a><div class="cap"><a href="#">Windshield Decals</a></div></div>
+      <div><a class="sq c4" href="#"><svg class="ico" viewBox="0 0 24 24"><path d="M5 22V3"/><path d="M5 4h12l-2 4 2 4H5"/></svg><span class="b">Sale Event</span><span class="a">Season</span></a><div class="cap"><a href="#">Sale Event Supplies</a></div></div>
+      <div><a class="sq c5" href="#"><svg class="ico" viewBox="0 0 24 24" style="color:var(--red)"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg><span class="b">OEM</span><span class="a">Programs</span></a><div class="cap"><a href="#">OEM Programs</a></div></div>
+      <div><a class="sq c6" href="#"><span class="a">Year-End</span><span class="b">Sell-Down</span><small>While quantities last</small></a><div class="cap"><a href="#">Year-End Sale</a></div></div>
+    </div>
+  </div></section>
+
+  <div class="strip"><div class="wrap">
+    <div class="s"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/><path d="m9 12 2 2 4-4"/></svg><div><b>Proof before print</b><span>Approve every custom job</span></div></div>
+    <div class="s"><svg class="ico" viewBox="0 0 24 24"><path d="M20 12V7H4v5M2 12h20v8H2z"/><path d="M12 7v13"/></svg><div><b>10% off on 10+</b><span>Volume pricing on top sellers</span></div></div>
+    <div class="s"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><div><b>Talk to a real person</b><span>1 (800) 465-8831</span></div></div>
+  </div></div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Wheels Automotive Dealer Supplies Inc.</span><span>Homepage concept · 5 reusable blocks</span></div></footer>
+
+<div class="mode">
+  <button data-m="light" class="on">Light</button><button data-m="dark">Dark</button>
+  <button id="lbls" style="margin-left:4px;border-left:1px solid #ddd;border-radius:0 30px 30px 0">Hide labels</button>
+</div>
+
+<script>
+const ICONS={car:'<path d="M3 16v-3l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v3"/><path d="M3 16h18v2H3z"/><path d="M6 12h12"/>',plate:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h3M6 14h6M15 10h3v4h-3z"/>',tag:'<path d="M9 2h6v3l-3 2-3-2z"/><rect x="5" y="7" width="14" height="15" rx="2"/><path d="M9 13h6M9 17h4"/>',mega:'<path d="M3 10v4h3l7 5V5L6 10z"/><path d="M17 8a5 5 0 0 1 0 8"/>',flag:'<path d="M5 22V3"/><path d="M5 4h12l-2 4 2 4H5"/>',balloon:'<ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16l-1 2h2zM12 18c0 2-2 2-2 4"/>',stand:'<rect x="7" y="3" width="10" height="7" rx="1"/><path d="M12 10v9M8 21h8"/>',wrench:'<path d="M14.5 6.5a4 4 0 0 0-5.3 5.3L3 18l3 3 6.2-6.2a4 4 0 0 0 5.3-5.3l-2.5 2.5-2.5-.5-.5-2.5z"/>',badge:'<circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/>'};
+const CATS=[["Vehicle Advertising & Display","car"],["License & Nameplates","plate"],["Mirror Tags & Hangers","tag"],["Dealership Marketing","mega"],["Flags & Banners","flag"],["Outdoor Displays","balloon"],["Showroom & Displays","stand"],["Service & Lot","wrench"],["OEM Programs","badge"]];
+document.getElementById('cats').innerHTML=CATS.map(c=>`<a class="cat" href="#"><svg class="ico" viewBox="0 0 24 24">${ICONS[c[1]]}</svg>${c[0]}</a>`).join('')+'<a class="cat all" href="#">Browse the full catalogue →</a>';
+document.querySelectorAll('.mode [data-m]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode [data-m]').forEach(x=>x.classList.toggle('on',x===b));document.getElementById('lower').classList.toggle('dark',b.dataset.m==='dark')});
+document.getElementById('lbls').onclick=e=>{document.body.classList.toggle('nolabels');e.target.textContent=document.body.classList.contains('nolabels')?'Show labels':'Hide labels'};
+</script>
+</body>
+</html>

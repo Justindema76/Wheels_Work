@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Homepage Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#d9161e; --red-dark:#b30f16; --ink:#141414; --ink-2:#2a2a2a; --muted:#6b6b6b;
+  --line:#e6e6e6; --bg:#ffffff; --bg-2:#f5f5f4; --bg-3:#ececea;
+  --radius:10px; --max:1280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Barlow,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:16px;line-height:1.45}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.cond{font-family:"Barlow Condensed",Barlow,sans-serif;text-transform:uppercase;letter-spacing:.02em}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+/* ---------- utility bar ---------- */
+.util{background:var(--ink);color:#d8d8d8;font-size:13.5px}
+.util .wrap{display:flex;justify-content:space-between;align-items:center;height:36px;gap:16px}
+.util b{color:#fff}
+.util .code{color:#fff;background:var(--red);padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.04em}
+.util nav{display:flex;gap:20px}
+.util nav a:hover{color:#fff}
+
+/* ---------- header ---------- */
+header.main{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.hdr{display:flex;align-items:center;gap:28px;height:78px}
+.logo img{height:46px;width:auto}
+.search{flex:1;display:flex;height:48px;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.search input{flex:1;border:0;padding:0 16px;font:inherit;font-size:16px;outline:none;min-width:0}
+.search button{background:var(--red);color:#fff;width:56px;display:grid;place-items:center}
+.search button:hover{background:var(--red-dark)}
+.hdr-actions{display:flex;gap:22px;align-items:center}
+.ha{display:flex;align-items:center;gap:8px;font-size:14px;line-height:1.15}
+.ha small{display:block;color:var(--muted);font-size:12px}
+.ha svg{flex:none}
+.ha.cart{position:relative}
+.ha.cart .count{position:absolute;top:-6px;left:14px;background:var(--red);color:#fff;font-size:11px;font-weight:700;border-radius:20px;padding:1px 6px}
+
+/* ---------- nav ---------- */
+.navbar{background:#fff;border-bottom:1px solid var(--line)}
+.navbar .wrap{display:flex;align-items:stretch;height:50px;gap:4px}
+.shopall{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:0 18px;font-weight:700;font-size:15px;border-radius:0}
+.shopall:hover,.shopall[aria-expanded=true]{background:var(--red)}
+.quick{display:flex;align-items:center;gap:2px;overflow:hidden}
+.quick a{padding:0 14px;height:100%;display:flex;align-items:center;font-weight:600;font-size:15px;white-space:nowrap;border-bottom:3px solid transparent}
+.quick a:hover{border-bottom-color:var(--red)}
+.navbar .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.navbar .right a{padding:0 12px;font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px;height:100%}
+.navbar .right a.deal{color:var(--red)}
+
+/* mega menu */
+.mega{position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.14);display:none}
+.mega.open{display:block}
+.mega .wrap{display:grid;grid-template-columns:280px 1fr 300px;min-height:400px;padding:0 24px}
+.mega-cats{border-right:1px solid var(--line);padding:14px 0}
+.mega-cats button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:11px 18px 11px 0;font-weight:600;font-size:15.5px;color:var(--ink-2)}
+.mega-cats button:hover,.mega-cats button.on{color:var(--red)}
+.mega-cats button.on::after,.mega-cats button:hover::after{content:"›";font-size:20px;line-height:1}
+.mega-subs{padding:26px 36px}
+.mega-subs h3{font-size:26px;margin-bottom:16px}
+.mega-subs ul{list-style:none;columns:2;column-gap:36px}
+.mega-subs li{padding:7px 0;break-inside:avoid}
+.mega-subs li a:hover{color:var(--red);text-decoration:underline}
+.mega-subs .all{display:inline-block;margin-top:18px;font-weight:700;color:var(--red)}
+.mega-feat{padding:22px 0 22px 24px;border-left:1px solid var(--line)}
+.mega-feat .img{border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;background:var(--bg-2)}
+.mega-feat .img img{width:100%;height:100%;object-fit:cover}
+.mega-feat p{margin-top:12px;font-weight:600}
+
+/* ---------- hero ---------- */
+.hero{background:var(--bg-2)}
+.hero .wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;padding-top:24px;padding-bottom:24px}
+.hero-main{position:relative;border-radius:14px;overflow:hidden;background:var(--ink);color:#fff;min-height:420px;display:flex;align-items:flex-end}
+.hero-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42}
+.hero-main .txt{position:relative;padding:44px;max-width:620px}
+.eyebrow{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--red);padding:5px 10px;border-radius:4px;margin-bottom:16px}
+.hero-main h1{font-size:clamp(38px,5vw,62px);line-height:.95;margin-bottom:16px}
+.hero-main p{font-size:18px;color:#e4e4e4;margin-bottom:26px;max-width:500px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;height:50px;padding:0 24px;border-radius:8px;font-weight:700;font-size:16px}
+.btn.red{background:var(--red);color:#fff}.btn.red:hover{background:var(--red-dark)}
+.btn.white{background:#fff;color:var(--ink)}.btn.white:hover{background:#eee}
+.btn.ghost{border:2px solid var(--ink);color:var(--ink)}.btn.ghost:hover{background:var(--ink);color:#fff}
+.hero-side{display:grid;grid-template-rows:1fr 1fr;gap:20px}
+.promo{border-radius:14px;overflow:hidden;position:relative;display:grid;grid-template-columns:1fr 46%;background:#fff;border:1px solid var(--line)}
+.promo .t{padding:24px;display:flex;flex-direction:column;justify-content:center}
+.promo .t .tag{font-weight:800;color:var(--red);font-size:30px;line-height:1}
+.promo .t h3{font-size:24px;line-height:1.05;margin:6px 0 8px}
+.promo .t p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.promo .t a{font-weight:700;color:var(--ink);border-bottom:2px solid var(--red);align-self:flex-start}
+.promo .i{background:var(--bg-3)}
+.promo .i img{width:100%;height:100%;object-fit:cover}
+.promo.dark{background:var(--ink);color:#fff;border:0}
+.promo.dark .t p{color:#bdbdbd}
+.promo.dark .t a{color:#fff}
+
+/* ---------- trust ---------- */
+.trust{border-bottom:1px solid var(--line)}
+.trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.trust div{display:flex;gap:14px;align-items:center;padding:22px 18px;border-right:1px solid var(--line)}
+.trust div:last-child{border-right:0}
+.trust svg{flex:none;color:var(--red)}
+.trust b{display:block;font-size:16px}
+.trust span{font-size:14px;color:var(--muted)}
+
+/* ---------- sections ---------- */
+section.s{padding:56px 0}
+.sh{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;gap:16px}
+.sh h2{font-size:36px;line-height:1}
+.sh p{color:var(--muted);margin-top:6px}
+.sh a{font-weight:700;color:var(--red);white-space:nowrap}
+
+/* category grid */
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat{border-radius:var(--radius);overflow:hidden;background:var(--bg-2);display:flex;flex-direction:column;transition:transform .15s, box-shadow .15s}
+.cat:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.1)}
+.cat .img{aspect-ratio:4/3;overflow:hidden;background:var(--bg-3)}
+.cat .img img{width:100%;height:100%;object-fit:cover}
+.cat .lbl{padding:13px 14px;font-weight:700;font-size:15.5px;line-height:1.2;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cat .lbl::after{content:"→";color:var(--red)}
+.cat.big{grid-row:span 2;grid-column:span 1}
+.cat.all{background:var(--ink);color:#fff;justify-content:center;align-items:flex-start;padding:24px}
+.cat.all h3{font-size:30px;line-height:1;margin-bottom:10px}
+.cat.all p{color:#bbb;font-size:14px;margin-bottom:16px}
+.cat.all span{font-weight:700;color:#fff;border-bottom:2px solid var(--red)}
+
+/* departments */
+.depts{background:var(--ink);color:#fff}
+.depts .sh p{color:#aaa}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dept{background:#1f1f1f;border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;border:1px solid #2c2c2c}
+.dept:hover{border-color:var(--red)}
+.dept .img{aspect-ratio:16/10;background:#fff}
+.dept .img img{width:100%;height:100%;object-fit:contain;padding:14px}
+.dept .b{padding:18px}
+.dept .role{font-size:12.5px;font-weight:700;letter-spacing:.12em;color:var(--red);text-transform:uppercase}
+.dept h3{font-size:26px;line-height:1;margin:6px 0 10px}
+.dept ul{list-style:none;font-size:14.5px;color:#cfcfcf}
+.dept li{padding:3px 0}
+.dept li::before{content:"— ";color:#666}
+
+/* products */
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.p{border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;background:#fff;overflow:hidden;position:relative}
+.p:hover{box-shadow:0 10px 24px rgba(0,0,0,.08)}
+.p .img{aspect-ratio:1;background:#fff;padding:14px}
+.p .img img{width:100%;height:100%;object-fit:contain}
+.p .badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.03em}
+.p .badge.custom{background:var(--ink)}
+.p .b{padding:0 14px 14px;display:flex;flex-direction:column;flex:1}
+.p .sku{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.p h4{font-size:15.5px;line-height:1.25;margin:4px 0 2px;font-weight:700}
+.p .sub{font-size:13.5px;color:var(--muted);margin-bottom:10px}
+.p .price{margin-top:auto;font-size:13px;color:var(--muted)}
+.p .price b{font-size:20px;color:var(--ink)}
+.p .add{margin-top:10px;height:40px;border-radius:7px;border:2px solid var(--ink);font-weight:700;font-size:14px}
+.p .add:hover{background:var(--ink);color:#fff}
+
+/* reorder band */
+.reorder{background:var(--bg-2);border-radius:14px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:28px}
+.reorder h3{font-size:28px;line-height:1}
+.reorder p{color:var(--muted);margin-top:6px}
+.qo{display:flex;gap:8px}
+.qo input{height:50px;border:2px solid var(--line);border-radius:8px;padding:0 14px;font:inherit;width:200px}
+.qo input:focus{outline:none;border-color:var(--ink)}
+
+/* custom process */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.step{padding:28px 24px;border-right:1px solid var(--line);background:#fff}
+.step:last-child{border-right:0;background:var(--red);color:#fff;display:flex;flex-direction:column;justify-content:center}
+.step .n{font-family:"Barlow Condensed";font-weight:800;font-size:44px;color:var(--red);line-height:1}
+.step h3{font-size:22px;margin:8px 0 6px;line-height:1.05}
+.step p{font-size:14.5px;color:var(--muted)}
+.step:last-child h3{font-size:28px}
+.step:last-child p{color:#ffe0e0;margin-bottom:16px}
+
+/* seasonal */
+.season{display:grid;grid-template-columns:1fr 1fr;border-radius:14px;overflow:hidden;background:var(--bg-2)}
+.season .t{padding:44px}
+.season .t h2{font-size:44px;line-height:.95;margin:12px 0 14px}
+.season .t p{color:var(--muted);margin-bottom:22px;max-width:440px}
+.season .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.season .chips a{border:1px solid #cfcfcf;background:#fff;border-radius:30px;padding:7px 14px;font-weight:600;font-size:14px}
+.season .chips a:hover{border-color:var(--ink)}
+.season .i img{width:100%;height:100%;object-fit:cover}
+
+/* catalogue + rep */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box{border-radius:14px;padding:34px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.box h3{font-size:32px;line-height:1}
+.box p{color:var(--muted);margin-bottom:10px;max-width:420px}
+.box.dark{background:var(--ink);color:#fff}
+.box.dark p{color:#bbb}
+.box.light{background:var(--bg-2)}
+.box .phone{font-family:"Barlow Condensed";font-weight:800;font-size:34px;color:var(--red)}
+
+/* footer */
+footer{background:#0d0d0d;color:#bdbdbd;margin-top:56px;padding:48px 0 24px;font-size:14.5px}
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:28px}
+footer h4{color:#fff;font-family:"Barlow Condensed";text-transform:uppercase;font-size:18px;margin-bottom:12px;letter-spacing:.03em}
+footer ul{list-style:none}
+footer li{padding:4px 0}
+footer a:hover{color:#fff}
+footer .logo img{height:44px;filter:brightness(0) invert(1);margin-bottom:14px}
+.fbot{border-top:1px solid #262626;margin-top:36px;padding-top:18px;display:flex;justify-content:space-between;font-size:13px;color:#777}
+
+/* VIP slide-in (replaces the full-screen popup) */
+.vip{position:fixed;left:20px;bottom:20px;width:340px;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.28);z-index:80;overflow:hidden;transform:translateY(140%);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.vip.show{transform:none}
+.vip .top{background:var(--ink);color:#fff;padding:18px 20px 16px;position:relative}
+.vip .top .x{position:absolute;top:10px;right:12px;color:#aaa;font-size:22px;line-height:1}
+.vip .top .x:hover{color:#fff}
+.vip .top .off{font-family:"Barlow Condensed";font-weight:800;font-size:40px;line-height:.9;color:#fff}
+.vip .top .off em{font-style:normal;color:var(--red)}
+.vip .top p{font-size:14px;color:#ccc;margin-top:6px}
+.vip form{padding:16px 20px 18px;display:flex;flex-direction:column;gap:10px}
+.vip input{height:46px;border:2px solid var(--line);border-radius:8px;padding:0 12px;font:inherit}
+.vip input:focus{outline:none;border-color:var(--ink)}
+.vip .fine{font-size:11.5px;color:var(--muted)}
+.vip-tab{position:fixed;left:20px;bottom:20px;z-index:79;background:var(--red);color:#fff;font-weight:700;border-radius:30px;padding:10px 16px;box-shadow:0 8px 20px rgba(0,0,0,.2);display:none}
+
+/* annotation toggle (mockup only) */
+.note{display:none}
+body.annotate .note{display:block;position:relative;z-index:5;background:#fff8c5;border:1px dashed #c9a400;color:#5c4a00;font-size:13px;padding:8px 12px;border-radius:6px;margin:10px 0;font-family:Barlow}
+.annot-btn{position:fixed;right:20px;bottom:20px;z-index:90;background:#fff8c5;border:1px solid #c9a400;color:#5c4a00;font-weight:700;padding:10px 14px;border-radius:30px;box-shadow:0 6px 16px rgba(0,0,0,.15);font-size:14px}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .cats,.pgrid{grid-template-columns:repeat(4,1fr)}
+  .cat.big{grid-row:auto}
+  .hero .wrap{grid-template-columns:1fr}
+  .hero-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .dgrid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .step:nth-child(2){border-right:0}
+  .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .ha .lbl{display:none}
+  .fgrid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .util nav{display:none}
+  .hdr{flex-wrap:wrap;height:auto;padding:12px 0;gap:12px}
+  .logo img{height:36px}
+  .hdr-actions{margin-left:auto;gap:16px}
+  .search{order:3;flex-basis:100%;height:46px}
+  .quick,.navbar .right a:not(.deal){display:none}
+  .navbar .wrap{padding:0}
+  .shopall{flex:1;justify-content:center}
+  .mega .wrap{grid-template-columns:1fr;min-height:0}
+  .mega-subs,.mega-feat{display:none}
+  .mega-cats{border:0}
+  .mega-cats button{padding:13px 0}
+  .hero-main{min-height:380px}
+  .hero-main .txt{padding:26px}
+  .hero-side{grid-template-columns:1fr}
+  .trust .wrap{grid-template-columns:1fr 1fr;padding:0}
+  .trust div{padding:16px;border-bottom:1px solid var(--line)}
+  .trust div:nth-child(2){border-right:0}
+  .cats,.pgrid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .dgrid,.steps,.duo,.season{grid-template-columns:1fr}
+  .step{border-right:0!important;border-bottom:1px solid var(--line)}
+  .season .t{padding:28px}
+  .season .t h2{font-size:36px}
+  .season .i{max-height:260px}
+  .reorder{grid-template-columns:1fr}
+  .qo{flex-wrap:wrap}.qo input{flex:1;width:auto}
+  .sh h2{font-size:30px}
+  section.s{padding:40px 0}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .vip{left:12px;right:12px;width:auto;bottom:12px}
+  .vip .top{padding:12px 16px}
+  .vip .top .off{font-size:24px}
+  .vip .top p,.vip .fine{display:none}
+  .vip form{flex-direction:row;padding:10px 12px}
+  .vip input{flex:1;min-width:0}
+  .vip .btn{height:46px;padding:0 14px;font-size:14px}
+  .annot-btn{bottom:auto;top:12px;right:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- Utility bar: one message, not three -->
+<div class="util">
+  <div class="wrap">
+    <div>New customer? Take 10% off your first order with <span class="code">WELCOME10</span></div>
+    <nav>
+      <a href="#">📞 <b>1 (800) 465-8831</b></a>
+      <a href="#">Request a Quote</a>
+      <a href="#">Catalogue Flipbook</a>
+      <a href="#">CA / EN ▾</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="main" id="hdr">
+  <div class="wrap hdr">
+    <a class="logo" href="https://wheelsauto.com/ca-en/"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheels Automotive Dealer Supplies"></a>
+    <form class="search" onsubmit="return false">
+      <input type="search" placeholder="Search by product name or SKU (e.g. 200BL, plate frames)">
+      <button aria-label="Search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+    </form>
+    <div class="hdr-actions">
+      <a class="ha" href="#reorder"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/><path d="M3 21v-5h5"/></svg><span class="lbl"><small>Fast</small><b>Reorder</b></span></a>
+      <a class="ha" href="#"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="lbl"><small>Sign in</small><b>Account</b></span></a>
+      <a class="ha cart" href="#"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg><span class="count">2</span><span class="lbl"><small>CAD$ 58.90</small><b>Cart</b></span></a>
+    </div>
+  </div>
+
+  <!-- NEW NAV: one "Shop All" mega menu + shortcuts to what people actually buy -->
+  <div class="navbar" style="position:relative">
+    <div class="wrap">
+      <button class="shopall cond" id="shopall" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        Shop All Products
+      </button>
+      <div class="quick">
+        <a href="https://wheelsauto.com/ca-en/vehicle-advertising-display.html">Windshield Decals</a>
+        <a href="https://wheelsauto.com/ca-en/200ye-200gy-genuine-versa-tag-key-tags.html">Key Tags</a>
+        <a href="https://wheelsauto.com/ca-en/license-name-plates/plate-frames.html">Plate Frames</a>
+        <a href="https://wheelsauto.com/ca-en/mirror-tags-hangers.html">Mirror Tags</a>
+        <a href="https://wheelsauto.com/ca-en/flags-more.html">Flags</a>
+        <a href="https://wheelsauto.com/ca-en/indoor-outdoor-displays.html">Sale Events</a>
+        <a href="https://wheelsauto.com/ca-en/oem-products.html">OEM Programs</a>
+      </div>
+      <div class="right">
+        <a href="#custom">Custom Printing</a>
+        <a class="deal" href="#">🔥 Deals</a>
+      </div>
+    </div>
+    <div class="mega" id="mega">
+      <div class="wrap">
+        <div class="mega-cats" id="megaCats"></div>
+        <div class="mega-subs" id="megaSubs"></div>
+        <div class="mega-feat" id="megaFeat"></div>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="wrap"><div class="note"><b>Nav:</b> 9 cramped two-line links → one “Shop All” mega menu (hover it) + 7 shortcuts to your best-selling product types. This is the Home Depot / Uline pattern. The shortcuts are just links — change them whenever.</div></div>
+
+<!-- HERO: static, no carousel -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-main">
+      <img src="https://wheelsauto.com/media/wysiwyg/Decals_and_Signs_-_home_page_categories_1.jpg" alt="">
+      <div class="txt">
+        <span class="eyebrow">Canada's dealership supply source</span>
+        <h1 class="cond">Everything your lot,<br>showroom &amp; service bay needs.</h1>
+        <p>Stock numbers, key tags, plate frames, flags and custom-branded dealership products — shipped across Canada.</p>
+        <div class="btns">
+          <a class="btn red" href="#cats">Shop by Category →</a>
+          <a class="btn white" href="#">Get the Free Catalogue</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-side">
+      <a class="promo" href="#">
+        <div class="t">
+          <span class="tag cond">10% Off</span>
+          <h3 class="cond">Vehicle Display Podiums</h3>
+          <p>While quantities last.</p>
+          <span style="font-weight:700;border-bottom:2px solid var(--red);align-self:flex-start">Shop the sale</span>
+        </div>
+        <div class="i"><img src="https://wheelsauto.com/media/wysiwyg/showroomequipmentaccessories.webp" alt=""></div>
+      </a>
+      <a class="promo dark" href="#">
+        <div class="t">
+          <span class="tag cond" style="font-size:20px">New</span>
+          <h3 class="cond">Key Management Systems</h3>
+          <p>Secure cabinets, tags &amp; ID accessories.</p>
+          <span style="font-weight:700;border-bottom:2px solid var(--red);align-self:flex-start">Explore</span>
+        </div>
+        <div class="i"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/q/sqkt-images-keys.png" alt="" style="object-fit:contain;background:#fff;padding:10px"></div>
+      </a>
+    </div>
+  </div>
+</section>
+<div class="wrap"><div class="note"><b>Hero:</b> One big message that says what you are + two side promos. Nothing rotates, so all three get seen. You update the two side cards when a promo changes — that's it.</div></div>
+
+<!-- TRUST STRIP -->
+<div class="trust">
+  <div class="wrap">
+    <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg><p><b>Ships Canada-wide</b><span>Fast, tracked delivery</span></p></div>
+    <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/><path d="m9 12 2 2 4-4"/></svg><p><b>Proof before print</b><span>Approve every custom job</span></p></div>
+    <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V7H4v5M2 12h20v8H2z"/><path d="M12 7v13"/></svg><p><b>Volume pricing</b><span>Save 10% on 10+ units</span></p></div>
+    <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/></svg><p><b>Real people</b><span>1 (800) 465-8831</span></p></div>
+  </div>
+</div>
+
+<!-- CATEGORIES (shown ONCE) -->
+<section class="s" id="cats">
+  <div class="wrap">
+    <div class="sh"><div><h2 class="cond">Shop by Category</h2><p>Every product we carry, in nine departments.</p></div><a href="#">View all →</a></div>
+    <div class="cats" id="catGrid"></div>
+    <div class="note"><b>Categories:</b> Shown once, as photo tiles. The 7 subcategory sections below this on the current site are gone — that's what the mega menu is for.</div>
+  </div>
+</section>
+
+<!-- SHOP BY DEPARTMENT / ROLE -->
+<section class="s depts">
+  <div class="wrap">
+    <div class="sh"><div><h2 class="cond">Shop by Department</h2><p>Built around who's ordering — not how our warehouse is organized.</p></div></div>
+    <div class="dgrid">
+      <a class="dept" href="#"><div class="img"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/c/h/chatgpt_image_sep_13_2026_11_00_28_pm.png" alt=""></div><div class="b"><span class="role">Used Car Manager</span><h3 class="cond">Get it front-line ready</h3><ul><li>Windshield stock numbers</li><li>Mirror tags &amp; hangers</li><li>Stock cards</li></ul></div></a>
+      <a class="dept" href="#"><div class="img"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/2/0/200bl-200ye-base.png" alt=""></div><div class="b"><span class="role">Service Department</span><h3 class="cond">Keep the bays moving</h3><ul><li>Key tags &amp; Versa-Tags</li><li>Service accessories</li><li>Cleaning &amp; repair</li></ul></div></a>
+      <a class="dept" href="#"><div class="img"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/3/0/30208-canada-window-flag.png" alt=""></div><div class="b"><span class="role">Sales Events</span><h3 class="cond">Make the lot loud</h3><ul><li>Flags, pennants &amp; bows</li><li>Balloons &amp; inflatables</li><li>Outdoor signs</li></ul></div></a>
+      <a class="dept" href="#"><div class="img"><img src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/l/p/lpf-ford-escape.png" alt=""></div><div class="b"><span class="role">Marketing &amp; Branding</span><h3 class="cond">Put your name on it</h3><ul><li>Custom plate frames</li><li>Dealership nameplates</li><li>Branded giveaways</li></ul></div></a>
+    </div>
+    <div class="note" style="margin-top:18px"><b>Departments:</b> Your buyers think in jobs (“I'm the used car manager, I need to prep cars”). Each tile links to a collection you build once in Magento. Set it and forget it.</div>
+  </div>
+</section>
+
+<!-- BEST SELLERS + REORDER -->
+<section class="s" id="reorder">
+  <div class="wrap">
+    <div class="sh"><div><h2 class="cond">Dealership Best Sellers</h2><p>The stuff dealers reorder every month.</p></div><a href="#">Shop all best sellers →</a></div>
+    <div class="pgrid" id="pGrid"></div>
+    <div class="reorder">
+      <div><h3 class="cond">Know your SKU? Skip the browsing.</h3><p>Type a SKU and quantity, hit add. Signed-in customers can reorder past orders in one click.</p></div>
+      <form class="qo" onsubmit="return false"><input placeholder="SKU (e.g. 200BL)"><input placeholder="Qty" style="width:90px"><button class="btn red">Add to Cart</button></form>
+    </div>
+    <div class="note"><b>Products:</b> One grid, no carousel, no duplicates. Fill it with Magento's best-seller widget so it updates itself. Names are cleaned up: product name big, the “| detail” part becomes a grey subtitle. Quick Order bar is for your repeat customers — Magento has extensions for this.</div>
+  </div>
+</section>
+
+<!-- CUSTOM PRINTING -->
+<section class="s" id="custom" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh"><div><h2 class="cond">Custom Printing, Made Simple</h2><p>Plate frames, nameplates, decals and more — with your dealership's logo.</p></div></div>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h3 class="cond">Pick a product</h3><p>Choose from frames, nameplates, decals, key tags and giveaways.</p></div>
+      <div class="step"><div class="n">02</div><h3 class="cond">Send your logo</h3><p>Upload any file. A one-time set-up fee covers your artwork.</p></div>
+      <div class="step"><div class="n">03</div><h3 class="cond">Approve your proof</h3><p>Nothing prints until you sign off on it.</p></div>
+      <div class="step"><h3 class="cond">Not sure where to start?</h3><p>Tell us what you need and we'll quote it.</p><a class="btn white" href="#">Request a Quote</a></div>
+    </div>
+    <div class="note"><b>Custom:</b> Explains the “+ One Time Set-Up Fee” before people hit it on a product page. Write it once.</div>
+  </div>
+</section>
+
+<!-- SEASONAL (swap 4x a year) -->
+<section class="s" style="padding-top:0">
+  <div class="wrap">
+    <div class="season">
+      <div class="t">
+        <span class="eyebrow">Fall Sales Season</span>
+        <h2 class="cond">Year-end sell-down starts now.</h2>
+        <p>Everything you need to make Q4 events impossible to miss from the road.</p>
+        <div class="chips">
+          <a href="#">Dealership Flags</a><a href="#">Balloons</a><a href="#">Inflatables</a><a href="#">Windshield Slogans</a><a href="#">Hanger Signs</a>
+        </div>
+        <a class="btn red" href="#">Shop Sale Event Supplies →</a>
+      </div>
+      <div class="i"><img src="https://wheelsauto.com/media/wysiwyg/Flags_Banners_-_home_page_categories.jpg" alt=""></div>
+    </div>
+    <div class="note"><b>Seasonal:</b> The ONE block you change on a schedule. Plan 4 versions once a year: Spring Sales Event → Canada Day → Fall Sell-Down → Winter / Lot Prep. Change the headline, chips and image. 15 minutes a quarter.</div>
+  </div>
+</section>
+
+<!-- CATALOGUE + REP -->
+<section class="s" style="padding-top:0">
+  <div class="wrap duo">
+    <div class="box dark">
+      <span class="eyebrow">Free</span>
+      <h3 class="cond">Get the Wheels Catalogue</h3>
+      <p>Every product, every price — flip through it online or have a printed copy sent to your dealership.</p>
+      <div class="btns"><a class="btn red" href="#">View Flipbook</a><a class="btn white" href="#">Mail Me a Copy</a></div>
+    </div>
+    <div class="box light">
+      <h3 class="cond">Talk to a real person</h3>
+      <p>Bulk order, group pricing or a weird request? We've probably done it before.</p>
+      <div class="phone">1 (800) 465-8831</div>
+      <a class="btn ghost" href="#">Email Our Team</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><div class="logo"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""></div><p>Automotive dealer supplies for dealerships across Canada.</p></div>
+      <div><h4>Shop</h4><ul><li><a href="#">All Categories</a></li><li><a href="#">Best Sellers</a></li><li><a href="#">Deals</a></li><li><a href="#">OEM Programs</a></li></ul></div>
+      <div><h4>Ordering</h4><ul><li><a href="#">Quick Order</a></li><li><a href="#">Request a Quote</a></li><li><a href="#">Custom Printing</a></li><li><a href="#">Catalogue</a></li></ul></div>
+      <div><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact Us</a></li></ul></div>
+      <div><h4>Account</h4><ul><li><a href="#">Sign In</a></li><li><a href="#">Order History</a></li><li><a href="#">Reorder</a></li></ul></div>
+    </div>
+    <div class="fbot"><span>© 2026 Wheels Automotive Dealer Supplies Inc.</span><span>Homepage redesign concept</span></div>
+  </div>
+</footer>
+
+<!-- VIP offer: same discount, way less annoying -->
+<div class="vip" id="vip">
+  <div class="top">
+    <button class="x" id="vipX" aria-label="Close">×</button>
+    <div class="off cond">Get <em>10% off</em><br>your first order</div>
+    <p>Join the VIP list for dealer-only deals and new product drops.</p>
+  </div>
+  <form onsubmit="this.innerHTML='<p style=&quot;font-weight:700&quot;>Your code: <span class=&quot;code&quot; style=&quot;background:var(--red);color:#fff;padding:2px 8px;border-radius:4px&quot;>WELCOME10</span></p>';return false">
+    <input type="email" placeholder="Work email" required>
+    <button class="btn red" style="justify-content:center">Unlock 10% Off</button>
+    <span class="fine">Unsubscribe anytime. One-time use for new customers.</span>
+  </form>
+</div>
+<button class="vip-tab" id="vipTab">🎁 10% off</button>
+
+<button class="annot-btn" id="annot">Show design notes</button>
+
+<script>
+const IMG = "https://wheelsauto.com/media/";
+const P = IMG + "catalog/product/cache/99e342a035429be4266d354ab7d104d9/";
+const BASE = "https://wheelsauto.com/ca-en/";
+
+const CATS = [
+  {n:"Vehicle Advertising & Display", img:IMG+"wysiwyg/Decals_and_Signs_-_home_page_categories_1.jpg", url:"vehicle-advertising-display.html",
+   subs:["Windshield Decals","Vehicle Signs & Displays","Custom Dealership Decals","Windshield Kits & Accessories","Vehicle Information Holders"]},
+  {n:"License & Nameplates", img:IMG+"wysiwyg/License_Nameplates_-_home_page_categories.jpg", url:"license-name-plates.html",
+   subs:["License Plate Accessories","License Plate Frames & Covers","License Plate Signs","Dealer Nameplates"]},
+  {n:"Mirror Tags & Hanger Signs", img:IMG+"wysiwyg/Mirror_Tags_Hangers_-_Wheel_s_ADS.jpg", url:"mirror-tags-hangers.html",
+   subs:["Paper Mirror Tags","Plastic Mirror Hangers","Custom Hanger Signs","Service Hang Tags"]},
+  {n:"Dealership Marketing", img:IMG+"wysiwyg/Promotional_Giveaways_-_Wheel_s_ADS.jpg", url:"promotional-giveaways.html",
+   subs:["Key Tags","Apparel","Customer Appreciation","Desk Accessories","Drinkware","Cards","Auto & Tech"]},
+  {n:"Flags & Banners", img:IMG+"wysiwyg/Flags_Banners_-_home_page_categories.jpg", url:"flags-more.html",
+   subs:["Dealership Flags","Flag Hardware","Specialty Flags","Banners & Hardware"]},
+  {n:"Outdoor Display Solutions", img:IMG+"wysiwyg/Indoor_Outdoor_Displays_-_home_page_categories.jpg", url:"indoor-outdoor-displays.html",
+   subs:["Flags, Pennants & Bows","Balloons & Accessories","Outdoor Signs & Banners","Inflatables & Tents","Outdoor Display Stands","Sale Event Items"]},
+  {n:"Showroom Marketing & Displays", img:IMG+"wysiwyg/showroomequipmentaccessories.webp", url:"indoor-showroom-displays.html",
+   subs:["Vehicle Display Stands","Promotional Displays","Posters & Showroom Signs","Showroom Equipment & Accessories"]},
+  {n:"Service & Lot Solutions", img:IMG+"wysiwyg/Service_Lot_Solutions_-_Wheel_s_ADS_1.jpg", url:"service-lot-solutions.html",
+   subs:["Inventory Control & Key Management","Auto Utility Products & Tools","Parking & Lot Solutions","Service Accessories","Cleaning & Repair Supplies"]},
+  {n:"OEM Programs", img:IMG+"wysiwyg/OEMPROGRAMS.webp", url:"oem-products.html",
+   subs:["Brand-Approved Products","OEM Plate Frames","OEM Nameplates","OEM Signage"]},
+];
+
+const PRODS = [
+  {sku:"10900-11311", n:"EZ Windshield Number Decals", s:"Fluorescent · Pack of 12", p:"8.95", from:true, img:"c/h/chatgpt_image_sep_13_2026_11_00_28_pm.png", u:"10900-11311-ez-windshield-pricing-decals.html", b:"Save 10% on 10"},
+  {sku:"200BL-200YE", n:"Genuine Versa-Tag Key Tags", s:"Dealership key tags", p:"49.95", from:true, img:"2/0/200bl-200ye-base.png", u:"200ye-200gy-genuine-versa-tag-key-tags.html", b:"Best Seller"},
+  {sku:"LPF", n:"Custom Plate Frames", s:"Screen printed with your logo", p:"1.55", from:true, img:"l/p/lpf-ford-escape.png", u:"screen-printed-licence-plate-frames.html", b:"Custom", c:1},
+  {sku:"WSAA-WSWN", n:"Paper Rearview Mirror Tags", s:"Red & green", p:"16.95", from:true, img:"w/s/wsaa-wswn-tag-car.png", u:"paper-rearview-mirror-tags-html.html", b:"Save 10% on 10"},
+  {sku:"SCB250-SCY250", n:"Plastic Windshield Stock Cards", s:"Self-adhesive", p:"42.95", from:true, img:"s/c/scb250-scy250-base.png", u:"scb250-scy250-plastic-stock-cards.html"},
+  {sku:"LPC", n:"Lexan License Plate Covers", s:"Screen printed", p:"4.85", from:true, img:"l/p/lpc-lexan-printed_1.png", u:"lpc-screen-printed-lexan-license-plate-protectors.html", b:"Custom", c:1},
+  {sku:"ACFN", n:"Flexible Chrome Nameplates", s:"O.E.M. style · custom", p:"2.09", from:true, img:"a/c/acfn_1_3.jpg", u:"custom-flexible-chrome-o-e-m-style-nameplates-acfn.html", b:"Custom", c:1},
+  {sku:"SQKT", n:"Soft Clear Key Tags", s:"With paper insert", p:"20.00", from:true, img:"s/q/sqkt-images-keys.png", u:"sqkt-soft-clear-plastic-key-tags-with-paper-insert.html"},
+  {sku:"30208", n:"Canada Clip-On Window Flag", s:"Vehicle window mounted", p:"7.95", img:"3/0/30208-canada-window-flag.png", u:"canada-clip-on-window-flag-30208.html", b:"Save 10% on 10"},
+  {sku:"DPP", n:"Dealer Plate Pouch", s:"Deluxe vinyl with strap", p:"10.95", img:"d/p/dpp.webp", u:"dealer-plate-pouch-dpp.html"},
+];
+
+// Category grid
+const cg = document.getElementById('catGrid');
+CATS.forEach(c=>{
+  cg.insertAdjacentHTML('beforeend',`<a class="cat" href="${BASE+c.url}"><div class="img"><img loading="lazy" src="${c.img}" alt=""></div><div class="lbl">${c.n}</div></a>`);
+});
+cg.insertAdjacentHTML('beforeend',`<a class="cat all" href="#"><h3 class="cond">Not sure what it's called?</h3><p>Search by SKU, flip the catalogue, or call us — we'll find it.</p><span>Browse the catalogue →</span></a>`);
+
+// Product grid
+const pg = document.getElementById('pGrid');
+PRODS.forEach(x=>{
+  pg.insertAdjacentHTML('beforeend',`<div class="p">${x.b?`<span class="badge ${x.c?'custom':''}">${x.b}</span>`:''}
+    <a class="img" href="${BASE+x.u}"><img loading="lazy" src="${P+x.img}" alt=""></a>
+    <div class="b"><span class="sku">SKU ${x.sku}</span><a href="${BASE+x.u}"><h4>${x.n}</h4></a><span class="sub">${x.s}</span>
+    <div class="price">${x.from?'From ':''}<b>$${x.p}</b> CAD${x.from?'':' each'}</div>
+    <button class="add">${x.c?'Customize':'Add to Cart'}</button></div></div>`);
+});
+
+// Mega menu
+const mega=document.getElementById('mega'), sa=document.getElementById('shopall');
+const mc=document.getElementById('megaCats'), ms=document.getElementById('megaSubs'), mf=document.getElementById('megaFeat');
+CATS.forEach((c,i)=>mc.insertAdjacentHTML('beforeend',`<button data-i="${i}">${c.n}</button>`));
+function showCat(i){
+  const c=CATS[i];
+  mc.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+  ms.innerHTML=`<h3 class="cond">${c.n}</h3><ul>${c.subs.map(s=>`<li><a href="${BASE+c.url}">${s}</a></li>`).join('')}</ul><a class="all" href="${BASE+c.url}">Shop all ${c.n} →</a>`;
+  mf.innerHTML=`<div class="img"><img src="${c.img}" alt=""></div><p>Popular in ${c.n}</p>`;
+}
+mc.addEventListener('mouseover',e=>{const b=e.target.closest('button');if(b)showCat(+b.dataset.i)});
+showCat(0);
+let t;
+function open(){clearTimeout(t);mega.classList.add('open');sa.setAttribute('aria-expanded','true')}
+function close(){t=setTimeout(()=>{mega.classList.remove('open');sa.setAttribute('aria-expanded','false')},150)}
+sa.addEventListener('mouseenter',open);sa.addEventListener('mouseleave',close);
+mega.addEventListener('mouseenter',open);mega.addEventListener('mouseleave',close);
+sa.addEventListener('click',()=>mega.classList.contains('open')?(mega.classList.remove('open'),sa.setAttribute('aria-expanded','false')):open());
+
+// VIP slide-in: after 6s or 40% scroll, once per visit
+const vip=document.getElementById('vip'), tab=document.getElementById('vipTab');
+let shown=false;
+function showVip(){if(shown)return;shown=true;vip.classList.add('show')}
+setTimeout(showVip,6000);
+addEventListener('scroll',()=>{if(scrollY>document.body.scrollHeight*.4)showVip()},{passive:true});
+document.getElementById('vipX').onclick=()=>{vip.classList.remove('show');tab.style.display='block'};
+tab.onclick=()=>{tab.style.display='none';vip.classList.add('show')};
+
+// Design notes toggle
+const ab=document.getElementById('annot');
+ab.onclick=()=>{document.body.classList.toggle('annotate');ab.textContent=document.body.classList.contains('annotate')?'Hide design notes':'Show design notes'};
+</script>
+</body>
+</html>

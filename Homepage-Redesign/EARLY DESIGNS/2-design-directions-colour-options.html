@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels Design Directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--red-d:#b30f16;--ink:#141414}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Barlow,system-ui,sans-serif;background:#fff;color:var(--ink)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
+.cond{font-family:"Barlow Condensed",Barlow,sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* ---------- picker bar (not part of the design) ---------- */
+.picker{position:sticky;top:0;z-index:100;background:#fff8c5;border-bottom:1px solid #e3cf5a;font-family:Inter,sans-serif}
+.picker .wrap{display:flex;align-items:center;gap:10px;height:56px;flex-wrap:wrap}
+.picker b{font-size:14px;margin-right:6px}
+.picker button{padding:8px 14px;border-radius:30px;border:1px solid #c9b23c;background:#fff;font-size:14px;font-weight:600}
+.picker button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.picker .desc{flex-basis:100%;font-size:13px;color:#5c4a00;padding-bottom:8px;display:none}
+@media(min-width:900px){.picker .desc{flex-basis:auto;display:block;padding:0;margin-left:auto;max-width:520px;text-align:right}}
+.dir{display:none}.dir.on{display:block}
+
+/* ================= A — SHOWROOM (light, photo-led) ================= */
+.dA .util{background:var(--ink);color:#ccc;font-size:13.5px}
+.dA .util .wrap{display:flex;justify-content:space-between;height:36px;align-items:center}
+.dA .util b{color:#fff}.dA .code{background:var(--red);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700}
+.dA .hdr{display:flex;align-items:center;gap:28px;height:78px;border-bottom:1px solid #e6e6e6}
+.dA .hdr img.logo{height:44px}
+.dA .search{flex:1;display:flex;height:48px;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.dA .search input{flex:1;border:0;padding:0 16px;font:inherit;outline:none;min-width:0}
+.dA .search button{background:var(--red);color:#fff;width:56px}
+.dA .acts{display:flex;gap:20px;font-weight:600;font-size:14px}
+.dA .nav{border-bottom:1px solid #e6e6e6}
+.dA .nav .wrap{display:flex;height:50px;align-items:stretch}
+.dA .shopall{background:var(--ink);color:#fff;padding:0 18px;font-weight:700;display:flex;align-items:center;gap:8px}
+.dA .nav a.q{display:flex;align-items:center;padding:0 14px;font-weight:600;font-size:15px;white-space:nowrap}
+.dA .nav a.q:hover{box-shadow:inset 0 -3px var(--red)}
+.dA .hero{background:#f5f5f4}
+.dA .hero .wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;padding:24px}
+.dA .hm{position:relative;border-radius:14px;overflow:hidden;background:var(--ink);color:#fff;min-height:420px;display:flex;align-items:flex-end}
+.dA .hm img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42}
+.dA .hm .t{position:relative;padding:44px;max-width:620px}
+.dA .eb{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:4px;margin-bottom:16px}
+.dA h1{font-size:clamp(38px,5vw,60px);line-height:.95;margin-bottom:16px}
+.dA .hm p{font-size:18px;color:#e4e4e4;margin-bottom:24px}
+.dA .btn{display:inline-flex;align-items:center;height:50px;padding:0 24px;border-radius:8px;font-weight:700}
+.dA .btn.r{background:var(--red);color:#fff}.dA .btn.w{background:#fff;color:var(--ink)}
+.dA .side{display:grid;grid-template-rows:1fr 1fr;gap:20px}
+.dA .pr{border-radius:14px;overflow:hidden;display:grid;grid-template-columns:1fr 46%;background:#fff;border:1px solid #e6e6e6}
+.dA .pr .tt{padding:24px;display:flex;flex-direction:column;justify-content:center}
+.dA .pr .tag{font-weight:800;color:var(--red);font-size:30px;line-height:1}
+.dA .pr h3{font-size:24px;line-height:1.05;margin:6px 0 8px}
+.dA .pr img{width:100%;height:100%;object-fit:cover}
+.dA .pr.dk{background:var(--ink);color:#fff;border:0}
+.dA .sec{padding:52px 0}
+.dA .sh{font-size:36px;line-height:1;margin-bottom:22px}
+.dA .cats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.dA .cat{border-radius:10px;overflow:hidden;background:#f5f5f4}
+.dA .cat img{aspect-ratio:4/3;width:100%;object-fit:cover}
+.dA .cat div{padding:12px 14px;font-weight:700;font-size:15px}
+.dA .prods{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.dA .p{border:1px solid #e6e6e6;border-radius:10px;overflow:hidden}
+.dA .p img{aspect-ratio:1;object-fit:contain;padding:14px;width:100%}
+.dA .p .b{padding:0 14px 14px}
+.dA .p small{color:#777;font-size:12px}
+.dA .p h4{font-size:15px;line-height:1.25;margin:4px 0 8px}
+.dA .p .pz b{font-size:20px}
+.dA .p button{margin-top:10px;width:100%;height:40px;border:2px solid var(--ink);border-radius:7px;font-weight:700}
+
+/* ================= B — NIGHT LOT (dark, bold, automotive) ================= */
+.dB{background:#0e0e0e;color:#fff}
+.dB .util{background:var(--red);color:#fff;font-size:13.5px;font-weight:600;text-align:center;padding:8px}
+.dB .hdr{display:flex;align-items:center;gap:28px;height:84px;border-bottom:1px solid #222}
+.dB .hdr img.logo{height:46px}
+.dB .search{flex:1;display:flex;height:50px;background:#1c1c1c;border:1px solid #333;border-radius:40px;overflow:hidden}
+.dB .search input{flex:1;background:none;border:0;color:#fff;padding:0 22px;font:inherit;outline:none;min-width:0}
+.dB .search input::placeholder{color:#888}
+.dB .search button{background:var(--red);width:50px;border-radius:40px;margin:4px;color:#fff}
+.dB .acts{display:flex;gap:20px;font-weight:600;font-size:14px;color:#ddd}
+.dB .nav{border-bottom:1px solid #222}
+.dB .nav .wrap{display:flex;height:54px;align-items:center;gap:6px}
+.dB .shopall{border:1px solid #444;border-radius:30px;padding:9px 18px;font-weight:700;display:flex;gap:8px;align-items:center}
+.dB .shopall:hover{border-color:var(--red)}
+.dB .nav a.q{padding:9px 14px;font-weight:600;font-size:15px;color:#bbb;white-space:nowrap}
+.dB .nav a.q:hover{color:#fff}
+.dB .hero{position:relative;min-height:560px;display:flex;align-items:center;overflow:hidden}
+.dB .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
+.dB .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0e0e0e 25%,transparent 85%)}
+.dB .hero .wrap{position:relative;z-index:1;width:100%}
+.dB .kick{color:var(--red);font-weight:800;letter-spacing:.2em;font-size:14px;text-transform:uppercase;margin-bottom:14px}
+.dB h1{font-size:clamp(48px,8vw,104px);line-height:.86;max-width:820px;margin-bottom:22px}
+.dB h1 em{font-style:normal;color:var(--red)}
+.dB .hero p{font-size:19px;color:#bbb;max-width:520px;margin-bottom:30px}
+.dB .btn{display:inline-flex;align-items:center;height:54px;padding:0 28px;border-radius:40px;font-weight:700}
+.dB .btn.r{background:var(--red);color:#fff}.dB .btn.o{border:1px solid #555;color:#fff;margin-left:10px}
+.dB .stats{display:flex;gap:44px;margin-top:44px}
+.dB .stats b{display:block;font-family:"Barlow Condensed";font-size:34px;line-height:1}
+.dB .stats span{color:#888;font-size:14px}
+.dB .rail{background:#141414;border-top:1px solid #222;border-bottom:1px solid #222}
+.dB .rail .wrap{display:grid;grid-template-columns:repeat(9,1fr);gap:0}
+.dB .rail a{padding:20px 10px;text-align:center;font-weight:600;font-size:13.5px;line-height:1.2;border-right:1px solid #222;color:#ccc;display:flex;flex-direction:column;align-items:center;gap:10px}
+.dB .rail a:last-child{border-right:0}
+.dB .rail a:hover{background:#1c1c1c;color:#fff}
+.dB .rail img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #2a2a2a}
+.dB .rail a:hover img{border-color:var(--red)}
+.dB .sec{padding:60px 0}
+.dB .sh{font-size:44px;line-height:1;margin-bottom:24px}
+.dB .sh em{font-style:normal;color:var(--red)}
+.dB .prods{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.dB .p{background:#181818;border:1px solid #262626;border-radius:14px;overflow:hidden}
+.dB .p:hover{border-color:var(--red)}
+.dB .p img{aspect-ratio:1;object-fit:contain;padding:16px;background:#fff;width:100%}
+.dB .p .b{padding:14px}
+.dB .p small{color:#888;font-size:12px}
+.dB .p h4{font-size:15px;line-height:1.25;margin:4px 0 10px}
+.dB .p .pz b{font-size:21px}
+.dB .p button{margin-top:10px;width:100%;height:42px;background:var(--red);border-radius:30px;font-weight:700;color:#fff}
+.dB .big2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dB .bt{position:relative;border-radius:16px;overflow:hidden;min-height:300px;display:flex;align-items:flex-end;padding:30px}
+.dB .bt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.dB .bt div{position:relative}
+.dB .bt h3{font-size:40px;line-height:.95}
+.dB .bt span{color:var(--red);font-weight:700}
+
+/* ================= C — PARTS COUNTER (B2B, search-first, dense) ================= */
+.dC{font-family:Inter,system-ui,sans-serif;background:#f3f4f6;color:#111}
+.dC .util{background:#fff;border-bottom:1px solid #e5e7eb;font-size:13px;color:#555}
+.dC .util .wrap{display:flex;justify-content:space-between;height:34px;align-items:center}
+.dC .util b{color:#111}
+.dC .hdr-w{background:var(--ink)}
+.dC .hdr{display:flex;align-items:center;gap:24px;height:72px}
+.dC .hdr img.logo{height:40px;background:#fff;border-radius:6px;padding:4px 8px}
+.dC .search{flex:1;display:flex;height:46px;background:#fff;border-radius:6px;overflow:hidden}
+.dC .search select{border:0;background:#eee;padding:0 10px;font:inherit;font-size:13px}
+.dC .search input{flex:1;border:0;padding:0 14px;font:inherit;outline:none;min-width:0}
+.dC .search button{background:var(--red);color:#fff;width:54px}
+.dC .acts{display:flex;gap:18px;color:#fff;font-size:13.5px;font-weight:600}
+.dC .acts .qo{background:var(--red);padding:8px 14px;border-radius:6px}
+.dC .layout{display:grid;grid-template-columns:260px 1fr;gap:20px;padding-top:20px;padding-bottom:20px}
+.dC .sidebar{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:8px 0;align-self:start}
+.dC .sidebar h5{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#777;padding:10px 16px 6px}
+.dC .sidebar a{display:flex;justify-content:space-between;padding:9px 16px;font-size:14.5px;font-weight:500}
+.dC .sidebar a:hover{background:#f6f6f6;color:var(--red)}
+.dC .sidebar a::after{content:"›";color:#bbb}
+.dC .main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.dC .welcome{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:26px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:center}
+.dC .welcome h1{font-size:30px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.dC .welcome p{color:#555;margin-bottom:16px}
+.dC .chips{display:flex;flex-wrap:wrap;gap:8px}
+.dC .chips span{font-size:13px;color:#777;align-self:center;margin-right:2px}
+.dC .chips a{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:6px 11px;font-size:13.5px;font-weight:500}
+.dC .chips a:hover{border-color:#111}
+.dC .qbox{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.dC .qbox h4{font-size:14px;margin-bottom:10px}
+.dC .qbox .r{display:flex;gap:6px;margin-bottom:6px}
+.dC .qbox input{height:36px;border:1px solid #d1d5db;border-radius:5px;padding:0 10px;font:inherit;font-size:13px;min-width:0}
+.dC .qbox input:first-child{flex:1}.dC .qbox input:last-child{width:60px}
+.dC .qbox button{width:100%;height:38px;background:var(--ink);color:#fff;border-radius:5px;font-weight:600;font-size:13.5px;margin-top:4px}
+.dC .promos{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
+.dC .pm{background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.dC .pm img{height:140px;object-fit:cover;width:100%}
+.dC .pm.wide{flex-direction:row}
+.dC .pm.wide img{width:45%;height:auto}
+.dC .pm .t{padding:16px}
+.dC .pm .tag{color:var(--red);font-weight:700;font-size:13px}
+.dC .pm h3{font-size:17px;margin:4px 0}
+.dC .pm p{font-size:13.5px;color:#666}
+.dC .panel{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px}
+.dC .panel .ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.dC .panel h2{font-size:20px;font-weight:700}
+.dC .panel .ph a{color:var(--red);font-weight:600;font-size:14px}
+.dC table{width:100%;border-collapse:collapse;font-size:14px}
+.dC th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#777;padding:8px;border-bottom:1px solid #e5e7eb}
+.dC td{padding:10px 8px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+.dC td img{width:46px;height:46px;object-fit:contain;border:1px solid #eee;border-radius:5px}
+.dC td .nm{font-weight:600}
+.dC td .sk{font-size:12px;color:#888}
+.dC td .pz{font-weight:700}
+.dC td input{width:56px;height:34px;border:1px solid #d1d5db;border-radius:5px;text-align:center;font:inherit}
+.dC td button{height:34px;padding:0 14px;background:var(--red);color:#fff;border-radius:5px;font-weight:600;font-size:13px}
+.dC .tag10{background:#fee2e2;color:var(--red);font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:6px}
+
+/* ---------- responsive ---------- */
+@media(max-width:1000px){
+  .dA .hero .wrap{grid-template-columns:1fr}.dA .side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .dA .cats,.dA .prods,.dB .prods{grid-template-columns:repeat(3,1fr)}
+  .dB .rail .wrap{grid-template-columns:repeat(5,1fr)}
+  .dC .layout{grid-template-columns:1fr}.dC .sidebar{display:none}
+  .dC .welcome{grid-template-columns:1fr}
+  .acts{display:none!important}
+}
+@media(max-width:700px){
+  .wrap{padding:0 16px}
+  .hdr{flex-wrap:wrap;height:auto!important;padding:12px 0;gap:12px!important}
+  .search{flex-basis:100%;order:3}
+  .nav a.q{display:none!important}
+  .util .wrap>*:last-child{display:none}
+  .dA .side{grid-template-columns:1fr}.dA .hm .t{padding:26px}
+  .dA .cats,.dA .prods,.dB .prods{grid-template-columns:repeat(2,1fr);gap:12px}
+  .dB .rail .wrap{grid-template-columns:repeat(3,1fr)}
+  .dB .stats{gap:24px;flex-wrap:wrap}
+  .dB .btn.o{margin:10px 0 0}
+  .dB .big2,.dC .promos{grid-template-columns:1fr}
+  .dC .pm.wide{flex-direction:column}.dC .pm.wide img{width:100%;height:140px}
+  .dC table .hide-m{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="picker">
+  <div class="wrap">
+    <b>Pick a direction:</b>
+    <button data-d="A" class="on">A · Showroom</button>
+    <button data-d="B">B · Night Lot</button>
+    <button data-d="C">C · Parts Counter</button>
+    <span class="desc" id="desc"></span>
+  </div>
+</div>
+
+<!-- ===================== A ===================== -->
+<div class="dir dA on" id="A">
+  <div class="util"><div class="wrap"><span>New customer? 10% off with <span class="code">WELCOME10</span></span><span><b>1 (800) 465-8831</b> · Quick Quote · Catalogue</span></div></div>
+  <div class="wrap hdr"><img class="logo" src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><div class="search"><input placeholder="Search by product name or SKU"><button>⌕</button></div><div class="acts"><span>↻ Reorder</span><span>Account</span><span>Cart (2)</span></div></div>
+  <div class="nav"><div class="wrap"><button class="shopall cond">☰ Shop All Products</button><span class="qlinks"></span></div></div>
+  <div class="hero"><div class="wrap">
+    <div class="hm"><img src="https://wheelsauto.com/media/wysiwyg/Decals_and_Signs_-_home_page_categories_1.jpg" alt=""><div class="t"><span class="eb">Canada's dealership supply source</span><h1 class="cond">Everything your lot, showroom &amp; service bay needs.</h1><p>Stock numbers, key tags, plate frames, flags and custom-branded products.</p><a class="btn r">Shop by Category →</a> <a class="btn w">View Catalogue</a></div></div>
+    <div class="side">
+      <div class="pr"><div class="tt"><span class="tag cond">10% Off</span><h3 class="cond">Vehicle Display Podiums</h3><small>While quantities last.</small></div><img src="https://wheelsauto.com/media/wysiwyg/showroomequipmentaccessories.webp" alt=""></div>
+      <div class="pr dk"><div class="tt"><span class="tag cond" style="font-size:20px">Featured</span><h3 class="cond">Key Management Systems</h3><small style="color:#bbb">Cabinets, tags &amp; ID.</small></div><img style="object-fit:contain;background:#fff;padding:10px" src="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/s/q/sqkt-images-keys.png" alt=""></div>
+    </div>
+  </div></div>
+  <div class="wrap sec"><h2 class="sh cond">Shop by Category</h2><div class="cats" data-cats></div></div>
+  <div class="wrap sec" style="padding-top:0"><h2 class="sh cond">Dealership Best Sellers</h2><div class="prods" data-prods></div></div>
+</div>
+
+<!-- ===================== B ===================== -->
+<div class="dir dB" id="B">
+  <div class="util">New customer? Take 10% off your first order — code WELCOME10</div>
+  <div class="wrap hdr"><img class="logo" src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><div class="search"><input placeholder="What does your dealership need? Search or enter a SKU"><button>⌕</button></div><div class="acts"><span>1 (800) 465-8831</span><span>Account</span><span>Cart (2)</span></div></div>
+  <div class="nav"><div class="wrap"><button class="shopall">☰ Shop All</button><span class="qlinks"></span></div></div>
+  <div class="hero">
+    <img src="https://wheelsauto.com/media/wysiwyg/Indoor_Outdoor_Displays_-_home_page_categories.jpg" alt="">
+    <div class="wrap">
+      <div class="kick">Wheels Automotive Dealer Supplies</div>
+      <h1 class="cond">Move more <em>metal.</em></h1>
+      <p>Everything that gets a car from trade-in to sold — stock numbers, key tags, plate frames, flags and lot displays. Shipped across Canada.</p>
+      <a class="btn r">Shop All Products →</a><a class="btn o">Request a Quote</a>
+      <div class="stats"><div><b>9</b><span>Departments</span></div><div><b>10% off</b><span>On 10+ units</span></div><div><b>Free</b><span>Proof on custom</span></div></div>
+    </div>
+  </div>
+  <div class="rail"><div class="wrap" data-rail></div></div>
+  <div class="wrap sec"><h2 class="sh cond">Dealers <em>reorder</em> these every month</h2><div class="prods" data-prods></div></div>
+  <div class="wrap sec" style="padding-top:0"><div class="big2">
+    <div class="bt"><img src="https://wheelsauto.com/media/wysiwyg/Flags_Banners_-_home_page_categories.jpg" alt=""><div><span>FALL SALES SEASON</span><h3 class="cond">Make the lot loud.</h3></div></div>
+    <div class="bt"><img src="https://wheelsauto.com/media/wysiwyg/License_Nameplates_-_home_page_categories.jpg" alt=""><div><span>CUSTOM PRINTING</span><h3 class="cond">Put your name on every car.</h3></div></div>
+  </div></div>
+</div>
+
+<!-- ===================== C ===================== -->
+<div class="dir dC" id="C">
+  <div class="util"><div class="wrap"><span>Dealer pricing · Volume discounts · Ships Canada-wide</span><span><b>1 (800) 465-8831</b> · Quick Quote · Catalogue</span></div></div>
+  <div class="hdr-w"><div class="wrap hdr"><img class="logo" src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><div class="search"><select><option>All</option></select><input placeholder="Search 1000s of dealer supplies by name or SKU"><button>⌕</button></div><div class="acts"><span class="qo">Quick Order</span><span>Requisition Lists</span><span>Account</span><span>Cart (2)</span></div></div></div>
+  <div class="wrap layout">
+    <aside class="sidebar"><h5>Shop by Category</h5><div data-side></div></aside>
+    <div class="main">
+      <div class="welcome">
+        <div>
+          <h1>What does your dealership need today?</h1>
+          <p>Search, reorder, or browse — built for the people who keep the lot running.</p>
+          <div class="chips"><span>Popular:</span><a>Stock numbers</a><a>Key tags</a><a>Mirror hang tags</a><a>Plate frames</a><a>Dealer plate pouches</a><a>Window flags</a></div>
+        </div>
+        <div class="qbox"><h4>⚡ Quick Order by SKU</h4><div class="r"><input placeholder="SKU"><input placeholder="Qty"></div><div class="r"><input placeholder="SKU"><input placeholder="Qty"></div><button>Add to Cart</button></div>
+      </div>
+      <div class="promos">
+        <div class="pm wide"><img src="https://wheelsauto.com/media/wysiwyg/showroomequipmentaccessories.webp" alt=""><div class="t"><span class="tag">10% OFF</span><h3>Vehicle Display Podiums</h3><p>While quantities last. Shop the sale →</p></div></div>
+        <div class="pm"><img src="https://wheelsauto.com/media/wysiwyg/Flags_Banners_-_home_page_categories.jpg" alt=""><div class="t"><span class="tag">SEASONAL</span><h3>Fall sales event kits</h3></div></div>
+        <div class="pm"><img src="https://wheelsauto.com/media/wysiwyg/License_Nameplates_-_home_page_categories.jpg" alt=""><div class="t"><span class="tag">CUSTOM</span><h3>Your logo, free proof</h3></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><h2>Dealership best sellers</h2><a>View all →</a></div>
+        <table><thead><tr><th></th><th>Product</th><th class="hide-m">Price</th><th>Qty</th><th></th></tr></thead><tbody data-rows></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const M="https://wheelsauto.com/media/wysiwyg/",P="https://wheelsauto.com/media/catalog/product/cache/99e342a035429be4266d354ab7d104d9/";
+const CATS=[["Vehicle Advertising & Display","Decals_and_Signs_-_home_page_categories_1.jpg"],["License & Nameplates","License_Nameplates_-_home_page_categories.jpg"],["Mirror Tags & Hangers","Mirror_Tags_Hangers_-_Wheel_s_ADS.jpg"],["Dealership Marketing","Promotional_Giveaways_-_Wheel_s_ADS.jpg"],["Flags & Banners","Flags_Banners_-_home_page_categories.jpg"],["Outdoor Displays","Indoor_Outdoor_Displays_-_home_page_categories.jpg"],["Showroom & Displays","showroomequipmentaccessories.webp"],["Service & Lot","Service_Lot_Solutions_-_Wheel_s_ADS_1.jpg"],["OEM Programs","OEMPROGRAMS.webp"]];
+const PR=[["10900-11311","EZ Windshield Number Decals","8.95","c/h/chatgpt_image_sep_13_2026_11_00_28_pm.png",1],["200BL-200YE","Genuine Versa-Tag Key Tags","49.95","2/0/200bl-200ye-base.png"],["LPF","Custom Plate Frames","1.55","l/p/lpf-ford-escape.png"],["WSAA-WSWN","Paper Mirror Tags","16.95","w/s/wsaa-wswn-tag-car.png",1],["SCB250","Windshield Stock Cards","42.95","s/c/scb250-scy250-base.png"],["LPC","Lexan Plate Covers","4.85","l/p/lpc-lexan-printed_1.png"],["ACFN","Flexible Chrome Nameplates","2.09","a/c/acfn_1_3.jpg"],["SQKT","Soft Clear Key Tags","20.00","s/q/sqkt-images-keys.png"],["30208","Canada Window Flag","7.95","3/0/30208-canada-window-flag.png",1],["DPP","Dealer Plate Pouch","10.95","d/p/dpp.webp"]];
+const Q=["Windshield Decals","Key Tags","Plate Frames","Mirror Tags","Flags","Sale Events","OEM Programs"];
+document.querySelectorAll('.qlinks').forEach(e=>e.outerHTML=Q.map(q=>`<a class="q" href="#">${q}</a>`).join(''));
+document.querySelectorAll('[data-cats]').forEach(e=>e.innerHTML=CATS.map(c=>`<a class="cat" href="#"><img src="${M+c[1]}" alt=""><div>${c[0]}</div></a>`).join('')+`<a class="cat" href="#" style="background:#141414;color:#fff;display:flex;align-items:center;padding:20px"><b class="cond" style="font-size:26px;line-height:1">Browse the full catalogue →</b></a>`);
+document.querySelectorAll('[data-prods]').forEach(e=>e.innerHTML=PR.map(p=>`<div class="p"><img src="${P+p[3]}" alt=""><div class="b"><small>SKU ${p[0]}</small><h4>${p[1]}</h4><div class="pz">From <b>$${p[2]}</b></div><button>Add to Cart</button></div></div>`).join(''));
+document.querySelector('[data-rail]').innerHTML=CATS.map(c=>`<a href="#"><img src="${M+c[1]}" alt="">${c[0]}</a>`).join('');
+document.querySelector('[data-side]').innerHTML=CATS.map(c=>`<a href="#">${c[0]}</a>`).join('');
+document.querySelector('[data-rows]').innerHTML=PR.slice(0,8).map(p=>`<tr><td><img src="${P+p[3]}" alt=""></td><td><div class="nm">${p[1]}${p[4]?'<span class="tag10">10% on 10</span>':''}</div><div class="sk">SKU ${p[0]}</div></td><td class="hide-m pz">$${p[2]}</td><td><input value="1"></td><td><button>Add</button></td></tr>`).join('');
+const D={A:"Showroom — light, photo-led, friendly. Closest to a modern Home Depot / retail feel. Safest choice.",B:"Night Lot — dark, bold, automotive. Big type, feels premium and 'car industry'. Most brand personality.",C:"Parts Counter — Uline / Grainger style. Search, quick order and a sidebar of categories. Fastest for repeat B2B buyers."};
+const desc=document.getElementById('desc');desc.textContent=D.A;
+document.querySelectorAll('.picker button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.picker button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.dir').forEach(d=>d.classList.toggle('on',d.id===b.dataset.d));desc.textContent=D[b.dataset.d];scrollTo(0,0)});
+</script>
+</body>
+</html>
