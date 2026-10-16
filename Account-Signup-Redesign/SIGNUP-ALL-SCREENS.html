@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign-up: Every Screen</title>
+<!-- WHEELS · ACCOUNT SIGN-UP · EVERY SCREEN ON ONE PAGE (static, for the meeting). Interactive version: SIGNUP-PREVIEW.html
+     Repo file: Account-Signup-Redesign/SIGNUP-ALL-SCREENS.html -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--ink:#141414;--ink2:#3a3a3a;--muted:#6b6b6b;--line:#dedede;--bg:#f2f2f1;--ok:#15803d;--ok-bg:#f0fdf4;--warn-bg:#fff7ed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+.top{background:#2a2a2a;color:#fff;padding:22px 20px;text-align:center}
+.top img{height:40px}
+.top h1{font:800 34px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin-top:12px}
+.top p{color:#cfcfcf;margin-top:6px;font-size:14px}
+.toc{max-width:1200px;margin:18px auto 0;padding:0 20px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.toc a{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--ink2);text-decoration:none}
+.sec{max-width:1200px;margin:34px auto 0;padding:0 20px}
+.sec>h2{font:800 26px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin-bottom:6px}
+.sec>p{color:var(--muted);margin-bottom:16px;font-size:14px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+.scr{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.06);overflow:hidden}
+.lbl{background:#141414;color:#fff;font-size:12.5px;font-weight:700;padding:8px 14px;display:flex;justify-content:space-between;gap:8px}
+.lbl span{color:#ffb3b6;font-weight:600}
+.body{padding:22px}
+.body h3{font:800 21px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin-bottom:4px}
+.note{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+.steps{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.steps div{font-size:11.5px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:2px 9px}
+.steps .on{background:var(--red);border-color:var(--red);color:#fff}.steps .dn{background:var(--ink);border-color:var(--ink);color:#fff}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g .full{grid-column:1/-1}
+.f label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:4px}
+.f label small{font-weight:400;color:var(--muted)}
+.in{height:38px;border:1px solid var(--line);border-radius:7px;padding:0 10px;display:flex;align-items:center;font-size:13.5px;color:#999;background:#fff}
+.in.v{color:var(--ink)}
+.sel::after{content:"▾";margin-left:auto;color:#888}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border-radius:7px;background:var(--red);color:#fff;font:700 15px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.04em}
+.btn.gh{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btns{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.who{display:grid;gap:10px}
+.who div{border:2px solid var(--line);border-radius:10px;padding:12px 14px}
+.who div.on{border-color:var(--red);background:#fff5f5}
+.who b{display:block}.who span{font-size:12.5px;color:var(--muted)}
+.warn{background:var(--warn-bg);border:1px solid #fed7aa;color:#7c2d12;border-radius:9px;padding:12px 14px;font-size:13.5px;margin-top:12px}
+.match{border:2px solid var(--ok);background:var(--ok-bg);border-radius:10px;padding:14px;margin-top:12px}
+.match .t{font-size:11.5px;font-weight:700;color:var(--ok);text-transform:uppercase;letter-spacing:.05em}
+.nomatch{border:1px dashed #bbb;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:13.5px;background:#fafafa}
+.opts{display:flex;gap:8px}.opts div{flex:1;border:2px solid var(--line);border-radius:8px;padding:9px 10px;font-size:13px;font-weight:600}.opts .on{border-color:var(--red);background:#fff5f5}
+.brands{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.brands div{border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:12px}.brands .on{border-color:var(--red);background:#fff5f5;font-weight:600}
+.closed{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;font-weight:700;font-size:13.5px}
+.done{text-align:center;padding:8px 0}
+.tick{width:52px;height:52px;border-radius:50%;background:var(--ok);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.done p{color:var(--ink2);font-size:14px;margin-top:6px}
+.link{color:var(--red);font-weight:600;text-decoration:underline;font-size:13.5px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{font-size:11px;color:var(--muted);text-transform:uppercase}
+.pill{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#eee}.pill.m{background:#fff5f5;color:var(--red)}.pill.i{background:var(--warn-bg);color:#9a3412}
+.mail{border:1px solid var(--line);border-radius:10px;overflow:hidden}.mail .h{background:#2a2a2a;padding:10px;text-align:center}.mail .h img{height:28px}.mail .b{padding:16px;font-size:14px;color:var(--ink2)}.mail .b p{margin-bottom:10px}
+.flow{display:grid;gap:8px}.flow div{display:grid;grid-template-columns:150px 1fr;gap:12px;background:#fff;border-radius:10px;padding:12px 14px;font-size:14px}.flow b{color:var(--red);font-size:12.5px;text-transform:uppercase}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin:40px 0}
+@media (max-width:640px){.g,.brands{grid-template-columns:1fr}.flow div{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><h1>Account sign-up · every screen</h1><p>One email = one account · One business = one company · Matched by business phone number (proposed)</p></div>
+<div class="toc"><a href="#flow">Workflow</a><a href="#s1">1 · Email</a><a href="#s2">2 · Who it's for</a><a href="#me">3 · Just me</a><a href="#dealer">3 · Dealership</a><a href="#biz">3 · Other business</a><a href="#done">4 · Done</a><a href="#login">Log in &amp; reset</a><a href="#team">Company users</a></div>
+
+<section class="sec" id="flow"><h2>The workflow</h2><p>How a person moves through sign-up.</p>
+<div class="flow">
+  <div><b>1 · Email</b><span>Everyone starts with their email. Already used → "You already have an account" → Log in / Reset password.</span></div>
+  <div><b>2 · Who it's for</b><span>Just me · A dealership · Another business.</span></div>
+  <div><b>3 · Just me</b><span>Name, phone, address. No company step.</span></div>
+  <div><b>3 · Dealership</b><span>Find it by business phone (or OEM dealer ID). Found → added to it. Not found → register once (New/Used, OEM brands + IDs, address, optional tax).</span></div>
+  <div><b>3 · Other business</b><span>Find it by business phone. Found → added. Not found → register once (business type, address, optional tax). No OEM questions.</span></div>
+  <div><b>4 · Done</b><span>"Check your email to set your password."</span></div>
+  <div><b>Adding people</b><span>They sign up and find the business by its phone, or the main contact invites them (My Account → Company Users).</span></div>
+  <div><b>Support</b><span>Customers: Forgot password. Staff: Magento admin → Customers → search email → Reset Password.</span></div>
+</div></section>
+
+<section class="sec" id="s1"><h2>1 · Email</h2><p>The first and only question on the first page.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">Email · new<span>everyone</span></div><div class="body">
+    <div class="steps"><div class="on">1 Email</div><div>2 Who it's for</div><div>3 Details</div><div>4 Done</div></div>
+    <h3>Start with your email</h3><p class="note">We'll check if you already have an account.</p>
+    <div class="f"><label>Email *</label><div class="in v">dave@smithford.ca</div></div>
+    <div class="btns"><span></span><span class="btn">Continue</span></div></div></div>
+  <div class="scr"><div class="lbl">Email · already used<span>stops duplicates</span></div><div class="body">
+    <h3>Start with your email</h3>
+    <div class="f"><label>Email *</label><div class="in v">justindema76@gmail.com</div></div>
+    <div class="warn"><b>You already have an account with this email.</b><br>One email = one account on all Wheels sites.
+      <div class="btns" style="justify-content:flex-start"><span class="btn">Log in</span><span class="btn gh">Reset my password</span></div></div></div></div>
+</div></section>
+
+<section class="sec" id="s2"><h2>2 · Who it's for</h2><p>The answer picks the right form.</p>
+<div class="row"><div class="scr" style="max-width:520px"><div class="lbl">Who it's for<span>everyone</span></div><div class="body">
+  <div class="steps"><div class="dn">1 Email</div><div class="on">2 Who it's for</div><div>3 Details</div><div>4 Done</div></div>
+  <h3>Who is this account for?</h3><p class="note">This decides which details we ask for.</p>
+  <div class="who"><div><b>👤 Just me</b><span>Personal purchases</span></div><div class="on"><b>🚗 A dealership</b><span>New or used vehicle dealership</span></div><div><b>🏢 Another business</b><span>Body shop, fleet, rental, agency…</span></div></div>
+  <div class="btns"><span class="btn gh">Back</span><span class="btn">Continue</span></div></div></div></div></section>
+
+<section class="sec" id="me"><h2>3 · Just me</h2><p>One short page. No company questions.</p>
+<div class="row"><div class="scr" style="max-width:560px"><div class="lbl">Just me<span>individual</span></div><div class="body">
+  <div class="steps"><div class="dn">1 Email</div><div class="dn">2 Who it's for</div><div class="on">3 Details</div><div>4 Done</div></div>
+  <h3>About you</h3><p class="note">Your own login.</p>
+  <div class="g"><div class="f"><label>First name *</label><div class="in v">Justin</div></div><div class="f"><label>Last name *</label><div class="in v">DeMatteis</div></div>
+  <div class="f"><label>Phone *</label><div class="in">(905) 555-0123</div></div><div class="f"><label>Job title <small>(optional)</small></label><div class="in"></div></div>
+  <div class="f full"><label>Street address *</label><div class="in"></div></div><div class="f"><label>City *</label><div class="in"></div></div>
+  <div class="f"><label>Province / State *</label><div class="in v sel">Ontario</div></div><div class="f"><label>Postal / ZIP code *</label><div class="in"></div></div>
+  <div class="f"><label>Country *</label><div class="in v sel">Canada</div></div>
+  <div class="f full"><label>How did you hear about us? <small>(optional)</small></label><div class="in sel">Choose one</div></div></div>
+  <div class="btns"><span class="btn gh">Back</span><span class="btn">Create account</span></div></div></div></div></section>
+
+<section class="sec" id="dealer"><h2>3 · A dealership</h2><p>Find it first by the business phone number (or OEM dealer ID). Only if it's not found do they register it.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">Dealership · find<span>step 1 of this page</span></div><div class="body">
+    <h3>About you</h3><div class="g"><div class="f"><label>First name *</label><div class="in v">Dave</div></div><div class="f"><label>Last name *</label><div class="in v">Chen</div></div><div class="f"><label>Phone *</label><div class="in"></div></div><div class="f"><label>Job title</label><div class="in"></div></div></div>
+    <h3 style="margin-top:18px">Find your dealership</h3><p class="note">If your dealership already has a Wheels account, you'll be added to it.</p>
+    <div class="g"><div class="f"><label>Business phone number *</label><div class="in v">(905) 555-0142</div></div><div class="f"><label>or OEM dealer ID</label><div class="in">FD-20417</div></div></div>
+    <div class="btns"><span></span><span class="btn gh">Find my dealership</span></div></div></div>
+  <div class="scr"><div class="lbl">Dealership · found<span>no retyping</span></div><div class="body">
+    <h3>Find your dealership</h3>
+    <div class="match"><div class="t">✓ Found it</div><b>Smith Ford Lincoln</b><div style="font-size:13.5px;color:var(--ink2)">Hamilton, ON</div></div>
+    <div class="btns"><span class="link">That's not my business</span><span style="font-size:13px;color:var(--muted)">You'll be added to this account.</span></div>
+    <div class="f" style="margin-top:14px"><label>How did you hear about us? <small>(optional)</small></label><div class="in sel">Choose one</div></div>
+    <div class="btns"><span class="btn gh">Back</span><span class="btn">Create account</span></div></div></div>
+  <div class="scr"><div class="lbl">Dealership · not found → register once<span>first person only</span></div><div class="body">
+    <div class="nomatch">No Wheels account for this dealership yet. <b>Register it below</b>, once. You'll be its main contact.</div>
+    <div class="g" style="margin-top:12px"><div class="f full"><label>Dealership name *</label><div class="in"></div></div>
+    <div class="f full"><label>Dealership type *</label><div class="opts"><div class="on">New vehicles</div><div>Used vehicles</div></div></div>
+    <div class="f full"><label>Brands you're an authorized dealer for</label><div class="brands"><div>Acura</div><div>Audi</div><div>BMW</div><div class="on">✓ Ford</div><div>Honda</div><div>Hyundai</div><div>Kia</div><div class="on">✓ Lincoln</div><div>Nissan</div><div>Toyota</div><div>Volkswagen</div><div>…</div></div></div>
+    <div class="f"><label>Ford dealer ID</label><div class="in">Optional</div></div><div class="f"><label>Lincoln dealer ID</label><div class="in">Optional</div></div>
+    <div class="f full"><label>Street address *</label><div class="in"></div></div><div class="f"><label>City *</label><div class="in"></div></div><div class="f"><label>Province / State *</label><div class="in v sel">Ontario</div></div>
+    <div class="f"><label>Postal / ZIP code *</label><div class="in"></div></div><div class="f"><label>Website</label><div class="in">Optional</div></div>
+    <div class="f full" style="font-size:13.5px">☑ Business email is the same as mine</div></div>
+    <div class="closed">▸ Tax &amp; billing (optional): legal name · GST/HST · PST exemption / reseller no.</div>
+    <div class="btns"><span class="btn gh">Back</span><span class="btn">Create account</span></div></div></div>
+</div></section>
+
+<section class="sec" id="biz"><h2>3 · Another business</h2><p>Same find-first step by business phone. No OEM questions.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">Other business · found<span>no retyping</span></div><div class="body">
+    <h3>Find your business</h3><div class="g"><div class="f full"><label>Business phone number *</label><div class="in v">(905) 555-0199</div></div></div>
+    <div class="match"><div class="t">✓ Found it</div><b>Hamilton Collision Centre</b><div style="font-size:13.5px;color:var(--ink2)">Hamilton, ON</div></div>
+    <div class="btns"><span class="btn gh">Back</span><span class="btn">Create account</span></div></div></div>
+  <div class="scr"><div class="lbl">Other business · not found → register once<span>first person only</span></div><div class="body">
+    <div class="nomatch">No Wheels account for this business yet. <b>Register it below</b>, once.</div>
+    <div class="g" style="margin-top:12px"><div class="f full"><label>Business name *</label><div class="in"></div></div>
+    <div class="f full"><label>Business type *</label><div class="in sel">Body / collision shop · Service shop · Fleet · Rental · Sign shop · Agency · Other</div></div>
+    <div class="f full"><label>Street address *</label><div class="in"></div></div><div class="f"><label>City *</label><div class="in"></div></div><div class="f"><label>Province / State *</label><div class="in v sel">Ontario</div></div>
+    <div class="f"><label>Postal / ZIP code *</label><div class="in"></div></div><div class="f"><label>Website</label><div class="in">Optional</div></div></div>
+    <div class="closed">▸ Tax &amp; billing (optional)</div>
+    <div class="btns"><span class="btn gh">Back</span><span class="btn">Create account</span></div></div></div>
+</div></section>
+
+<section class="sec" id="done"><h2>4 · Done</h2><p>What they see after creating the account.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">Done · just me</div><div class="body done"><div class="tick">✓</div><h3>Your account is ready</h3><p>You can start ordering right away.</p><p><b>Check your email</b> for a link to set your password.</p></div></div>
+  <div class="scr"><div class="lbl">Done · joined a business</div><div class="body done"><div class="tick">✓</div><h3>You're part of Smith Ford Lincoln</h3><p>You're added with its pricing and discounts. Its main contact gets an email letting them know you joined.</p><p><b>Check your email</b> to set your password.</p></div></div>
+  <div class="scr"><div class="lbl">Done · registered a new business</div><div class="body done"><div class="tick">✓</div><h3>Your dealership is set up</h3><p>You're the main contact. Your team can sign up and find it by its phone number, or you can invite them.</p><p><b>Check your email</b> to set your password.</p></div></div>
+</div></section>
+
+<section class="sec" id="login"><h2>Log in &amp; forgot password</h2><p>Customers fix "I can't get in" themselves. Staff have a one-click reset in admin.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">Log in</div><div class="body"><h3>Log in</h3><div class="f"><label>Email</label><div class="in v">justindema76@gmail.com</div></div><div class="f" style="margin-top:10px"><label>Password</label><div class="in v">••••••••</div></div><div class="btns"><span class="link">Forgot your password?</span><span class="btn">Log in</span></div></div></div>
+  <div class="scr"><div class="lbl">Forgot password</div><div class="body"><h3>Reset your password</h3><p class="note">Enter your email. If it has an account, we'll send a reset link.</p><div class="f"><label>Email</label><div class="in v">justindema76@gmail.com</div></div><div class="match"><div class="t">✓ Sent</div>Check your inbox (and junk folder).</div></div></div>
+  <div class="scr"><div class="lbl">Wheels staff · Magento admin</div><div class="body"><h3>"Do I have an account?"</h3><p style="font-size:14px;color:var(--ink2)">Customers → All Customers → search the email → open the customer → <b>Reset Password</b>. Magento emails them a link. Staff never know or set passwords.</p></div></div>
+</div></section>
+
+<section class="sec" id="team"><h2>Company users &amp; invites</h2><p>The main contact manages their people.</p>
+<div class="row">
+  <div class="scr"><div class="lbl">My Account → Company Users</div><div class="body">
+    <div class="btns" style="margin:0 0 10px"><h3>Company Users</h3><span class="btn">+ Invite a teammate</span></div>
+    <table><tr><th>Name</th><th>Email</th><th>Role</th></tr><tr><td>Justin DeMatteis</td><td>justin@smithford.ca</td><td><span class="pill m">Main contact</span></td></tr><tr><td>Maria Lopez</td><td>maria@smithford.ca</td><td><span class="pill">Buyer</span></td></tr><tr><td>Dave Chen</td><td>dave@smithford.ca</td><td><span class="pill i">Invite sent</span></td></tr></table></div></div>
+  <div class="scr"><div class="lbl">Invite a teammate</div><div class="body"><h3>Invite a teammate</h3><p class="note">They get an email to set their password, already linked to the business.</p>
+    <div class="g"><div class="f"><label>First name</label><div class="in v">Dave</div></div><div class="f"><label>Last name</label><div class="in v">Chen</div></div><div class="f full"><label>Email</label><div class="in v">dave@smithford.ca</div></div><div class="f full"><label>Role</label><div class="in v sel">Buyer</div></div></div>
+    <div class="btns"><span class="btn gh">Cancel</span><span class="btn">Send invite</span></div></div></div>
+  <div class="scr"><div class="lbl">The invite email</div><div class="body"><div class="mail"><div class="h"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""></div><div class="b"><p><b>Hi Dave,</b></p><p>Justin DeMatteis added you to <b>Smith Ford Lincoln</b>'s account at Wheel's Automotive Dealer Supplies.</p><p style="text-align:center"><span class="btn">Set my password</span></p></div></div></div></div>
+</div></section>
+
+<p class="foot">Preview only · Wheel's Automotive Dealer Supplies · Interactive version: SIGNUP-PREVIEW.html</p>
+</body>
+</html>
