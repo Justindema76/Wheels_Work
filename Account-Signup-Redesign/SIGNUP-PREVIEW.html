@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dealer Sign-up</title>
+<!-- WHEELS · ACCOUNT SIGN-UP REDESIGN · PREVIEW ONLY (nothing is saved or sent).
+     One dealership = one company. The form looks for the dealership first (phone, dealer ID, website or name + postal code).
+     Found -> the person is linked to it straight away (no approval, no company info retyped).
+     Not found -> they set it up once and become the main contact. Teammates can also be invited by email.
+     Repo file: Account-Signup-Redesign/SIGNUP-PREVIEW.html -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--red-d:#b30f16;--ink:#141414;--ink2:#3a3a3a;--muted:#6b6b6b;--line:#dedede;--bg:#f5f5f4;--ok:#15803d;--ok-bg:#f0fdf4;--warn-bg:#fff7ed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);background:#fff}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.cond{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase}
+
+/* preview bar (not part of the design) */
+.pv{background:#fffbe6;border-bottom:1px solid #eadf9f;font-size:13.5px}
+.pv .in{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.pv b{margin-right:4px}
+.pv button{border:1px solid #c9bd76;background:#fff;border-radius:6px;padding:5px 11px;font-weight:600;font-size:13px}
+.pv button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pv span{flex-basis:100%;text-align:center;color:#6b5f1a}
+
+.head{background:#2a2a2a;padding:14px 20px;display:flex;justify-content:center}
+.head img{height:42px;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:34px 20px 80px}
+h1{font:800 34px/1.05 "Barlow Condensed",sans-serif;text-transform:uppercase;text-align:center}
+.sub{text-align:center;color:var(--muted);margin:8px 0 26px}
+.sub a{color:var(--red);font-weight:600}
+
+/* steps */
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:26px;flex-wrap:wrap}
+.steps div{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
+.steps i{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.steps .on{color:var(--ink)}.steps .on i{border-color:var(--red);background:var(--red);color:#fff}
+.steps .done i{border-color:var(--ink);background:var(--ink);color:#fff}
+.steps b{width:28px;height:2px;background:var(--line);align-self:center}
+
+.card{border:1px solid var(--line);border-radius:12px;padding:26px}
+.card h2{font:800 22px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin-bottom:4px}
+.card .note{color:var(--muted);font-size:14px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.grid .full{grid-column:1/-1}
+.f label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink2)}
+.f label small{font-weight:400;color:var(--muted)}
+.f input,.f select{width:100%;height:44px;border:1px solid var(--line);border-radius:8px;padding:0 12px;background:#fff}
+.f input:focus,.f select:focus{outline:2px solid #ffd2d4;border-color:var(--red)}
+.chk{display:flex;gap:9px;align-items:center;font-size:14px;margin-top:8px}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opt{flex:1;min-width:150px;border:2px solid var(--line);border-radius:10px;padding:12px 14px;font-weight:600;font-size:14px;background:#fff;text-align:left}
+.opt.on{border-color:var(--red);background:#fff5f5}
+.brands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.brand{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13.5px}
+.ids{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+details.more{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+details.more summary{cursor:pointer;font-weight:700;font-size:14px}
+details.more .grid{margin-top:12px}
+.btns{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:22px;flex-wrap:wrap}
+.btn{height:46px;padding:0 24px;border-radius:8px;border:0;font:700 16px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.04em;background:var(--red);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.link{background:none;border:0;color:var(--red);font-weight:600;text-decoration:underline;font-size:14px}
+
+/* found / not found */
+.match{border:2px solid var(--ok);background:var(--ok-bg);border-radius:12px;padding:18px;margin-top:16px}
+.match h3{font-size:16px;margin-bottom:4px}
+.match .addr{color:var(--ink2);font-size:14px}
+.match .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--ok);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.nomatch{border:1px dashed var(--line);border-radius:12px;padding:16px;margin-top:16px;color:var(--ink2);font-size:14px}
+.warn{background:var(--warn-bg);border:1px solid #fed7aa;color:#7c2d12;border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.warn b{color:#7c2d12}
+.done{text-align:center;padding:16px 6px}
+.done .tick{width:60px;height:60px;border-radius:50%;background:var(--ok);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.done p{color:var(--ink2);margin-top:8px}
+.tip{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+
+/* account: company users */
+.acct{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px}
+.acct nav a{display:block;padding:9px 12px;border-radius:8px;color:var(--ink2);text-decoration:none;font-size:14px}
+.acct nav a.on{background:var(--bg);font-weight:700;color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.pill{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--bg)}
+.pill.main{background:#fff5f5;color:var(--red)}
+.pill.inv{background:var(--warn-bg);color:#9a3412}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal.open{display:flex}
+.modal .card{background:#fff;max-width:480px;width:100%}
+.email{max-width:520px;margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.email .eh{background:#2a2a2a;padding:14px;text-align:center}.email .eh img{height:34px}
+.email .eb{padding:24px}
+.email .eb p{margin-bottom:12px;color:var(--ink2)}
+.hide{display:none!important}
+
+@media (hover:hover){.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.opt:hover{border-color:#bbb}.pv button:hover{border-color:#999}}
+@media (max-width:640px){.grid,.ids{grid-template-columns:1fr}.brands{grid-template-columns:1fr 1fr}.acct{grid-template-columns:1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+
+<div class="pv"><div class="in">
+  <b>Preview:</b>
+  <button data-go="signup" class="on">1 · Sign up</button>
+  <button data-go="team">2 · My Account → Company Users</button>
+  <button data-go="invite">3 · Invite email</button>
+  <span id="pvNote">Try phone <b>905-555-0142</b> or dealer ID <b>FD-20417</b> to see an existing dealership found. Any other number = new dealership.</span>
+</div></div>
+
+<div class="head"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"></div>
+
+<!-- ================= SIGN UP ================= -->
+<main class="wrap" id="v-signup">
+  <h1>Create your account</h1>
+  <p class="sub">Already have one? <a href="#">Log in</a></p>
+
+  <div class="steps" id="steps">
+    <div data-s="1" class="on"><i>1</i>About you</div><b></b>
+    <div data-s="2"><i>2</i>Your dealership</div><b></b>
+    <div data-s="3"><i>3</i>Done</div>
+  </div>
+
+  <!-- step 1 -->
+  <section class="card" id="s1">
+    <h2>About you</h2>
+    <p class="note">Your own login. Each person at the dealership has their own.</p>
+    <div id="emailWarn"></div>
+    <div class="grid">
+      <div class="f"><label>First name *</label><input id="fn" value="Justin"></div>
+      <div class="f"><label>Last name *</label><input id="ln" value="DeMatteis"></div>
+      <div class="f full"><label>Email *</label><input id="em" type="email" placeholder="you@dealership.com"></div>
+      <div class="f"><label>Phone</label><input id="ph" placeholder="(905) 555-0123"></div>
+      <div class="f"><label>Ext.</label><input placeholder="Optional"></div>
+      <div class="f full"><label>Job title</label><input placeholder="e.g. Sales Manager"></div>
+    </div>
+    <div class="btns"><span></span><button class="btn" id="to2">Next</button></div>
+  </section>
+
+  <!-- step 2 -->
+  <section class="card hide" id="s2">
+    <h2>Find your dealership</h2>
+    <p class="note">If your dealership already has a Wheels account, you'll be added to it. Nothing to retype.</p>
+    <div class="grid">
+      <div class="f"><label>Dealership phone number</label><input id="dph" placeholder="(905) 555-0142"></div>
+      <div class="f"><label>or OEM dealer ID <small>(if you have one)</small></label><input id="did" placeholder="e.g. FD-20417"></div>
+    </div>
+    <div class="btns" style="margin-top:14px"><span></span><button class="btn ghost" id="find">Find my dealership</button></div>
+
+    <div id="found" class="hide">
+      <div class="match">
+        <span class="tag">✓ Found your dealership</span>
+        <h3>Smith Ford Lincoln</h3>
+        <div class="addr">1200 Upper James St, Hamilton, ON L9C 3B1 · (905) 555-0142</div>
+      </div>
+      <div class="btns"><button class="link" id="notMine">That's not my dealership</button><button class="btn" id="join">Join Smith Ford Lincoln</button></div>
+    </div>
+
+    <div id="newCo" class="hide">
+      <div class="nomatch">No Wheels account for this dealership yet. <b>Set it up below</b>. You'll be its main contact and can add your team later.</div>
+      <div class="grid" style="margin-top:16px">
+        <div class="f full"><label>Dealership name *</label><input placeholder="e.g. Smith Ford Lincoln"></div>
+        <div class="f full"><label>Type *</label>
+          <div class="opts" id="type"><button class="opt" data-v="new">New vehicle dealership</button><button class="opt" data-v="used">Used vehicle dealership</button><button class="opt" data-v="other">Other</button></div>
+        </div>
+        <div class="f full hide" id="oemWrap"><label>Brands you're an authorized dealer for <small>(for OEM program products)</small></label>
+          <div class="brands" id="brands"></div>
+          <div class="ids" id="ids"></div>
+        </div>
+        <div class="f full"><label>Street address *</label><input></div>
+        <div class="f"><label>Suite, unit</label><input placeholder="Optional"></div>
+        <div class="f"><label>City *</label><input></div>
+        <div class="f"><label>Province *</label><select><option>Ontario</option><option>Alberta</option><option>British Columbia</option><option>Manitoba</option><option>New Brunswick</option><option>Newfoundland and Labrador</option><option>Nova Scotia</option><option>PEI</option><option>Quebec</option><option>Saskatchewan</option></select></div>
+        <div class="f"><label>Postal code *</label><input></div>
+        <div class="f"><label>Country *</label><select><option>Canada</option><option>United States</option></select></div>
+        <div class="f"><label>Website</label><input placeholder="Optional"></div>
+        <div class="f full"><label class="chk" style="font-weight:400"><input type="checkbox" checked style="width:auto;height:auto"> Dealership phone and email are the same as mine</label></div>
+      </div>
+      <details class="more"><summary>Tax &amp; billing (optional)</summary>
+        <div class="grid">
+          <div class="f full"><label>Legal business name <small>(if different)</small></label><input></div>
+          <div class="f"><label>GST/HST number</label><input></div>
+          <div class="f"><label>PST exemption / reseller number</label><input></div>
+        </div>
+      </details>
+    </div>
+
+    <div id="hearWrap" class="hide">
+      <div class="f" style="margin-top:20px"><label>How did you hear about us? <small>(optional)</small></label>
+        <select><option>Choose one</option><option>Google search</option><option>Wheels sales rep</option><option>Another dealer</option><option>Trade show</option><option>Email or catalogue</option><option>Social media</option><option>Other</option></select></div>
+      <div class="btns"><button class="btn ghost" id="back1">Back</button><button class="btn" id="create">Create account</button></div>
+    </div>
+  </section>
+
+  <!-- step 3 -->
+  <section class="card hide" id="s3">
+    <div class="done">
+      <div class="tick">✓</div>
+      <h2 id="doneTitle">You're in</h2>
+      <p id="doneText"></p>
+      <p><b>Check your email</b> for a link to set your password.</p>
+    </div>
+  </section>
+  <p class="tip">Preview only. Nothing is saved or sent.</p>
+</main>
+
+<!-- ================= MY ACCOUNT → COMPANY USERS ================= -->
+<main class="wrap hide" id="v-team" style="max-width:1000px">
+  <h1>My Account</h1><p class="sub">Smith Ford Lincoln</p>
+  <div class="acct">
+    <nav><a href="#">Dashboard</a><a href="#">My Orders</a><a href="#">Company Profile</a><a href="#" class="on">Company Users</a><a href="#">Address Book</a></nav>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap"><h2>Company Users</h2><button class="btn" id="openInvite">+ Invite a teammate</button></div>
+      <table><thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+        <tbody id="users">
+          <tr><td>Justin DeMatteis</td><td>justin@smithford.ca</td><td><span class="pill main">Main contact</span></td></tr>
+          <tr><td>Maria Lopez</td><td>maria@smithford.ca</td><td><span class="pill">Buyer</span></td></tr>
+        </tbody></table>
+      <p class="tip" style="text-align:left">Teammates who sign up with this dealership's phone or dealer ID show up here automatically. You can also invite them by email.</p>
+    </div>
+  </div>
+</main>
+
+<div class="modal" id="inviteM"><div class="card">
+  <h2>Invite a teammate</h2><p class="note">They get an email to set their password. They're already linked to Smith Ford Lincoln.</p>
+  <div class="grid">
+    <div class="f"><label>First name</label><input id="ifn" value="Dave"></div>
+    <div class="f"><label>Last name</label><input id="iln" value="Chen"></div>
+    <div class="f full"><label>Email</label><input id="iem" value="dave@smithford.ca"></div>
+    <div class="f full"><label>Role</label><select id="irole"><option>Buyer</option><option>Main contact</option></select></div>
+  </div>
+  <div class="btns"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="sendInvite">Send invite</button></div>
+</div></div>
+
+<!-- ================= INVITE EMAIL ================= -->
+<main class="wrap hide" id="v-invite">
+  <h1>The invite email</h1><p class="sub">What the teammate receives</p>
+  <div class="email">
+    <div class="eh"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""></div>
+    <div class="eb">
+      <p><b>Hi Dave,</b></p>
+      <p>Justin DeMatteis added you to <b>Smith Ford Lincoln</b>'s account at Wheel's Automotive Dealer Supplies.</p>
+      <p>Set your password to start ordering with your dealership's pricing and discounts.</p>
+      <p style="text-align:center;margin:20px 0"><a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" href="#">Set my password</a></p>
+      <p style="font-size:13px;color:var(--muted)">Not expecting this? You can ignore this email.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+function $(id){return document.getElementById(id)}
+function show(id,on){$(id).classList.toggle('hide',!on)}
+function step(n){['s1','s2','s3'].forEach(function(s,i){show(s,i+1===n)});
+  document.querySelectorAll('#steps>div').forEach(function(d){var s=+d.dataset.s;d.className=s===n?'on':(s<n?'done':'')});window.scrollTo(0,0)}
+var EXISTING_PHONES=['9055550142','905-555-0142','(905) 555-0142'], EXISTING_ID='FD-20417';
+var joined=false;
+
+// step 1 → 2 (email already used? offer log in instead)
+$('to2').onclick=function(){
+  var em=$('em').value.trim().toLowerCase();
+  if(!em){$('em').focus();return}
+  if(em==='justindema76@gmail.com'||em==='justin@wheelsauto.com'){
+    $('emailWarn').innerHTML='<div class="warn"><b>This email already has a Wheels account.</b> <a href="#" style="color:#7c2d12;font-weight:700">Log in</a> or <a href="#" style="color:#7c2d12;font-weight:700">reset your password</a>. One email = one account across all Wheels sites.</div>';return}
+  $('emailWarn').innerHTML='';step(2);
+};
+// step 2: look for the dealership
+function norm(s){return String(s||'').replace(/\D/g,'')}
+$('find').onclick=function(){
+  var p=norm($('dph').value),id=$('did').value.trim().toUpperCase();
+  var hit=(p&&p===norm(EXISTING_PHONES[0]))||id===EXISTING_ID;
+  show('found',hit);show('newCo',!hit);show('hearWrap',!hit);joined=false;
+};
+$('notMine').onclick=function(){show('found',false);show('newCo',true);show('hearWrap',true)};
+$('join').onclick=function(){joined=true;show('hearWrap',true);$('create').textContent='Join Smith Ford Lincoln';$('create').click()};
+$('back1').onclick=function(){step(1)};
+$('create').onclick=function(){
+  $('doneTitle').textContent=joined?'You\'re part of Smith Ford Lincoln':'Your dealership is set up';
+  $('doneText').textContent=joined?'You can order right away with your dealership\'s pricing. Smith Ford Lincoln\'s main contact gets an email letting them know you joined.':'You\'re the main contact. Invite your team from My Account → Company Users, or they can sign up and find your dealership by its phone number.';
+  step(3);
+};
+// dealer type + OEM brands
+var BRANDS=['Acura','Audi','BMW','Chevrolet Buick GMC','Ford','Honda','Hyundai','Infiniti','Kia','Mazda','Mercedes-Benz','Mini','Mitsubishi','Nissan','Subaru','Volkswagen','Volvo'];
+$('brands').innerHTML=BRANDS.map(function(b){return '<label class="brand"><input type="checkbox" value="'+b+'"> '+b+'</label>'}).join('');
+$('type').addEventListener('click',function(e){var b=e.target.closest('.opt');if(!b)return;$('type').querySelectorAll('.opt').forEach(function(x){x.classList.toggle('on',x===b)});show('oemWrap',b.dataset.v==='new')});
+$('brands').addEventListener('change',function(){
+  var on=[].slice.call($('brands').querySelectorAll('input:checked')).map(function(i){return i.value});
+  $('ids').innerHTML=on.map(function(b){return '<div class="f"><label>'+b+' dealer ID</label><input placeholder="Optional"></div>'}).join('');
+});
+// account: invite
+$('openInvite').onclick=function(){$('inviteM').classList.add('open')};
+document.addEventListener('click',function(e){if(e.target.closest('[data-close]')||e.target===$('inviteM'))$('inviteM').classList.remove('open')});
+$('sendInvite').onclick=function(){
+  $('users').insertAdjacentHTML('beforeend','<tr><td>'+$('ifn').value+' '+$('iln').value+'</td><td>'+$('iem').value+'</td><td><span class="pill inv">Invite sent</span></td></tr>');
+  $('inviteM').classList.remove('open');
+};
+// preview bar
+var NOTES={signup:'Try phone <b>905-555-0142</b> or dealer ID <b>FD-20417</b> to see an existing dealership found. Any other number = new dealership. Email <b>justindema76@gmail.com</b> shows the "already has an account" message.',team:'The main contact\'s view. Click <b>+ Invite a teammate</b>.',invite:'The email a teammate gets when they\'re invited.'};
+document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){var v=b.dataset.go;document.querySelectorAll('[data-go]').forEach(function(x){x.classList.toggle('on',x===b)});['signup','team','invite'].forEach(function(x){show('v-'+x,x===v)});$('pvNote').innerHTML=NOTES[v];window.scrollTo(0,0)}});
+$('pvNote').innerHTML=NOTES.signup;
+</script>
+</body>
+</html>
