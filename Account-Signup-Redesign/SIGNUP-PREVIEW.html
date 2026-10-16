@@ -30,7 +30,7 @@ h1{font:800 34px/1.05 "Barlow Condensed",sans-serif;text-transform:uppercase;tex
 .sub{text-align:center;color:var(--muted);margin:8px 0 24px}
 .sub a{color:var(--red);font-weight:600}
 .steps{display:flex;justify-content:center;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.steps div{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted)}
+.steps div{cursor:pointer;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted)}
 .steps i{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
 .steps .on{color:var(--ink)}.steps .on i{border-color:var(--red);background:var(--red);color:#fff}
 .steps .done i{border-color:var(--ink);background:var(--ink);color:#fff}
@@ -296,6 +296,12 @@ function show(id,on){$(id).classList.toggle('hide',!on)}
 var who=null, foundBiz=false;
 function step(n){[1,2,3,4].forEach(function(i){show('s'+i,i===n)});
   document.querySelectorAll('#steps>div').forEach(function(d){var s=+d.dataset.s;d.className=s===n?'on':(s<n?'done':'')});window.scrollTo(0,0)}
+// preview: click a step number to jump straight to that page
+document.querySelectorAll('#steps>div').forEach(function(d){d.onclick=function(){var n=+d.dataset.s;
+  if(n>=3&&!who){var b=document.querySelector('#who button[data-v="dealer"]');b.click()}
+  if(n===3){$('to3').onclick();return}
+  if(n===4&&!$('doneTitle').textContent){$('create').onclick();return}
+  step(n)}});
 document.querySelectorAll('[data-back]').forEach(function(b){b.onclick=function(){step(+b.dataset.back)}});
 
 // 1 · email first
@@ -354,7 +360,7 @@ $('sendInvite').onclick=function(){$('users').insertAdjacentHTML('beforeend','<t
 
 // preview bar + in-page jumps
 var NOTES={
- signup:'Try email <b>justindema76@gmail.com</b> (already has an account). Business phone <b>905-555-0142</b> = Smith Ford Lincoln (dealership), <b>905-555-0199</b> = Hamilton Collision Centre (other business). Any other number = new.',
+ signup:'Click the step numbers (1 Email · 2 Who it\'s for · 3 Details · 4 Done) to jump to any page. Try email <b>justindema76@gmail.com</b> (already has an account). Business phone <b>905-555-0142</b> = Smith Ford Lincoln (dealership), <b>905-555-0199</b> = Hamilton Collision Centre (other business). Any other number = new.',
  login:'Click <b>Forgot your password?</b> to see the reset flow.',
  team:'The main contact\'s view. Click <b>+ Invite a teammate</b>.',
  flow:'One page with the whole workflow, for the meeting.'};
