@@ -31,7 +31,7 @@
 - WordPress plugin (`justinnovate-code-studio/`, auto-deploys live on push to main) — untouched; redesign goes there after the standalone is approved.
 
 ## 2. Nav bar redesign — handed off
-- Previews: `Homepage-Redesign/10 NAV BAR/` (NAV-0 … NAV-5; **NAV-5-rona-side-menu-CURRENT** is the one).
+- Previews: `Website-Redesign/10 NAV BAR/` (NAV-0 … NAV-5; **NAV-5-rona-side-menu-CURRENT** is the one).
 - Code branch **`feature/nav-redesign`** in `Justindema76/Wheels-Staging-Justin` (built from Hafiz's `feature/phase2-composer-cleanup`). Step-by-step README: `docs/README.md`.
 - Repo is private → add **hafizmuzamal422** as collaborator (Read) so he can open it. Ask Hafiz which branch to merge into.
 - Desktop only; phones unchanged. CMS blocks to create: `header-quick-links`, `side-menu-popular`, `account-links-group-<ID>` (Rafih).
@@ -45,7 +45,7 @@
 
 ## 4. Other
 - Harjas's mobile question: the live site is fine on phones; she was looking at the old Code Studio editor's canvas.
-- Early designs recovered: `Homepage-Redesign/EARLY DESIGNS/`.
+- Early designs recovered: `Website-Redesign/EARLY DESIGNS/`.
 - Code Studio redesign previews: `Code-Studio-Redesign/` (preview 1 simple, preview 2 all controls).
 - Deleted old `Plate-Cover-Designer/` folder (still in git history).
 
