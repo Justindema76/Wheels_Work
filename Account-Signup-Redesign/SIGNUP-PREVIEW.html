@@ -93,6 +93,33 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
 .modal.open{display:flex}.modal .card{background:#fff;max-width:480px;width:100%}
 .hide{display:none!important}
+
+/* ---- wheelsauto.com page frame (header, menu, footer) ---- */
+.s-top{background:#000;color:#ddd;font-size:12px}
+.s-top .in{max-width:1240px;margin:0 auto;padding:7px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.s-top b{color:var(--red)}
+.s-head{background:#e9e9e9;border-bottom:1px solid #d5d5d5}
+.s-head .in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:28px}
+.s-head img{height:44px;display:block}
+.s-search{flex:1;max-width:520px;display:flex;height:44px;background:#fff;border-radius:4px;overflow:hidden}
+.s-search span{flex:1;display:flex;align-items:center;padding:0 16px;color:#777;font-size:14px}
+.s-search i{width:44px;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal}
+.s-acts{margin-left:auto;display:flex;align-items:center;gap:22px;font-size:12.5px;font-weight:600}
+.s-acts .st{border:1px solid #bbb;border-radius:4px;padding:7px 10px}
+.s-nav{background:linear-gradient(90deg,#3c3c3c,#4a4a4a 50%,#3c3c3c)}
+.s-nav .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;color:#e5e5e5;font-size:12.5px;text-align:center;line-height:1.25}
+.s-nav .in span{padding:0 6px}
+.s-nav .burger{font-size:22px;padding-right:16px}
+.s-title{font:800 30px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;text-align:center;margin:34px 0 0}
+.s-foot{background:#141414;color:#cfcfcf;margin-top:60px;font-size:13px}
+.s-foot .in{max-width:1240px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:24px}
+.s-foot img{height:44px;margin-bottom:16px}
+.s-foot h4{color:#fff;font-size:13px;letter-spacing:.05em;margin-bottom:12px}
+.s-foot p{line-height:1.9}
+.s-badges{max-width:1240px;margin:0 auto 24px;padding:18px 20px;border:1px solid #333;border-radius:10px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px;color:#fff;font:800 20px/1 "Barlow Condensed",sans-serif;text-transform:uppercase}
+.s-badges span em{color:#f5c400;font-style:normal}
+.s-copy{text-align:center;color:#888;font-size:12px;padding:0 0 24px}
+@media (max-width:900px){.s-nav,.s-search,.s-top .hide-m{display:none!important}.s-foot .in{grid-template-columns:1fr 1fr}}
 @media (hover:hover){.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.who button:hover,.opt:hover{border-color:#bbb}}
 @media (max-width:640px){.grid,.ids,.who{grid-template-columns:1fr}.brands{grid-template-columns:1fr 1fr}.acct,.flow .row{grid-template-columns:1fr}.card{padding:18px}}
 </style>
@@ -107,11 +134,13 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <span id="pvNote"></span>
 </div></div>
 
-<div class="head"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"></div>
+<div class="s-top"><div class="in"><span>Contact Us · 1 (800) 465-8831 &nbsp; Quick Quote</span><span class="hide-m">Welcome to our new website! Save 10% with code <b>WELCOME10</b>. One-time use. Need help getting started? Chat with us for friendly support!</span><span class="hide-m">Catalogue Flipbook ▾</span></div></div>
+<div class="s-head"><div class="in"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"><div class="s-search"><span>Search by keywords or SKU...</span><i>⌕</i></div><div class="s-acts"><span class="st">🇨🇦 CA / EN ▾</span><span>Login / Register</span><span style="font-size:22px">🛒</span></div></div></div>
+<div class="s-nav"><div class="in"><span class="burger">☰</span><span>Dealership<br>Marketing</span><span>Vehicle Advertising &amp;<br>Display</span><span>Flags &amp;<br>Banners</span><span>License &amp; Name<br>Plates</span><span>Showroom Marketing &amp;<br>Displays</span><span>Outdoor Display<br>Solutions</span><span>Mirror Tags &amp;<br>Hangers</span><span>Service &amp; Lot<br>Solutions</span><span>OEM<br>Programs</span><span>Save 10%<br>on 10</span><span>New<br>Arrival</span><span>On Sale<br>Now</span></div></div>
 
 <!-- ============ 1 · CREATE ACCOUNT ============ -->
 <main class="wrap" id="v-signup">
-  <h1>Create your account</h1>
+  <h1 class="s-title">Create your account</h1>
   <p class="sub">Already have one? <a href="#" data-goto="login">Log in</a></p>
   <div class="steps" id="steps">
     <div data-s="1" class="on"><i>1</i>Email</div><b></b>
@@ -290,6 +319,17 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   </div>
 </main>
 
+<footer class="s-foot">
+  <div class="in">
+    <div><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><p><b style="color:#fff">Wheel's Automotive Dealer Supplies Inc.</b><br>600 Arvin Ave<br>Stoney Creek, Ontario<br>Canada L8E 5P1</p><p style="margin-top:12px">Toll Free: 1-800-465-8831<br>Hours: 9 AM - 5 PM Monday to Friday</p></div>
+    <div><h4>COMPANY</h4><p>Contact Us<br>About Us<br>Team<br>Site Map</p></div>
+    <div><h4>SUPPORT</h4><p>Account<br>Order Status<br>Artwork Guide<br>Accessibility</p></div>
+    <div><h4>POLICIES &amp; INFO</h4><p>Return Policy<br>Shipping Policy<br>Privacy Policy<br>Terms Of Use</p></div>
+    <div><h4>STAY INFORMED</h4><p>Newsletter Subscription<br>Connect On LinkedIn<br>Connect On Facebook<br>Connect On Instagram</p></div>
+  </div>
+  <div class="s-badges"><span>Mix &amp; Match <em>Bulk Discount</em></span><span>Save 10% on 10</span><span>Save 3% <em>Pay with CC</em></span><span>Spend $2500 Save $250</span><span>Rush <em>Service</em></span></div>
+  <p class="s-copy">© 2026 Wheel's Automotive Dealer Supplies Inc. All Rights Reserved.</p>
+</footer>
 <script>
 function $(id){return document.getElementById(id)}
 function show(id,on){$(id).classList.toggle('hide',!on)}
