@@ -45,7 +45,7 @@
 
 ## 4. Other
 - Harjas's mobile question: the live site is fine on phones; she was looking at the old Code Studio editor's canvas.
-- Early designs recovered: `Website-Redesign/EARLY DESIGNS/`.
+- Early designs recovered: `Website-Redesign/Homepage/EARLY DESIGNS/`.
 - Code Studio redesign previews: `Code-Studio-Redesign/` (preview 1 simple, preview 2 all controls).
 - Deleted old `Plate-Cover-Designer/` folder (still in git history).
 
