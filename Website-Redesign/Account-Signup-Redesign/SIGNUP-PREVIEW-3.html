@@ -232,6 +232,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
       <div class="f"><label>Last name *</label><input value="DeMatteis"></div>
       <div class="f"><label>Phone *</label><input placeholder="(905) 555-0123"></div>
       <div class="f"><label>Job title <small>(optional)</small></label><input></div>
+      <div class="f full hide" id="emDetWrap"><label>Email * <small>(your login)</small></label><input id="emDet" type="email" placeholder="you@example.com"></div>
     </div>
 
     <div id="meAddr" class="hide">
@@ -266,7 +267,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     <div class="f hide" id="msgWrap" style="margin-top:14px"><label>Message to the administrator <small>(optional)</small></label><input id="msg" placeholder="e.g. I'm the new sales manager"></div>
     <div class="f" style="margin-top:20px"><label>How did you hear about us? <small>(optional)</small></label>
       <select><option>Choose one</option><option>Google search</option><option>Wheels sales rep</option><option>Another dealer / business</option><option>Trade show</option><option>Email or catalogue</option><option>Social media</option><option>Other</option></select></div>
-    <div class="btns"><button class="btn ghost" data-to="email">Back</button><button class="btn" id="create">Create account</button></div>
+    <div class="btns"><button class="btn ghost" id="detBack">Back</button><button class="btn" id="create">Create account</button></div>
   </section>
 
   <!-- 5 · done -->
@@ -346,7 +347,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <div class="flow">
     <div class="row"><b>1 · Who it's for</b><p>The first screen: <b>A dealership</b> · <b>Another business</b> · <b>Just me</b>.</p></div>
     <div class="row"><b>2 · Find it</b><p>Dealership: <b>brand (dropdown)</b>, then search the <b>dealership name or address</b> (like Google Maps). Business: search only. If it already has a Wheels account we only say so (no names shown): <b>Join the existing account</b> or <b>Start a new account</b>. Just me skips this step.</p></div>
-    <div class="row"><b>3 · Email</b><p>Their login email. If it already has an account, the last step says so and offers <b>Log in</b> / <b>Reset my password</b>. One email = one account.</p></div>
+    <div class="row"><b>3 · Email</b><p><b>Only when joining an existing account, or Just me.</b> Joining: <b>Check if I already have an account</b> (→ Log in / Reset my password) or <b>Email administrator for access</b>. Just me: Check, or <b>I'm new, continue</b>. <b>Starting a new account skips this step</b>: the email is entered in About you.</p></div>
     <div class="row"><b>4 · Details</b><p><b>Joining:</b> about you + optional message → <b>Request access</b>. The request goes to the account administrator (by email), who approves and picks the role, or declines. Approved → set-password email; orders invoiced to the account's accounts payable. <b>Starting new:</b> about you + business (name auto-filled, type, brands, phone, <b>accounts payable email</b>) → Create account; you become its administrator. <b>Just me:</b> about you + address.</p></div>
     <div class="row"><b>5 · Done</b><p>"Check your email to set your password." The account admin is emailed when someone joins.</p></div>
     <div class="row"><b>Accounts payable</b><p>Everyone linked to a business shares its <b>one accounts payable email</b>. However many people join, invoices go to the same place.</p></div>
@@ -372,16 +373,19 @@ function $(id){return document.getElementById(id)}
 function show(id,on){$(id).classList.toggle('hide',!on)}
 var who=null, picked=null, choice=null, exists=false;
 var ORDER=['who','find','email','details','done'];
-function steps(){return who==='me'?['who','email','details','done']:ORDER}
+function steps(){if(who==='me')return ['who','email','details','done'];return choice==='join'?ORDER:['who','find','details','done']}
 function go2(p){ORDER.forEach(function(x){show('p-'+x,x===p)});if(p==='email')$('emailNext').textContent=nextLabel();
   var st=steps(), cur=st.indexOf(p);
   document.querySelectorAll('#steps>div').forEach(function(d){var k=steps().indexOf(d.dataset.s);d.className=(k<0?'hide':'')+(k===cur?' on':(k>=0&&k<cur?' done':''))});
   document.querySelectorAll('#steps .sf').forEach(function(x){x.classList.toggle('hide',who==='me')});
-  $('nEmail').textContent=who==='me'?2:3;$('nDet').textContent=who==='me'?3:4;$('nDone').textContent=who==='me'?4:5;
+  document.querySelectorAll('#steps>div').forEach(function(d){var k=steps().indexOf(d.dataset.s);if(k>=0)d.querySelector('i').textContent=k+1});
+  var hideFind=who==='me', hideEmail=who!=='me'&&choice!=='join';
+  document.querySelectorAll('#steps .sf').forEach(function(x){x.classList.toggle('hide',hideFind)});
+  var eb=document.querySelector('#steps [data-s="email"]').previousElementSibling;eb.classList.toggle('hide',hideEmail);
   window.scrollTo(0,0)}
 // preview: click a step to jump there
 document.querySelectorAll('#steps>div').forEach(function(d){d.onclick=function(){if(!who)$('who').querySelector('[data-v="dealer"]').click();
-  var s=d.dataset.s;if(s==='details'&&!choice&&who!=='me'){choice='new'}if(s==='details')prepDetails();if(s==='done')$('create').onclick();else go2(s)}});
+  var s=d.dataset.s;if(s==='details'&&!choice&&who!=='me'){choice='new'}if(s==='email'&&who!=='me')choice='join';if(s==='details')prepDetails();if(s==='done')$('create').onclick();else go2(s)}});
 document.querySelectorAll('[data-to]').forEach(function(b){b.onclick=function(){go2(b.dataset.to)}});
 
 // 1 · who
@@ -428,7 +432,7 @@ function evaluate(){
   $('findNext').disabled=exists;$('joinName').textContent='the existing '+kind()+' account'}
 $('choice').addEventListener('click',function(e){var b=e.target.closest('.bizopt');if(!b)return;choice=b.dataset.c;
   $('choice').querySelectorAll('.bizopt').forEach(function(x){x.classList.toggle('on',x===b)});$('findNext').disabled=false});
-$('findNext').onclick=function(){go2('email')};
+$('findNext').onclick=function(){if(choice==='join'){go2('email')}else{prepDetails();go2('details')}};
 
 // 3 · email first (already used -> log in / reset password)
 var USED=['justindema76@gmail.com','justin@wheelsauto.com','maria@upperjamestoyota.ca'];
@@ -442,7 +446,7 @@ $('em').addEventListener('input',function(){show('emailHit',false);show('emailOk
 // 4 · details
 function prepDetails(){
   var biz=who!=='me', joining=biz&&choice==='join';
-  show('meAddr',!biz);show('joinNote',joining);show('newBiz',biz&&!joining);show('msgWrap',joining);
+  show('meAddr',!biz);show('joinNote',joining);show('newBiz',biz&&!joining);show('msgWrap',joining);show('emDetWrap',biz&&!joining);
   $('create').textContent=joining?'Request access':'Create account';
   var d=who==='dealer';
   $('newTitle').textContent=d?'Your dealership':'Your business';$('nameLbl').textContent=(d?'Dealership':'Business')+' name *';
@@ -454,8 +458,10 @@ function addBrandRow(sel){var row=document.createElement('div');row.className='g
   row.innerHTML='<div class="f"><select>'+'<option value="">Choose a brand</option>'+BRANDS.map(function(b){return '<option'+(b===sel?' selected':'')+'>'+b+'</option>'}).join('')+'</select></div><div class="f"><input placeholder="Dealer ID (optional)"></div>';
   $('oemRows').appendChild(row)}
 $('addBrand').onclick=function(e){e.preventDefault();addBrandRow('')};
+$('detBack').onclick=function(){go2(who==='me'||choice==='join'?'email':'find')};
 $('create').onclick=function(){$('doneMail').classList.remove('hide');
-  if(USED.indexOf($('em').value.trim().toLowerCase())>=0&&!$('createHit')){
+  var emv=(who!=='me'&&choice!=='join'?$('emDet'):$('em')).value.trim().toLowerCase();
+  if(USED.indexOf(emv)>=0&&!$('createHit')){
     $('create').closest('.btns').insertAdjacentHTML('beforebegin','<div class="warn" id="createHit"><b>This email already has a Wheels account.</b> Each email can only have one.<div class="btns" style="justify-content:flex-start"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div></div>');
     document.querySelectorAll('#createHit [data-goto]').forEach(function(a){a.onclick=function(e){e.preventDefault();go(a.dataset.goto);if(a.hasAttribute('data-forgot'))$('forgot').click()}});return}
   if($('createHit'))return;
