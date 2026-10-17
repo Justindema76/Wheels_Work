@@ -139,7 +139,13 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 .brandpick button.on{border-color:var(--red);background:#fff5f5}
 .brandpick button.wide{grid-column:span 2}
 @media (max-width:640px){.brandpick{grid-template-columns:1fr 1fr}}
-@media (hover:hover){.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.who button:hover,.opt:hover{border-color:#bbb}}
+
+.backlink{display:inline-block;background:none;border:0;padding:0;margin:-6px 0 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.btns.end{justify-content:flex-end}
+.btn{height:38px;padding:0 16px;font-size:14px;border-radius:7px}
+.f input,.f select{height:38px;font-size:14px;padding:0 10px}
+.who button{padding:14px 12px}
+@media (hover:hover){.backlink:hover{color:var(--red)}.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.who button:hover,.opt:hover{border-color:#bbb}}
 @media (max-width:640px){.grid,.ids,.who{grid-template-columns:1fr}.brands{grid-template-columns:1fr 1fr}.acct,.flow .row{grid-template-columns:1fr}.card{padding:18px}}
 </style>
 </head>
@@ -183,6 +189,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 
   <!-- 2 · find the dealership / business -->
   <section class="card hide" id="p-find">
+    <button class="backlink" data-to="who">‹ Back</button>
     <h2 id="findTitle">Find your dealership</h2>
     <p class="note">So you're linked to the right account and nothing is entered twice.</p>
     <div class="grid">
@@ -205,11 +212,12 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     </div>
     <div id="none" class="hide"><div class="nomatch" id="noneTxt"></div></div>
 
-    <div class="btns"><button class="btn ghost" data-to="who">Back</button><button class="btn" id="findNext" disabled>Continue</button></div>
+    <div class="btns end"><button class="btn" id="findNext" disabled>Continue</button></div>
   </section>
 
   <!-- 3 · email first -->
   <section class="card hide" id="p-email">
+    <button class="backlink" id="emailBack">‹ Back</button>
     <h2>Your email</h2>
     <p class="note">Not sure if you already have an account? We can check for you.</p>
     <div class="f"><label>Email *</label><input id="em" type="email" placeholder="you@example.com"></div>
@@ -219,11 +227,12 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
         <div class="btns"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div>
       </div>
     </div>
-    <div class="btns"><button class="btn ghost" id="emailBack">Back</button><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="emailCheck">Check if I already have an account</button><button class="btn" id="emailNext">I'm new, continue</button></span></div>
+    <div class="btns end"><span style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end"><button class="btn ghost" id="emailCheck">Check if I already have an account</button><button class="btn" id="emailNext">I'm new, continue</button></span></div>
   </section>
 
   <!-- 4 · details -->
   <section class="card hide" id="p-details">
+    <button class="backlink" id="detBack">‹ Back</button>
     <div id="joinNote" class="hide"><div class="ap" style="margin:0 0 16px">✉️ <span>You're <b>asking to join</b> <b id="joinName">the existing account</b>. Your request goes to its <b>account administrator</b>. Once they approve it, you'll get an email to set your password, and your orders will be invoiced to its accounts payable.</span></div></div>
     <h2>About you</h2>
     <p class="note">Your own login.</p>
@@ -267,7 +276,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     <div class="f hide" id="msgWrap" style="margin-top:14px"><label>Message to the administrator <small>(optional)</small></label><input id="msg" placeholder="e.g. I'm the new sales manager"></div>
     <div class="f" style="margin-top:20px"><label>How did you hear about us? <small>(optional)</small></label>
       <select><option>Choose one</option><option>Google search</option><option>Wheels sales rep</option><option>Another dealer / business</option><option>Trade show</option><option>Email or catalogue</option><option>Social media</option><option>Other</option></select></div>
-    <div class="btns"><button class="btn ghost" id="detBack">Back</button><button class="btn" id="create">Create account</button></div>
+    <div class="btns end"><button class="btn" id="create">Create account</button></div>
   </section>
 
   <!-- 5 · done -->
