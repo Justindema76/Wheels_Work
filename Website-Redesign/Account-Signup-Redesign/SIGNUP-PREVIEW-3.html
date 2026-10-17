@@ -211,9 +211,15 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <!-- 3 · email first -->
   <section class="card hide" id="p-email">
     <h2>Your email</h2>
-    <p class="note">This will be your login.</p>
+    <p class="note">Not sure if you already have an account? We can check for you.</p>
     <div class="f"><label>Email *</label><input id="em" type="email" placeholder="you@example.com"></div>
-    <div class="btns"><button class="btn ghost" id="emailBack">Back</button><button class="btn" id="emailNext">Continue</button></div>
+    <div id="emailOk" class="hide"><div class="match" style="margin-top:12px"><span class="tag">✓ No account with this email</span><div class="addr">You're good to go.</div></div></div>
+    <div id="emailHit" class="hide">
+      <div class="warn"><b>You already have an account with this email.</b><br>Forgot your password? It happens. Reset it and you're back in.
+        <div class="btns"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div>
+      </div>
+    </div>
+    <div class="btns"><button class="btn ghost" id="emailBack">Back</button><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="emailCheck">Check if I already have an account</button><button class="btn" id="emailNext">I'm new, continue</button></span></div>
   </section>
 
   <!-- 4 · details -->
@@ -367,7 +373,7 @@ function show(id,on){$(id).classList.toggle('hide',!on)}
 var who=null, picked=null, choice=null, exists=false;
 var ORDER=['who','find','email','details','done'];
 function steps(){return who==='me'?['who','email','details','done']:ORDER}
-function go2(p){ORDER.forEach(function(x){show('p-'+x,x===p)});
+function go2(p){ORDER.forEach(function(x){show('p-'+x,x===p)});if(p==='email')$('emailNext').textContent=nextLabel();
   var st=steps(), cur=st.indexOf(p);
   document.querySelectorAll('#steps>div').forEach(function(d){var k=steps().indexOf(d.dataset.s);d.className=(k<0?'hide':'')+(k===cur?' on':(k>=0&&k<cur?' done':''))});
   document.querySelectorAll('#steps .sf').forEach(function(x){x.classList.toggle('hide',who==='me')});
@@ -427,7 +433,11 @@ $('findNext').onclick=function(){go2('email')};
 // 3 · email first (already used -> log in / reset password)
 var USED=['justindema76@gmail.com','justin@wheelsauto.com','maria@upperjamestoyota.ca'];
 $('emailBack').onclick=function(){go2(who==='me'?'who':'find')};
-$('emailNext').onclick=function(){if(!$('em').value.trim()){$('em').focus();return}prepDetails();go2('details')};
+function nextLabel(){return (who!=='me'&&choice==='join')?'Email administrator for access':"I'm new, continue"}
+$('emailCheck').onclick=function(){var em=$('em').value.trim().toLowerCase();if(!em){$('em').focus();return}
+  var used=USED.indexOf(em)>=0;show('emailHit',used);show('emailOk',!used)};
+$('emailNext').onclick=function(){if(!$('em').value.trim()){$('em').focus();return}show('emailHit',false);show('emailOk',false);prepDetails();go2('details')};
+$('em').addEventListener('input',function(){show('emailHit',false);show('emailOk',false)});
 
 // 4 · details
 function prepDetails(){
