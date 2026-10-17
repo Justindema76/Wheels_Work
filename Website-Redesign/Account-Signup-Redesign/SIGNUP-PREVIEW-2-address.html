@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account Sign-up v2</title>
+<!-- WHEELS · ACCOUNT SIGN-UP WORKFLOW · PREVIEW 2 (dealership brand first, address lookup, accounts payable). Version 1 = SIGNUP-PREVIEW.html.
+     Dealerships pick their brand first, then the address (picked from a lookup list so it's always written the same way).
+     Everyone who joins a business is linked to it, so invoices always go to that business's one accounts payable email.
+     Anyone can join (Buyer role, account admin is emailed). Admins can also invite people and pick their role.
+     Step 0: email first (already have an account? -> log in / reset password).
+     Step 1: who is this account for? Just me / A dealership / Another business.
+     Step 2: the right form. Businesses: find first by the business phone number (dealerships: or OEM dealer ID).
+             Found -> join it (no company info retyped). Not found -> register it once.
+     Step 3: done -> check your email to set your password.
+     Repo file: Website-Redesign/Account-Signup-Redesign/SIGNUP-PREVIEW-2-address.html -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--red-d:#b30f16;--ink:#141414;--ink2:#3a3a3a;--muted:#6b6b6b;--line:#dedede;--bg:#f5f5f4;--ok:#15803d;--ok-bg:#f0fdf4;--warn-bg:#fff7ed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);background:#fff}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.pv{background:#fffbe6;border-bottom:1px solid #eadf9f;font-size:13.5px}
+.pv .in{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.pv button{border:1px solid #c9bd76;background:#fff;border-radius:6px;padding:5px 11px;font-weight:600;font-size:13px}
+.pv button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pv span{flex-basis:100%;text-align:center;color:#6b5f1a}
+.head{background:#2a2a2a;padding:14px 20px;display:flex;justify-content:center}
+.head img{height:42px;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:34px 20px 80px}
+h1{font:800 34px/1.05 "Barlow Condensed",sans-serif;text-transform:uppercase;text-align:center}
+.sub{text-align:center;color:var(--muted);margin:8px 0 24px}
+.sub a{color:var(--red);font-weight:600}
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.steps div{cursor:pointer;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted)}
+.steps i{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.steps .on{color:var(--ink)}.steps .on i{border-color:var(--red);background:var(--red);color:#fff}
+.steps .done i{border-color:var(--ink);background:var(--ink);color:#fff}
+.steps b{width:22px;height:2px;background:var(--line);align-self:center}
+.card{border:1px solid var(--line);border-radius:12px;padding:26px}
+.card h2{font:800 22px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin-bottom:4px}
+.card .note{color:var(--muted);font-size:14px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.grid .full{grid-column:1/-1}
+.f label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink2)}
+.f label small{font-weight:400;color:var(--muted)}
+.f input,.f select{width:100%;height:44px;border:1px solid var(--line);border-radius:8px;padding:0 12px;background:#fff}
+.f input:focus,.f select:focus{outline:2px solid #ffd2d4;border-color:var(--red)}
+.chk{display:flex;gap:9px;align-items:center;font-size:14px;font-weight:400!important}
+.chk input{width:auto!important;height:auto!important}
+.who{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.who button{border:2px solid var(--line);border-radius:12px;padding:18px 14px;background:#fff;text-align:left}
+.who button b{display:block;font-size:16px;margin-bottom:4px}
+.who button span{font-size:13px;color:var(--muted)}
+.who button .ic{font-size:26px;display:block;margin-bottom:8px}
+.who button.on{border-color:var(--red);background:#fff5f5}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opt{flex:1;min-width:150px;border:2px solid var(--line);border-radius:10px;padding:11px 14px;font-weight:600;font-size:14px;background:#fff;text-align:left}
+.opt.on{border-color:var(--red);background:#fff5f5}
+.brands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.brand{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13.5px}
+.ids{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+details.more{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+details.more summary{cursor:pointer;font-weight:700;font-size:14px}
+details.more .grid{margin-top:12px}
+.btns{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:22px;flex-wrap:wrap}
+.btn{height:46px;padding:0 24px;border-radius:8px;border:0;font:700 16px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.04em;background:var(--red);color:#fff;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.link{background:none;border:0;color:var(--red);font-weight:600;text-decoration:underline;font-size:14px}
+.match{border:2px solid var(--ok);background:var(--ok-bg);border-radius:12px;padding:18px;margin-top:16px}
+.match h3{font-size:16px;margin-bottom:2px}
+.match .addr{color:var(--ink2);font-size:14px}
+.match .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--ok);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.nomatch{border:1px dashed #bbb;border-radius:12px;padding:14px 16px;margin-top:16px;color:var(--ink2);font-size:14px;background:var(--bg)}
+.warn{background:var(--warn-bg);border:1px solid #fed7aa;color:#7c2d12;border-radius:10px;padding:14px 16px;font-size:14px;margin-top:14px}
+.warn b{color:#7c2d12}.warn .btns{margin-top:12px;justify-content:flex-start}
+.why{font-size:12.5px;color:var(--muted);margin-top:8px}
+.done{text-align:center;padding:16px 6px}
+.done .tick{width:60px;height:60px;border-radius:50%;background:var(--ok);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.done p{color:var(--ink2);margin-top:8px}
+.tip{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+.flow{display:grid;gap:10px}
+.flow .row{display:grid;grid-template-columns:160px minmax(0,1fr);gap:14px;align-items:start;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.flow .row b{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--red)}
+.flow .row p{font-size:14px;color:var(--ink2)}
+.acct{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px}
+.acct nav a{display:block;padding:9px 12px;border-radius:8px;color:var(--ink2);text-decoration:none;font-size:14px}
+.acct nav a.on{background:var(--bg);font-weight:700;color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.pill{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--bg)}
+.pill.main{background:#fff5f5;color:var(--red)}.pill.inv{background:var(--warn-bg);color:#9a3412}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal.open{display:flex}.modal .card{background:#fff;max-width:480px;width:100%}
+.hide{display:none!important}
+
+/* ---- wheelsauto.com page frame (header, menu, footer) ---- */
+.s-top{background:#000;color:#ddd;font-size:12px}
+.s-top .in{max-width:1240px;margin:0 auto;padding:7px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.s-top b{color:var(--red)}
+.s-head{background:#e9e9e9;border-bottom:1px solid #d5d5d5}
+.s-head .in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:28px}
+.s-head img{height:44px;display:block}
+.s-search{flex:1;max-width:520px;display:flex;height:44px;background:#fff;border-radius:4px;overflow:hidden}
+.s-search span{flex:1;display:flex;align-items:center;padding:0 16px;color:#777;font-size:14px}
+.s-search i{width:44px;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal}
+.s-acts{margin-left:auto;display:flex;align-items:center;gap:22px;font-size:12.5px;font-weight:600}
+.s-acts .st{border:1px solid #bbb;border-radius:4px;padding:7px 10px}
+.s-nav{background:linear-gradient(90deg,#3c3c3c,#4a4a4a 50%,#3c3c3c)}
+.s-nav .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;color:#e5e5e5;font-size:12.5px;text-align:center;line-height:1.25}
+.s-nav .in span{padding:0 6px}
+.s-nav .burger{font-size:22px;padding-right:16px}
+.s-title{font:800 30px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;text-align:center;margin:34px 0 0}
+.s-foot{background:#141414;color:#cfcfcf;margin-top:60px;font-size:13px}
+.s-foot .in{max-width:1240px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:24px}
+.s-foot img{height:44px;margin-bottom:16px}
+.s-foot h4{color:#fff;font-size:13px;letter-spacing:.05em;margin-bottom:12px}
+.s-foot p{line-height:1.9}
+.s-badges{max-width:1240px;margin:0 auto 24px;padding:18px 20px;border:1px solid #333;border-radius:10px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px;color:#fff;font:800 20px/1 "Barlow Condensed",sans-serif;text-transform:uppercase}
+.s-badges span em{color:#f5c400;font-style:normal}
+.s-copy{text-align:center;color:#888;font-size:12px;padding:0 0 24px}
+@media (max-width:900px){.s-nav,.s-search,.s-top .hide-m{display:none!important}.s-foot .in{grid-template-columns:1fr 1fr}}
+
+.look{position:relative}
+.sugg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.12);z-index:5;overflow:hidden}
+.sugg button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;background:#fff;font-size:14px}
+.sugg button small{display:block;color:var(--muted);font-size:12px}
+.sugg .pw{padding:6px 12px;font-size:11px;color:var(--muted);border-top:1px solid var(--line);text-align:right}
+.picked{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);font-size:14px;margin-top:10px}
+.bizlist{display:grid;gap:8px;margin-top:10px}
+.bizopt{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;text-align:left;width:100%}
+.bizopt.on{border-color:var(--ok);background:var(--ok-bg)}
+.bizopt i{width:18px;height:18px;border-radius:50%;border:2px solid #bbb;flex:none;margin-top:2px}
+.bizopt.on i{border:6px solid var(--ok)}
+.bizopt b{display:block}.bizopt span{font-size:13px;color:var(--muted)}
+.bizopt.add{border-style:dashed}
+.ap{display:flex;gap:10px;align-items:flex-start;background:#f0f6ff;border:1px solid #c9dcff;border-radius:10px;padding:12px 14px;font-size:14px;color:#1e3a6e;margin-top:12px}
+.brandpick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.brandpick button{border:2px solid var(--line);border-radius:8px;padding:9px 8px;background:#fff;font-weight:600;font-size:13.5px}
+.brandpick button.on{border-color:var(--red);background:#fff5f5}
+.brandpick button.wide{grid-column:span 2}
+@media (max-width:640px){.brandpick{grid-template-columns:1fr 1fr}}
+@media (hover:hover){.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.who button:hover,.opt:hover{border-color:#bbb}}
+@media (max-width:640px){.grid,.ids,.who{grid-template-columns:1fr}.brands{grid-template-columns:1fr 1fr}.acct,.flow .row{grid-template-columns:1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+
+<div class="pv"><div class="in">
+  <button data-go="signup" class="on">1 · Create account</button>
+  <button data-go="login">2 · Log in / Forgot password</button>
+  <button data-go="team">3 · Company users &amp; invites</button>
+  <button data-go="flow">4 · The whole workflow</button>
+  <span id="pvNote"></span>
+</div></div>
+
+<div class="s-top"><div class="in"><span>Contact Us · 1 (800) 465-8831 &nbsp; Quick Quote</span><span class="hide-m">Welcome to our new website! Save 10% with code <b>WELCOME10</b>. One-time use. Need help getting started? Chat with us for friendly support!</span><span class="hide-m">Catalogue Flipbook ▾</span></div></div>
+<div class="s-head"><div class="in"><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt="Wheel's Automotive Dealer Supplies"><div class="s-search"><span>Search by keywords or SKU...</span><i>⌕</i></div><div class="s-acts"><span class="st">🇨🇦 CA / EN ▾</span><span>Login / Register</span><span style="font-size:22px">🛒</span></div></div></div>
+<div class="s-nav"><div class="in"><span class="burger">☰</span><span>Dealership<br>Marketing</span><span>Vehicle Advertising &amp;<br>Display</span><span>Flags &amp;<br>Banners</span><span>License &amp; Name<br>Plates</span><span>Showroom Marketing &amp;<br>Displays</span><span>Outdoor Display<br>Solutions</span><span>Mirror Tags &amp;<br>Hangers</span><span>Service &amp; Lot<br>Solutions</span><span>OEM<br>Programs</span><span>Save 10%<br>on 10</span><span>New<br>Arrival</span><span>On Sale<br>Now</span></div></div>
+
+<!-- ============ 1 · CREATE ACCOUNT ============ -->
+<main class="wrap" id="v-signup">
+  <h1 class="s-title">Create your account</h1>
+  <p class="sub">Already have one? <a href="#" data-goto="login">Log in</a></p>
+  <div class="steps" id="steps">
+    <div data-s="1" class="on"><i>1</i>Email</div><b></b>
+    <div data-s="2"><i>2</i>Who it's for</div><b></b>
+    <div data-s="3"><i>3</i>Details</div><b></b>
+    <div data-s="4"><i>4</i>Done</div>
+  </div>
+
+  <!-- 1 · email first -->
+  <section class="card" id="s1">
+    <h2>Start with your email</h2>
+    <p class="note">We'll check if you already have an account.</p>
+    <div class="f"><label>Email *</label><input id="em" type="email" placeholder="you@example.com"></div>
+    <div id="emailHit" class="hide">
+      <div class="warn"><b>You already have an account with this email.</b><br>One email = one account on all Wheels sites (Canada English, Canada French, USA).
+        <div class="btns"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div>
+      </div>
+    </div>
+    <div class="btns"><span></span><button class="btn" id="to2">Continue</button></div>
+  </section>
+
+  <!-- 2 · who is this for -->
+  <section class="card hide" id="s2">
+    <h2>Who is this account for?</h2>
+    <p class="note">This decides which details we ask for.</p>
+    <div class="who" id="who">
+      <button data-v="me"><span class="ic">👤</span><b>Just me</b><span>Personal purchases</span></button>
+      <button data-v="dealer"><span class="ic">🚗</span><b>A dealership</b><span>New or used vehicle dealership</span></button>
+      <button data-v="biz"><span class="ic">🏢</span><b>Another business</b><span>Body shop, fleet, rental, agency…</span></button>
+    </div>
+    <div class="btns"><button class="btn ghost" data-back="1">Back</button><button class="btn" id="to3" disabled>Continue</button></div>
+  </section>
+
+  <!-- 3 · details -->
+  <section class="card hide" id="s3">
+    <!-- about you (everyone) -->
+    <h2 id="s3title">About you</h2>
+    <p class="note" id="s3note"></p>
+    <div class="grid">
+      <div class="f"><label>First name *</label><input value="Justin"></div>
+      <div class="f"><label>Last name *</label><input value="DeMatteis"></div>
+      <div class="f"><label>Phone *</label><input id="myPhone" placeholder="(905) 555-0123"></div>
+      <div class="f"><label>Job title <small id="jtOpt">(optional)</small></label><input></div>
+    </div>
+
+    <!-- just me: address -->
+    <div id="meBlock" class="hide">
+      <div class="grid" style="margin-top:12px">
+        <div class="f full"><label>Street address *</label><input></div>
+        <div class="f"><label>City *</label><input></div>
+        <div class="f"><label>Province / State *</label><select><option>Ontario</option><option>Quebec</option><option>Alberta</option><option>British Columbia</option><option>Other…</option></select></div>
+        <div class="f"><label>Postal / ZIP code *</label><input></div>
+        <div class="f"><label>Country *</label><select><option>Canada</option><option>United States</option></select></div>
+      </div>
+    </div>
+
+    <!-- business: (dealership brand) + find by address -->
+    <div id="bizBlock" class="hide">
+      <div id="brandStep">
+        <h2 style="margin-top:24px">Which dealership are you from?</h2>
+        <p class="note">Pick your brand first. It narrows the search to your dealership.</p>
+        <div class="brandpick" id="brandpick"></div>
+      </div>
+      <div id="addrStep">
+        <h2 style="margin-top:24px" id="findTitle">Find your business</h2>
+        <p class="note" id="findNote">Start typing the address and pick it from the list. If it already has a Wheels account, you'll be added to it.</p>
+        <div class="f look"><label>Business address *</label><input id="addr" autocomplete="off" placeholder="Start typing… e.g. 1200 Upper James">
+          <div class="sugg hide" id="sugg"></div></div>
+        <p class="why">Picking from the list means the address is always written the same way, so we can match it.</p>
+        <div id="pickedWrap" class="hide"><div class="picked"><span id="pickedTxt"></span><button class="link" id="changeAddr">Change</button></div></div>
+      </div>
+
+      <div id="atAddr" class="hide">
+        <h3 style="font-size:15px;margin-top:16px" id="atTitle"></h3>
+        <div class="bizlist" id="bizlist"></div>
+        <div id="joinInfo" class="hide"><div class="ap">🧾 <span>You'll be linked to <b id="joinName"></b>. Invoices for your orders go to its accounts payable (<b id="joinAp"></b>), the same as everyone else there.</span></div></div>
+      </div>
+
+      <div id="newBiz" class="hide">
+        <div class="nomatch" id="newNote"></div>
+        <div class="grid" style="margin-top:16px">
+          <div class="f full"><label id="nameLbl">Business name *</label><input></div>
+          <div class="f full" id="dealerType"><label>Dealership type *</label>
+            <div class="opts" id="dtype"><button class="opt" data-v="new">New vehicles</button><button class="opt" data-v="used">Used vehicles</button></div></div>
+          <div class="f full" id="bizType"><label>Business type *</label>
+            <select><option>Choose one</option><option>Body / collision shop</option><option>Service / repair shop</option><option>Fleet</option><option>Rental</option><option>Sign shop / printer</option><option>Marketing agency</option><option>Other</option></select></div>
+          <div class="f full hide" id="oemWrap"><label>All brands you're an authorized dealer for <small>(for OEM program products)</small></label>
+            <div class="brands" id="brands"></div><div class="ids" id="ids"></div></div>
+          <div class="f"><label>Suite, unit <small>(if any)</small></label><input placeholder="Optional"></div>
+          <div class="f"><label>Business phone *</label><input placeholder="(905) 555-0100"></div>
+          <div class="f full"><label>Accounts payable email * <small>(where invoices go)</small></label><input placeholder="ap@yourbusiness.com"></div>
+          <div class="f full"><label>Website</label><input placeholder="Optional"></div>
+        </div>
+        <div class="ap">🧾 <span>Everyone who joins this business later is linked to it, so <b>all invoices go to this one accounts payable email</b>.</span></div>
+        <details class="more"><summary>Tax &amp; billing (optional)</summary>
+          <div class="grid">
+            <div class="f full"><label>Legal business name <small>(if different)</small></label><input></div>
+            <div class="f"><label>GST/HST number</label><input></div>
+            <div class="f"><label>PST exemption / reseller number</label><input></div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="f" style="margin-top:20px"><label>How did you hear about us? <small>(optional)</small></label>
+      <select><option>Choose one</option><option>Google search</option><option>Wheels sales rep</option><option>Another dealer / business</option><option>Trade show</option><option>Email or catalogue</option><option>Social media</option><option>Other</option></select></div>
+    <div class="btns"><button class="btn ghost" data-back="2">Back</button><button class="btn" id="create">Create account</button></div>
+  </section>
+
+  <!-- 4 · done -->
+  <section class="card hide" id="s4">
+    <div class="done"><div class="tick">✓</div><h2 id="doneTitle"></h2><p id="doneText"></p><p><b>Check your email</b> for a link to set your password.</p></div>
+  </section>
+  <p class="tip">Preview only. Nothing is saved or sent.</p>
+</main>
+
+<!-- ============ 2 · LOG IN / FORGOT PASSWORD ============ -->
+<main class="wrap hide" id="v-login" style="max-width:480px">
+  <h1 id="loginH">Log in</h1>
+  <p class="sub">No account yet? <a href="#" data-goto="signup">Create one</a></p>
+  <section class="card" id="loginCard">
+    <div class="f"><label>Email</label><input value="justindema76@gmail.com"></div>
+    <div class="f" style="margin-top:12px"><label>Password</label><input type="password" value="password"></div>
+    <div class="btns"><button class="link" id="forgot">Forgot your password?</button><button class="btn">Log in</button></div>
+  </section>
+  <section class="card hide" id="resetCard">
+    <h2>Reset your password</h2>
+    <p class="note">Enter your email. If it has an account, we'll send a reset link right away.</p>
+    <div class="f"><label>Email</label><input value="justindema76@gmail.com"></div>
+    <div class="btns"><button class="link" id="backLogin">Back to log in</button><button class="btn" id="sendReset">Send reset link</button></div>
+    <div id="resetSent" class="hide"><div class="match" style="margin-top:16px"><span class="tag">✓ Sent</span><div class="addr">Check your inbox (and junk folder) for the reset link.</div></div></div>
+  </section>
+  <div class="card" style="margin-top:16px;background:var(--bg)">
+    <h2 style="font-size:18px">For Wheels staff</h2>
+    <p class="note" style="margin:6px 0 0">"Do I have an account?" or "I can't get in": in Magento admin, go to <b>Customers → All Customers</b>, search the email, open the customer and click <b>Reset Password</b>. Magento emails them a reset link. Staff never need to know or set a password.</p>
+  </div>
+</main>
+
+<!-- ============ 3 · COMPANY USERS & INVITES ============ -->
+<main class="wrap hide" id="v-team" style="max-width:1000px">
+  <h1>My Account</h1><p class="sub">Smith Ford Lincoln</p>
+  <div class="acct">
+    <nav><a href="#">Dashboard</a><a href="#">My Orders</a><a href="#">Company Profile</a><a href="#" class="on">Company Users</a><a href="#">Address Book</a></nav>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap"><h2>Company Users</h2><button class="btn" id="openInvite">+ Invite a teammate</button></div>
+      <table><thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+        <tbody id="users">
+          <tr><td>Justin DeMatteis</td><td>justin@smithford.ca</td><td><span class="pill main">Account admin</span></td></tr>
+          <tr><td>Maria Lopez</td><td>maria@smithford.ca</td><td><span class="pill">Buyer</span></td></tr>
+          <tr><td>Dave Chen</td><td>dave@smithford.ca</td><td><span class="pill">Buyer</span> <small style="color:var(--muted)">joined by address · today</small></td></tr>
+        </tbody></table>
+      <div class="ap" style="margin-top:14px">🧾 <span><b>Accounts payable:</b> ap@smithford.ca. All invoices for everyone below go here.</span></div><p class="tip" style="text-align:left">Anyone who signs up and picks this dealership&rsquo;s address joins automatically as a <b>Buyer</b>, and you get an email. You can change their role or remove them. You can also invite people and pick their role.</p>
+    </div>
+  </div>
+</main>
+<div class="modal" id="inviteM"><div class="card">
+  <h2>Invite a teammate</h2><p class="note">They get an email to set their password, already linked to Smith Ford Lincoln.</p>
+  <div class="grid">
+    <div class="f"><label>First name</label><input id="ifn" value="Dave"></div>
+    <div class="f"><label>Last name</label><input id="iln" value="Chen"></div>
+    <div class="f full"><label>Email</label><input id="iem" value="dave@smithford.ca"></div>
+    <div class="f full"><label>Role</label><select><option>Buyer</option><option>Approver</option><option>Account admin</option></select></div>
+  </div>
+  <div class="btns"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="sendInvite">Send invite</button></div>
+</div></div>
+
+<!-- ============ 4 · THE WHOLE WORKFLOW ============ -->
+<main class="wrap hide" id="v-flow" style="max-width:820px">
+  <h1>The sign-up workflow</h1><p class="sub">One email = one account. One business = one company.</p>
+  <div class="flow">
+    <div class="row"><b>Step 1 · Email</b><p>Everyone starts with their email. <b>Already used?</b> → "You already have an account" → Log in / Reset password. This answers "Do I have an account?" and stops duplicate people.</p></div>
+    <div class="row"><b>Step 2 · Who for</b><p><b>Just me</b> · <b>A dealership</b> · <b>Another business</b>. The answer picks the right form.</p></div>
+    <div class="row"><b>Just me</b><p>Name, phone, address. No company step. Done.</p></div>
+    <div class="row"><b>Dealership</b><p><b>Which dealership are you from?</b> Pick the brand first (Ford, Honda… or Used / independent). Then <b>type the address and pick it from the lookup list</b>. Only that brand's dealerships at that address are shown. Pick yours → joined, nothing retyped. <b>Not listed</b> → register it once (brand already ticked): name, New/Used, OEM brands, phone, <b>accounts payable email</b>, optional tax info. You become its account admin.</p></div>
+    <div class="row"><b>Other business</b><p>Type the address, pick it from the list → businesses at that address → join yours. <b>Not listed</b> → register once: name, business type, phone, <b>accounts payable email</b>, optional tax info.</p></div>
+    <div class="row"><b>Accounts payable</b><p>Every person linked to a business shares its <b>one accounts payable email</b>. However many people join, invoices always go to the same place.</p></div>
+    <div class="row"><b>Step 4 · Done</b><p>"Check your email to set your password."</p></div>
+    <div class="row"><b>Adding people</b><p><b>Anyone</b> at the business can sign up and join it. They get the <b>Buyer</b> role and the account admin gets an email. Or the admin <b>invites</b> them and picks the role.</p></div>
+    <div class="row"><b>Common denominator</b><p><b>The business address</b>, picked from an address lookup (e.g. Canada Post AddressComplete or Google) so it's always written the same way. Matched on street number + postal code. For dealerships, narrowed by brand first. Name spellings never decide a match.</p></div>
+    <div class="row"><b>Support calls</b><p>Customers: email check + Forgot password. Staff: Magento admin → Customers → All Customers → search email → <b>Reset Password</b>.</p></div>
+  </div>
+</main>
+
+<footer class="s-foot">
+  <div class="in">
+    <div><img src="https://wheelsauto.com/media/logo/stores/6/wheelsauto_logo_2.svg" alt=""><p><b style="color:#fff">Wheel's Automotive Dealer Supplies Inc.</b><br>600 Arvin Ave<br>Stoney Creek, Ontario<br>Canada L8E 5P1</p><p style="margin-top:12px">Toll Free: 1-800-465-8831<br>Hours: 9 AM - 5 PM Monday to Friday</p></div>
+    <div><h4>COMPANY</h4><p>Contact Us<br>About Us<br>Team<br>Site Map</p></div>
+    <div><h4>SUPPORT</h4><p>Account<br>Order Status<br>Artwork Guide<br>Accessibility</p></div>
+    <div><h4>POLICIES &amp; INFO</h4><p>Return Policy<br>Shipping Policy<br>Privacy Policy<br>Terms Of Use</p></div>
+    <div><h4>STAY INFORMED</h4><p>Newsletter Subscription<br>Connect On LinkedIn<br>Connect On Facebook<br>Connect On Instagram</p></div>
+  </div>
+  <div class="s-badges"><span>Mix &amp; Match <em>Bulk Discount</em></span><span>Save 10% on 10</span><span>Save 3% <em>Pay with CC</em></span><span>Spend $2500 Save $250</span><span>Rush <em>Service</em></span></div>
+  <p class="s-copy">© 2026 Wheel's Automotive Dealer Supplies Inc. All Rights Reserved.</p>
+</footer>
+<script>
+function $(id){return document.getElementById(id)}
+function show(id,on){$(id).classList.toggle('hide',!on)}
+var who=null, foundBiz=false;
+function step(n){[1,2,3,4].forEach(function(i){show('s'+i,i===n)});
+  document.querySelectorAll('#steps>div').forEach(function(d){var s=+d.dataset.s;d.className=s===n?'on':(s<n?'done':'')});window.scrollTo(0,0)}
+// preview: click a step number to jump straight to that page
+document.querySelectorAll('#steps>div').forEach(function(d){d.onclick=function(){var n=+d.dataset.s;
+  if(n>=3&&!who){var b=document.querySelector('#who button[data-v="dealer"]');b.click()}
+  if(n===3){$('to3').onclick();return}
+  if(n===4&&!$('doneTitle').textContent){$('create').onclick();return}
+  step(n)}});
+document.querySelectorAll('[data-back]').forEach(function(b){b.onclick=function(){step(+b.dataset.back)}});
+
+// 1 · email first
+var USED=['justindema76@gmail.com','justin@wheelsauto.com','maria@smithford.ca'];
+$('to2').onclick=function(){var em=$('em').value.trim().toLowerCase();if(!em){$('em').focus();return}
+  if(USED.indexOf(em)>=0){show('emailHit',true);return}show('emailHit',false);step(2)};
+$('em').addEventListener('input',function(){show('emailHit',false)});
+
+// 2 · who for
+$('who').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;who=b.dataset.v;
+  $('who').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});$('to3').disabled=false});
+$('to3').onclick=function(){
+  var biz=who!=='me', dealer=who==='dealer';
+  show('meBlock',!biz);show('bizBlock',biz);brand=null;$('brandpick').querySelectorAll('button').forEach(function(x){x.classList.remove('on')});
+  show('brandStep',dealer);show('addrStep',!dealer);resetAddr();
+  $('s3note').textContent=biz?'Your own login. Each person at the business has their own.':'Your own login.';
+  $('jtOpt').textContent='(optional)';
+  $('findTitle').textContent=dealer?'Find your dealership':'Find your business';
+  show('dealerType',dealer);show('bizType',!dealer);show('oemWrap',false);
+  $('nameLbl').textContent=dealer?'Dealership name *':'Business name *';
+  step(3)};
+
+// 3 · dealerships pick their brand first, then everyone finds the business by ADDRESS (picked from a lookup list)
+var BRANDS=['Acura','Audi','BMW','Chevrolet Buick GMC','Ford','Honda','Hyundai','Infiniti','Kia','Mazda','Mercedes-Benz','Mini','Mitsubishi','Nissan','Subaru','Toyota','Volkswagen','Volvo'];
+var ADDRS=[
+ {a:'1200 Upper James St',c:'Hamilton, ON L9C 3B1',biz:[{n:'Smith Ford Lincoln',t:'Dealership · New',brand:'Ford',ap:'a••••@smithford.ca'}]},
+ {a:'2000 Auto Mall Dr',c:'Burlington, ON L7L 6X9',biz:[{n:'Burlington Honda',t:'Dealership · New',brand:'Honda',ap:'p••••@burlingtonhonda.ca'},{n:'Burlington Kia',t:'Dealership · New',brand:'Kia',ap:'a••••@burlingtonkia.ca'},{n:'Auto Mall Pre-Owned',t:'Dealership · Used',brand:'Used',ap:'b••••@automallpreowned.ca'}]},
+ {a:'45 Collision Way',c:'Hamilton, ON L8W 2Z7',biz:[{n:'Hamilton Collision Centre',t:'Body / collision shop',ap:'a••••@hamiltoncollision.ca'}]},
+ {a:'88 King St W',c:'Hamilton, ON L8P 1A1',biz:[]},
+ {a:'350 Queen St E',c:'Brampton, ON L6V 1C2',biz:[]}];
+var brand=null, picked=null, chosen=null;
+$('brandpick').innerHTML=BRANDS.map(function(b){return '<button data-b="'+b+'">'+b+'</button>'}).join('')+'<button class="wide" data-b="Used">Used / independent</button><button class="wide" data-b="Other">Other brand</button>';
+$('brandpick').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;brand=b.dataset.b;
+  $('brandpick').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});
+  show('addrStep',true);resetAddr();
+  $('findTitle').textContent='Find your '+(brand==='Used'||brand==='Other'?'':brand+' ')+'dealership';
+  $('addr').focus()});
+function resetAddr(){picked=null;chosen=null;$('addr').value='';$('addr').closest('.look').classList.remove('hide');show('pickedWrap',false);show('atAddr',false);show('newBiz',false);show('sugg',false)}
+function renderSugg(){
+  var q=$('addr').value.trim().toLowerCase();
+  if(q.length<2){show('sugg',false);return}
+  var hits=ADDRS.filter(function(x){var s=(x.a+' '+x.c).toLowerCase();return q.split(/\s+/).every(function(w){return s.indexOf(w)>=0})});
+  if(!hits.length) hits=[{a:$('addr').value.trim(),c:'Hamilton, ON',biz:[]}];
+  $('sugg').innerHTML=hits.map(function(x,i){return '<button data-i="'+i+'">'+x.a+'<small>'+x.c+'</small></button>'}).join('')+'<div class="pw">Address lookup (e.g. Canada Post AddressComplete / Google)</div>';
+  $('sugg')._hits=hits;show('sugg',true)}
+$('addr').addEventListener('input',renderSugg);
+$('addr').addEventListener('focus',renderSugg);
+$('sugg').addEventListener('mousedown',function(e){var b=e.target.closest('button');if(!b)return;e.preventDefault();pickAddr($('sugg')._hits[+b.dataset.i])});
+document.addEventListener('click',function(e){if(!e.target.closest('.look'))show('sugg',false)});
+function kind(){return who==='dealer'?'dealership':'business'}
+function pickAddr(x){
+  picked=x;chosen=null;show('sugg',false);
+  $('addr').closest('.look').classList.add('hide');
+  $('pickedTxt').innerHTML='📍 <b>'+x.a+'</b>, '+x.c;show('pickedWrap',true);
+  var list=x.biz.filter(function(b){
+    if(who!=='dealer') return b.t.indexOf('Dealership')!==0;
+    if(b.t.indexOf('Dealership')!==0) return false;
+    return brand==='Other'||b.brand===brand});
+  if(!list.length){show('atAddr',false);openNew('No '+(who==='dealer'&&brand!=='Used'&&brand!=='Other'?brand+' ':'')+kind()+' with a Wheels account at this address yet. <b>Register it below</b>, once. You\'ll be its account admin.');return}
+  $('atTitle').textContent=list.length>1?'Several at this address. Which one is yours?':'Is this your '+kind()+'?';
+  $('bizlist').innerHTML=list.map(function(b,i){return '<button class="bizopt" data-i="'+i+'"><i></i><span><b>'+b.n+'</b><span>'+b.t+'</span></span></button>'}).join('')+'<button class="bizopt add" data-new="1"><i></i><span><b>Mine isn\'t listed</b><span>Register it at this address</span></span></button>';
+  $('bizlist')._list=list;show('atAddr',true);show('joinInfo',false);show('newBiz',false)}
+$('bizlist').addEventListener('click',function(e){var b=e.target.closest('.bizopt');if(!b)return;
+  $('bizlist').querySelectorAll('.bizopt').forEach(function(x){x.classList.toggle('on',x===b)});
+  if(b.dataset.new){chosen=null;show('joinInfo',false);openNew('OK. <b>Register your '+kind()+' below</b>, at this address.');return}
+  chosen=$('bizlist')._list[+b.dataset.i];$('joinName').textContent=chosen.n;$('joinAp').textContent=chosen.ap;show('joinInfo',true);show('newBiz',false)});
+function openNew(msg){
+  $('newNote').innerHTML=msg;show('newBiz',true);
+  // the brand they picked is already ticked
+  if(who==='dealer'&&brand&&brand!=='Used'&&brand!=='Other'){
+    $('dtype').querySelector('[data-v="new"]').click();
+    var cb=$('brands').querySelector('input[value="'+brand+'"]');if(cb&&!cb.checked){cb.checked=true;cb.dispatchEvent(new Event('change',{bubbles:true}))}}
+  else if(who==='dealer'&&brand==='Used'){$('dtype').querySelector('[data-v="used"]').click()}}
+$('changeAddr').onclick=function(){resetAddr();$('addr').focus()};
+$('dtype').addEventListener('click',function(e){var b=e.target.closest('.opt');if(!b)return;$('dtype').querySelectorAll('.opt').forEach(function(x){x.classList.toggle('on',x===b)});show('oemWrap',b.dataset.v==='new')});
+$('brands').innerHTML=BRANDS.map(function(b){return '<label class="brand"><input type="checkbox" value="'+b+'"> '+b+'</label>'}).join('');
+$('brands').addEventListener('change',function(){var on=[].slice.call($('brands').querySelectorAll('input:checked')).map(function(i){return i.value});
+  $('ids').innerHTML=on.map(function(b){return '<div class="f"><label>'+b+' dealer ID</label><input placeholder="Optional"></div>'}).join('')});
+$('create').onclick=function(){
+  if(who==='me'){$('doneTitle').textContent='Your account is ready';$('doneText').textContent='You can start ordering right away.'}
+  else if(chosen){$('doneTitle').textContent='You\'re part of '+chosen.n;$('doneText').innerHTML='You\'re added as a <b>Buyer</b> with '+chosen.n+'\'s pricing and discounts. Invoices go to its accounts payable. Its account admin gets an email that you joined and can change your role.'}
+  else{$('doneTitle').textContent='Your '+kind()+' is set up';$('doneText').innerHTML='You\'re its account admin. Invoices go to the accounts payable email you entered. Anyone at your '+kind()+' can sign up and find it by its address, or you can invite them and pick their role.'}
+  step(4)};
+
+// log in / forgot
+$('forgot').onclick=function(){show('loginCard',false);show('resetCard',true);show('resetSent',false);$('loginH').textContent='Forgot password'};
+$('backLogin').onclick=function(){show('loginCard',true);show('resetCard',false);$('loginH').textContent='Log in'};
+$('sendReset').onclick=function(){show('resetSent',true)};
+
+// invites
+$('openInvite').onclick=function(){$('inviteM').classList.add('open')};
+document.addEventListener('click',function(e){if(e.target.closest('[data-close]')||e.target===$('inviteM'))$('inviteM').classList.remove('open')});
+$('sendInvite').onclick=function(){$('users').insertAdjacentHTML('beforeend','<tr><td>'+$('ifn').value+' '+$('iln').value+'</td><td>'+$('iem').value+'</td><td><span class="pill inv">Invite sent</span></td></tr>');$('inviteM').classList.remove('open')};
+
+// preview bar + in-page jumps
+var NOTES={
+ signup:'Click the step numbers (1 Email · 2 Who it\'s for · 3 Details · 4 Done) to jump to any page. Try email <b>justindema76@gmail.com</b> (already has an account). Dealership: pick <b>Ford</b> + <b>1200 Upper James</b> (found), or <b>Honda</b>/<b>Kia</b> + <b>2000 Auto Mall</b>. Other business: <b>45 Collision</b>. <b>88 King</b> = nothing there (register new).',
+ login:'Click <b>Forgot your password?</b> to see the reset flow.',
+ team:'The main contact\'s view. Click <b>+ Invite a teammate</b>.',
+ flow:'One page with the whole workflow, for the meeting.'};
+function go(v){document.querySelectorAll('.pv [data-go]').forEach(function(x){x.classList.toggle('on',x.dataset.go===v)});['signup','login','team','flow'].forEach(function(x){show('v-'+x,x===v)});$('pvNote').innerHTML=NOTES[v];window.scrollTo(0,0)}
+document.querySelectorAll('.pv [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+document.querySelectorAll('[data-goto]').forEach(function(a){a.onclick=function(e){e.preventDefault();go(a.dataset.goto);if(a.hasAttribute('data-forgot'))$('forgot').click()}});
+$('pvNote').innerHTML=NOTES.signup;
+</script>
+</body>
+</html>
