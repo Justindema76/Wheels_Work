@@ -148,7 +148,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 <div class="pv"><div class="in">
   <button data-go="signup" class="on">1 · Create account</button>
   <button data-go="login">2 · Log in / Forgot password</button>
-  <button data-go="team">3 · Company users &amp; invites</button>
+  <button data-go="team">3 · Admin: requests, users &amp; emails</button>
   <button data-go="flow">4 · The whole workflow</button>
   <span id="pvNote"></span>
 </div></div>
@@ -211,20 +211,14 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <!-- 3 · email first -->
   <section class="card hide" id="p-email">
     <h2>Your email</h2>
-    <p class="note">Not sure if you already have an account? We can check for you.</p>
+    <p class="note">This will be your login.</p>
     <div class="f"><label>Email *</label><input id="em" type="email" placeholder="you@example.com"></div>
-    <div id="emailOk" class="hide"><div class="match" style="margin-top:12px"><span class="tag">✓ No account with this email</span><div class="addr">You're good to go.</div></div></div>
-    <div id="emailHit" class="hide">
-      <div class="warn"><b>You already have an account with this email.</b><br>Forgot your password? It happens. Reset it and you're back in.
-        <div class="btns"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div>
-      </div>
-    </div>
-    <div class="btns"><button class="btn ghost" id="emailBack">Back</button><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="emailCheck">Check if I already have an account</button><button class="btn" id="emailNext">I'm new, continue</button></span></div>
+    <div class="btns"><button class="btn ghost" id="emailBack">Back</button><button class="btn" id="emailNext">Continue</button></div>
   </section>
 
   <!-- 4 · details -->
   <section class="card hide" id="p-details">
-    <div id="joinNote" class="hide"><div class="ap" style="margin:0 0 16px">🧾 <span>You're joining <b id="joinName">the existing account</b>. Invoices go to its accounts payable, and its account admin will be told you joined.</span></div></div>
+    <div id="joinNote" class="hide"><div class="ap" style="margin:0 0 16px">✉️ <span>You're <b>asking to join</b> <b id="joinName">the existing account</b>. Your request goes to its <b>account administrator</b>. Once they approve it, you'll get an email to set your password, and your orders will be invoiced to its accounts payable.</span></div></div>
     <h2>About you</h2>
     <p class="note">Your own login.</p>
     <div class="grid">
@@ -263,6 +257,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
       </details>
     </div>
 
+    <div class="f hide" id="msgWrap" style="margin-top:14px"><label>Message to the administrator <small>(optional)</small></label><input id="msg" placeholder="e.g. I'm the new sales manager"></div>
     <div class="f" style="margin-top:20px"><label>How did you hear about us? <small>(optional)</small></label>
       <select><option>Choose one</option><option>Google search</option><option>Wheels sales rep</option><option>Another dealer / business</option><option>Trade show</option><option>Email or catalogue</option><option>Social media</option><option>Other</option></select></div>
     <div class="btns"><button class="btn ghost" data-to="email">Back</button><button class="btn" id="create">Create account</button></div>
@@ -270,7 +265,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 
   <!-- 5 · done -->
   <section class="card hide" id="p-done">
-    <div class="done"><div class="tick">✓</div><h2 id="doneTitle"></h2><p id="doneText"></p><p><b>Check your email</b> for a link to set your password.</p></div>
+    <div class="done"><div class="tick">✓</div><h2 id="doneTitle"></h2><p id="doneText"></p><p id="doneMail"><b>Check your email</b> for a link to set your password.</p></div>
   </section>
   <p class="tip">Preview only. Nothing is saved or sent.</p>
 </main>
@@ -304,16 +299,30 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     <nav><a href="#">Dashboard</a><a href="#">My Orders</a><a href="#">Company Profile</a><a href="#" class="on">Company Users</a><a href="#">Address Book</a></nav>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap"><h2>Company Users</h2><button class="btn" id="openInvite">+ Invite a teammate</button></div>
+      <div id="pending">
+        <h3 style="font-size:15px;margin-bottom:8px">Requests to join <span class="pill inv" id="pendCount">1</span></h3>
+        <div class="req" id="req1" style="border:1px solid #fed7aa;background:var(--warn-bg);border-radius:10px;padding:12px 14px;margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><b>Dave Chen</b> · dave@upperjamestoyota.ca · Sales Manager<div style="font-size:13px;color:var(--ink2);margin-top:2px">"I'm the new sales manager."</div></div><small style="color:var(--muted)">today</small></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap"><select id="reqRole" style="height:38px;border:1px solid var(--line);border-radius:7px;padding:0 10px"><option>Buyer</option><option>Approver</option><option>Account admin</option></select><button class="btn" id="approve" style="height:38px">Approve</button><button class="btn ghost" id="decline" style="height:38px">Decline</button></div>
+        </div>
+      </div>
       <table><thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
         <tbody id="users">
           <tr><td>Justin DeMatteis</td><td>justin@upperjamestoyota.ca</td><td><span class="pill main">Account admin</span></td></tr>
           <tr><td>Maria Lopez</td><td>maria@upperjamestoyota.ca</td><td><span class="pill">Buyer</span></td></tr>
-          <tr><td>Dave Chen</td><td>dave@upperjamestoyota.ca</td><td><span class="pill">Buyer</span> <small style="color:var(--muted)">joined by address · today</small></td></tr>
         </tbody></table>
-      <div class="ap" style="margin-top:14px">🧾 <span><b>Accounts payable:</b> ap@upperjamestoyota.ca. All invoices for everyone below go here.</span></div><p class="tip" style="text-align:left">Anyone who signs up and picks this dealership&rsquo;s address joins automatically as a <b>Buyer</b>, and you get an email. You can change their role or remove them. You can also invite people and pick their role.</p>
+      <div class="ap" style="margin-top:14px">🧾 <span><b>Accounts payable:</b> ap@upperjamestoyota.ca. All invoices for everyone below go here.</span></div><p class="tip" style="text-align:left">People who ask to join show up under <b>Requests to join</b>, and you get an email. Approve them and pick their role, or decline. You can also invite people yourself.</p>
     </div>
   </div>
 </main>
+<section class="wrap hide" id="v-mails" style="max-width:1100px;padding-top:0">
+  <h2 style="font:800 24px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;margin:10px 0 14px">The emails</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+    <div class="card"><p class="note" style="margin-bottom:10px"><b>1 · To the account administrator</b></p><p><b>Dave Chen</b> (dave@upperjamestoyota.ca) is asking to join <b>Upper James Toyota</b>'s Wheels account.</p><p style="color:var(--ink2);margin:8px 0">Message: "I'm the new sales manager."</p><div class="btns" style="justify-content:flex-start"><span class="btn">Review request</span></div><p class="why">Opens My Account → Company Users → Requests to join.</p></div>
+    <div class="card"><p class="note" style="margin-bottom:10px"><b>2 · To Dave, approved</b></p><p>Good news, Dave. You've been added to <b>Upper James Toyota</b>'s Wheels account as a <b>Buyer</b>.</p><div class="btns" style="justify-content:flex-start"><span class="btn">Set my password</span></div></div>
+    <div class="card"><p class="note" style="margin-bottom:10px"><b>3 · To Dave, declined</b></p><p>Your request to join <b>Upper James Toyota</b>'s Wheels account wasn't approved. If you think that's a mistake, please talk to your account administrator or call us at 1-800-465-8831.</p></div>
+  </div>
+</section>
 <div class="modal" id="inviteM"><div class="card">
   <h2>Invite a teammate</h2><p class="note">They get an email to set their password, already linked to Upper James Toyota.</p>
   <div class="grid">
@@ -330,12 +339,12 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <h1>The sign-up workflow</h1><p class="sub">One email = one account. One business = one company.</p>
   <div class="flow">
     <div class="row"><b>1 · Who it's for</b><p>The first screen: <b>A dealership</b> · <b>Another business</b> · <b>Just me</b>.</p></div>
-    <div class="row"><b>2 · Find it</b><p>Dealership: <b>brand (dropdown)</b> + <b>address</b> picked from a lookup list. Business: address only. If it already has a Wheels account, we only say so (no names shown) and ask: <b>Join the existing account</b> or <b>Start a new account</b>. "Not sure? Contact your account admin." Just me skips this step.</p></div>
-    <div class="row"><b>3 · Email</b><p>Their choice: <b>"I'm new, continue"</b> (no check), or <b>"Check if I already have an account"</b> → if it exists: <b>Log in</b> or <b>Reset my password</b>. If they skip it and the email is already used, they're told at the end with the same options. One email = one account.</p></div>
-    <div class="row"><b>4 · Details</b><p>About you. Joining: nothing else; invoices go to the existing account's accounts payable. Starting new: business name, type (dealerships: New/Used + brands with dealer IDs as dropdowns), phone, <b>accounts payable email</b>, optional tax info. Just me: your address.</p></div>
+    <div class="row"><b>2 · Find it</b><p>Dealership: <b>brand (dropdown)</b>, then search the <b>dealership name or address</b> (like Google Maps). Business: search only. If it already has a Wheels account we only say so (no names shown): <b>Join the existing account</b> or <b>Start a new account</b>. Just me skips this step.</p></div>
+    <div class="row"><b>3 · Email</b><p>Their login email. If it already has an account, the last step says so and offers <b>Log in</b> / <b>Reset my password</b>. One email = one account.</p></div>
+    <div class="row"><b>4 · Details</b><p><b>Joining:</b> about you + optional message → <b>Request access</b>. The request goes to the account administrator (by email), who approves and picks the role, or declines. Approved → set-password email; orders invoiced to the account's accounts payable. <b>Starting new:</b> about you + business (name auto-filled, type, brands, phone, <b>accounts payable email</b>) → Create account; you become its administrator. <b>Just me:</b> about you + address.</p></div>
     <div class="row"><b>5 · Done</b><p>"Check your email to set your password." The account admin is emailed when someone joins.</p></div>
     <div class="row"><b>Accounts payable</b><p>Everyone linked to a business shares its <b>one accounts payable email</b>. However many people join, invoices go to the same place.</p></div>
-    <div class="row"><b>Roles</b><p>People who join get the <b>Buyer</b> role. The account admin can change roles (Buyer / Approver / Account admin), remove people, or invite them.</p></div>
+    <div class="row"><b>Roles</b><p>The account administrator approves requests and picks the role (Buyer / Approver / Account admin), can remove people, and can invite people directly.</p></div>
     <div class="row"><b>Common denominator</b><p>The <b>address</b>, picked from an address lookup so it's always written the same way (matched on street number + postal code). Dealerships are narrowed by brand first.</p></div>
     <div class="row"><b>Support calls</b><p>Customers: email check + Reset my password. Staff: Magento admin → Customers → search email → <b>Reset Password</b>.</p></div>
   </div>
@@ -418,16 +427,13 @@ $('findNext').onclick=function(){go2('email')};
 // 3 · email first (already used -> log in / reset password)
 var USED=['justindema76@gmail.com','justin@wheelsauto.com','maria@upperjamestoyota.ca'];
 $('emailBack').onclick=function(){go2(who==='me'?'who':'find')};
-// the check is optional: "Check if I already have an account" or skip with "I'm new, continue"
-$('emailCheck').onclick=function(){var em=$('em').value.trim().toLowerCase();if(!em){$('em').focus();return}
-  var used=USED.indexOf(em)>=0;show('emailHit',used);show('emailOk',!used);if(!used)$('emailNext').textContent='Continue'};
-$('emailNext').onclick=function(){if(!$('em').value.trim()){$('em').focus();return}show('emailHit',false);show('emailOk',false);prepDetails();go2('details')};
-$('em').addEventListener('input',function(){show('emailHit',false);show('emailOk',false);$('emailNext').textContent="I'm new, continue"});
+$('emailNext').onclick=function(){if(!$('em').value.trim()){$('em').focus();return}prepDetails();go2('details')};
 
 // 4 · details
 function prepDetails(){
   var biz=who!=='me', joining=biz&&choice==='join';
-  show('meAddr',!biz);show('joinNote',joining);show('newBiz',biz&&!joining);
+  show('meAddr',!biz);show('joinNote',joining);show('newBiz',biz&&!joining);show('msgWrap',joining);
+  $('create').textContent=joining?'Request access':'Create account';
   var d=who==='dealer';
   $('newTitle').textContent=d?'Your dealership':'Your business';$('nameLbl').textContent=(d?'Dealership':'Business')+' name *';
   show('dTypeWrap',d);show('bTypeWrap',!d);show('oemWrap',d&&$('brand').value!=='Used');
@@ -438,13 +444,13 @@ function addBrandRow(sel){var row=document.createElement('div');row.className='g
   row.innerHTML='<div class="f"><select>'+'<option value="">Choose a brand</option>'+BRANDS.map(function(b){return '<option'+(b===sel?' selected':'')+'>'+b+'</option>'}).join('')+'</select></div><div class="f"><input placeholder="Dealer ID (optional)"></div>';
   $('oemRows').appendChild(row)}
 $('addBrand').onclick=function(e){e.preventDefault();addBrandRow('')};
-$('create').onclick=function(){
+$('create').onclick=function(){$('doneMail').classList.remove('hide');
   if(USED.indexOf($('em').value.trim().toLowerCase())>=0&&!$('createHit')){
     $('create').closest('.btns').insertAdjacentHTML('beforebegin','<div class="warn" id="createHit"><b>This email already has a Wheels account.</b> Each email can only have one.<div class="btns" style="justify-content:flex-start"><a class="btn" href="#" data-goto="login">Log in</a><a class="btn ghost" href="#" data-goto="login" data-forgot>Reset my password</a></div></div>');
     document.querySelectorAll('#createHit [data-goto]').forEach(function(a){a.onclick=function(e){e.preventDefault();go(a.dataset.goto);if(a.hasAttribute('data-forgot'))$('forgot').click()}});return}
   if($('createHit'))return;
   if(who==='me'){$('doneTitle').textContent='Your account is ready';$('doneText').textContent='You can start ordering right away.'}
-  else if(choice==='join'){$('doneTitle').textContent='You\'ve joined the '+kind()+' account';$('doneText').innerHTML='You\'re added as a <b>Buyer</b> with its pricing and discounts. Invoices go to its accounts payable. Its account admin gets an email that you joined and can change your role.'}
+  else if(choice==='join'){$('doneTitle').textContent='Request sent';$('doneText').innerHTML='Your request went to this '+kind()+'\'s <b>account administrator</b>. You\'ll get an email as soon as they approve it, with a link to set your password.';$('doneMail').classList.add('hide');go2('done');return}
   else{$('doneTitle').textContent='Your '+kind()+' is set up';$('doneText').innerHTML='You\'re its account admin. Invoices go to the accounts payable email you entered. Anyone at your '+kind()+' can sign up and join it, or you can invite them and pick their role.'}
   go2('done')};
 
@@ -453,6 +459,9 @@ $('forgot').onclick=function(){show('loginCard',false);show('resetCard',true);sh
 $('backLogin').onclick=function(){show('loginCard',true);show('resetCard',false);$('loginH').textContent='Log in'};
 $('sendReset').onclick=function(){show('resetSent',true)};
 
+// requests to join
+$('approve').onclick=function(){var r=$('reqRole').value;$('users').insertAdjacentHTML('beforeend','<tr><td>Dave Chen</td><td>dave@upperjamestoyota.ca</td><td><span class="pill">'+r+'</span> <small style="color:var(--muted)">approved · set-password email sent</small></td></tr>');$('pending').innerHTML='<p class="why" style="margin-bottom:14px">✓ Dave Chen approved as '+r+'. He got an email to set his password.</p>'};
+$('decline').onclick=function(){$('pending').innerHTML='<p class="why" style="margin-bottom:14px">Request declined. Dave Chen got a polite email.</p>'};
 // invites
 $('openInvite').onclick=function(){$('inviteM').classList.add('open')};
 document.addEventListener('click',function(e){if(e.target.closest('[data-close]')||e.target===$('inviteM'))$('inviteM').classList.remove('open')});
@@ -463,9 +472,9 @@ var NOTES={
  signup:'Click the step numbers to jump. Dealership: brand <b>Toyota</b> + <b>Upper James</b> = existing account. <b>Kia</b> + <b>Burlington Kia</b> = existing. <b>Hyundai</b> + <b>Centennial</b> or <b>Mazda</b> + <b>King West</b> = new (name fills in). Business: <b>Hamilton Collision</b>. Email <b>justindema76@gmail.com</b> = already has an account.',
 
  login:'Click <b>Forgot your password?</b> to see the reset flow.',
- team:'The main contact\'s view. Click <b>+ Invite a teammate</b>.',
+ team:'The account administrator\'s view. Approve Dave\'s request (pick a role) or decline. The emails are below.',
  flow:'One page with the whole workflow, for the meeting.'};
-function go(v){document.querySelectorAll('.pv [data-go]').forEach(function(x){x.classList.toggle('on',x.dataset.go===v)});['signup','login','team','flow'].forEach(function(x){show('v-'+x,x===v)});$('pvNote').innerHTML=NOTES[v];window.scrollTo(0,0)}
+function go(v){document.querySelectorAll('.pv [data-go]').forEach(function(x){x.classList.toggle('on',x.dataset.go===v)});['signup','login','team','flow'].forEach(function(x){show('v-'+x,x===v)});show('v-mails',v==='team');$('pvNote').innerHTML=NOTES[v];window.scrollTo(0,0)}
 document.querySelectorAll('.pv [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
 document.querySelectorAll('[data-goto]').forEach(function(a){a.onclick=function(e){e.preventDefault();go(a.dataset.goto);if(a.hasAttribute('data-forgot'))$('forgot').click()}});
 $('pvNote').innerHTML=NOTES.signup;
