@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign-up v3: Every Screen</title>
-<!-- WHEELS · ACCOUNT SIGN-UP v3 · EVERY SCREEN ON ONE PAGE (static, for meetings). Built from SIGNUP-PREVIEW-3.html, which stays the interactive version.
+<!-- WHEELS · ACCOUNT SIGN-UP v3 · EVERY SCREEN ON ONE PAGE (static, for meetings; same layout as SIGNUP-ALL-SCREENS.html). Interactive version: SIGNUP-PREVIEW-3.html
      Repo file: Website-Redesign/Account-Signup-Redesign/SIGNUP-ALL-SCREENS-3.html
       (v1 = SIGNUP-PREVIEW.html, v2 = SIGNUP-PREVIEW-2-address.html)
      1 Who is this for? (first screen) -> Dealership / Another business: find it first (brand dropdown + address lookup).
@@ -150,17 +150,24 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 @media (hover:hover){.backlink:hover{color:var(--red)}.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--bg)}.who button:hover,.opt:hover{border-color:#bbb}}
 @media (max-width:640px){.grid,.ids,.who{grid-template-columns:1fr}.brands{grid-template-columns:1fr 1fr}.acct,.flow .row{grid-template-columns:1fr}.card{padding:18px}}
 
-/* EVERY SCREEN */
-#all{max-width:1240px;margin:0 auto;padding:30px 20px 80px}
-#all .shot{margin:0 0 44px}
-#all .shot h2{font:800 26px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:0 0 4px}
-#all .shot p.note{color:var(--muted);font-size:14px;margin:0 0 14px}
-#all .shot .frame{border:1px solid var(--line);border-radius:12px;padding:24px;background:#fafafa}
-#all .shot .frame > .card,#all .shot .frame > .wrap{max-width:none!important;margin:0;padding:0}
-#all .shot .frame > .card{background:#fff}
-#all .shot .frame .wrap{padding:0}
-#all .toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
-#all .toc a{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none}
+/* EVERY SCREEN (same layout as SIGNUP-ALL-SCREENS.html) */
+#all .hero{text-align:center;max-width:1200px;margin:30px auto 0;padding:0 20px}
+#all .hero h1{font:800 34px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase}
+#all .hero p{color:var(--muted);font-size:14px;margin-top:6px}
+#all .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px auto 0;max-width:1200px;padding:0 20px}
+#all .toc a{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;background:#fff}
+#all .sec{max-width:1200px;margin:34px auto 0;background:var(--bg);border-radius:16px;padding:24px 20px}
+#all .sec h2{font:800 26px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase}
+#all .sec > p{color:var(--muted);font-size:14px;margin:4px 0 16px}
+#all .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+#all .row.one{grid-template-columns:1fr}
+#all .scr{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.06);overflow:hidden}
+#all .lbl{background:#141414;color:#fff;font-size:12.5px;font-weight:700;padding:8px 14px;display:flex;justify-content:space-between;gap:8px}
+#all .lbl span{color:#ffb3b6;font-weight:600}
+#all .scr .body > *{max-width:none!important;margin:0!important;border:0!important;box-shadow:none!important;padding:18px!important}
+#all .scr .body .wrap{padding:0}
+#all .scr .who,#all .scr .grid{grid-template-columns:1fr}
+#all{padding-bottom:60px}
 </style>
 </head>
 <body>
@@ -521,39 +528,47 @@ $('pvNote').innerHTML=NOTES.signup;
 
 <script>
 (function(){
-  var SHOTS=[
-    ['p-who','1 · Who is this for?','First screen. The answer decides which questions come next.',[]],
-    ['p-find','2 · Find your dealership','Dealership or another business: pick the brand, then search by name or address.',['sugg']],
-    ['p-find','2 · Already has a Wheels account','The business is found and already has an account (no names shown): join it or start a new one.',['pickedWrap','exists']],
-    ['p-find','2 · Not found','No match: carry on and add the business details later.',['pickedWrap','none']],
-    ['p-email','3 · Email','Email check, optional.',['emailOk']],
-    ['p-email','3 · Email already used','Offers Log in or Reset password instead of a duplicate account.',['emailHit']],
-    ['p-details','4 · About you: joining an existing account','The request goes to the account administrator to approve.',['joinNote','msgWrap']],
-    ['p-details','4 · About you: starting a new business account','Business details only show when starting new, including the accounts payable email.',['newBiz','emDetWrap','nameAuto']],
-    ['p-details','4 · About you: just me','Personal account with an address.',['meAddr','emDetWrap']],
-    ['p-done','5 · Done','',[]],
-    ['loginCard','Log in','',[]],
-    ['resetCard','Forgot password','',[]],
-    ['v-team','Admin: company users & requests','The account administrator approves join requests with a role, or declines them.',[]],
-    ['v-mails','Admin: the emails','Every email the flow sends.',[]],
-    ['v-flow','The whole workflow','',[]]
+  // [section title, note, [[source id, label, tag, sub-parts to show], ...], one-wide?]
+  var SECS=[
+    ['The workflow','How a person moves through sign-up.',[['v-flow','Whole workflow','overview',[]]],1],
+    ["1 · Who it's for",'First screen. The answer decides which questions come next.',[['p-who',"Who it's for",'everyone',[]]]],
+    ['2 · Find the business','Dealership or another business: brand first, then search by name or address.',[
+      ['p-find','Find · search','dealership / business',['sugg']],
+      ['p-find','Find · already has an account','join or start new',['pickedWrap','exists']],
+      ['p-find','Find · not found','add details later',['pickedWrap','none']]]],
+    ['3 · Email','Optional check. Joining and Just me only.',[
+      ['p-email','Email · new','check',['emailOk']],
+      ['p-email','Email · already used','stops duplicates',['emailHit']]]],
+    ['4 · About you','Business details only show when starting a new account.',[
+      ['p-details','Details · joining','request to admin',['joinNote','msgWrap']],
+      ['p-details','Details · new business','incl. accounts payable',['newBiz','emDetWrap','nameAuto']],
+      ['p-details','Details · just me','personal',['meAddr','emDetWrap']]]],
+    ['5 · Done','',[['p-done','Done','everyone',[]]]],
+    ['Log in & forgot password','',[['loginCard','Log in','returning',[]],['resetCard','Forgot password','returning',[]]]],
+    ['Company users & requests','The account administrator approves join requests with a role, or declines them.',[['v-team','My Account · Company users','admin',[]]],1],
+    ['The emails','Every email the flow sends.',[['v-mails','Emails','sent automatically',[]]],1]
   ];
+  function card(src,label,tag,subs){
+    var o=document.getElementById(src); if(!o) return null;
+    var c=o.cloneNode(true); c.classList.remove('hide'); c.removeAttribute('style');
+    subs.forEach(function(id){var e=c.querySelector('#'+id); if(e) e.classList.remove('hide');});
+    c.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id')}); c.removeAttribute('id');
+    c.querySelectorAll('.hide').forEach(function(e){ if(e.closest('.steps')) return; });
+    var d=document.createElement('div'); d.className='scr';
+    d.innerHTML='<div class="lbl">'+label+'<span>'+tag+'</span></div><div class="body"></div>';
+    d.querySelector('.body').appendChild(c); return d;
+  }
   function build(){
     var all=document.createElement('main'); all.id='all';
-    var toc=document.createElement('div'); toc.className='toc';
-    all.innerHTML='<div style="text-align:center;margin:0 0 22px"><h1 style="font:800 40px/1 \'Barlow Condensed\',sans-serif;text-transform:uppercase">Create your account: every screen</h1><p style="color:var(--muted);margin-top:6px">Sign-up preview 3, all steps on one page.</p></div>';
-    all.appendChild(toc);
-    SHOTS.forEach(function(sh,i){
-      var src=document.getElementById(sh[0]); if(!src) return;
-      var c=src.cloneNode(true);
-      c.classList.remove('hide'); c.removeAttribute('style');
-      sh[3].forEach(function(id){var e=c.querySelector('#'+id); if(e) e.classList.remove('hide');});
-      c.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id')}); c.removeAttribute('id');
-      var sec=document.createElement('section'); sec.className='shot'; sec.id='shot'+i;
-      sec.innerHTML='<h2>'+sh[1]+'</h2>'+(sh[2]?'<p class="note">'+sh[2]+'</p>':'');
-      var fr=document.createElement('div'); fr.className='frame'; fr.appendChild(c); sec.appendChild(fr);
-      all.appendChild(sec);
-      var a=document.createElement('a'); a.href='#shot'+i; a.textContent=sh[1]; toc.appendChild(a);
+    all.innerHTML='<div class="hero"><h1>Account sign-up · every screen</h1><p>Preview 3 · find the business first · join or start new · admin approves join requests</p></div><div class="toc"></div>';
+    var toc=all.querySelector('.toc');
+    SECS.forEach(function(s,i){
+      var sec=document.createElement('section'); sec.className='sec'; sec.id='s'+i;
+      sec.innerHTML='<h2>'+s[0]+'</h2>'+(s[1]?'<p>'+s[1]+'</p>':'<p></p>');
+      var row=document.createElement('div'); row.className='row'+(s[3]?' one':'');
+      s[2].forEach(function(x){var c=card(x[0],x[1],x[2],x[3]); if(c) row.appendChild(c);});
+      sec.appendChild(row); all.appendChild(sec);
+      var a=document.createElement('a'); a.href='#s'+i; a.textContent=s[0]; toc.appendChild(a);
     });
     document.querySelectorAll('main.wrap, section.wrap').forEach(function(m){m.classList.add('hide')});
     var pv=document.querySelector('.pv'); if(pv) pv.style.display='none';
