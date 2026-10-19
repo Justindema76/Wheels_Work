@@ -208,6 +208,18 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     <div class="btns"><span></span><button class="btn" id="whoNext" disabled>Continue</button></div>
   </section>
 
+  <!-- 1b · dealership: new or used? -->
+  <section class="card hide" id="p-type">
+    <button class="backlink" data-to="who">‹ Back</button>
+    <h2>New or used car dealership?</h2>
+    <p class="note">This decides what we ask next.</p>
+    <div class="who" id="dtype" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <button data-v="new"><span class="ic">🚘</span><b>New car dealership</b><span>Franchise dealer for a brand (Toyota, Kia, Honda…)</span></button>
+      <button data-v="used"><span class="ic">🔑</span><b>Used car dealership</b><span>Pre-owned / independent dealer</span></button>
+    </div>
+    <div class="btns"><span></span><button class="btn" id="typeNext" disabled>Continue</button></div>
+  </section>
+
   <!-- 2 · find the dealership / business -->
   <section class="card hide" id="p-find">
     <button class="backlink" data-to="who">‹ Back</button>
@@ -216,10 +228,10 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
     <div class="grid">
       <div class="f full" id="brandWrap"><label>Which dealership are you from? *</label>
         <select id="brand"><option value="">Choose your brand</option></select></div>
-      <div class="f full look" id="addrBox"><label>Dealership name or address *</label><input id="addr" autocomplete="off" placeholder="Start typing… e.g. Burlington Kia or 2000 Auto Mall">
+      <div class="f full look" id="addrBox"><label>Enter your address *</label><input id="addr" autocomplete="off" placeholder="Start typing your address… e.g. 2000 Auto Mall">
         <div class="sugg hide" id="sugg"></div></div>
     </div>
-    <p class="why" id="addrWhy">Pick it from the list (like Google Maps) so the name and address are always written the same way.</p>
+    <p class="why" id="addrWhy">Pick it from the list (like Google Maps) so the address is always written the same way.</p>
     <div id="pickedWrap" class="hide"><div class="picked"><span id="pickedTxt"></span><button class="link" id="changeAddr">Change</button></div></div>
 
     <div id="exists" class="hide">
@@ -376,7 +388,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
   <h1>The sign-up workflow</h1><p class="sub">One email = one account. One business = one company.</p>
   <div class="flow">
     <div class="row"><b>1 · Who it's for</b><p>The first screen: <b>A dealership</b> · <b>Another business</b> · <b>Just me</b>.</p></div>
-    <div class="row"><b>2 · Find it</b><p>Dealership: <b>brand (dropdown)</b>, then search the <b>dealership name or address</b> (like Google Maps). Business: search only. If it already has a Wheels account we only say so (no names shown): <b>Join the existing account</b> or <b>Start a new account</b>. Just me skips this step.</p></div>
+    <div class="row"><b>2 · Find it</b><p>Dealership: <b>new or used?</b> New car: <b>brand (dropdown)</b>, then search the <b>address</b> (like Google Maps). Used car and business: <b>address</b> only. If it already has a Wheels account we only say so (no names shown): <b>Join the existing account</b> or <b>Start a new account</b>. Just me skips this step.</p></div>
     <div class="row"><b>3 · Email</b><p><b>Only when joining an existing account, or Just me.</b> Joining: <b>Check if I already have an account</b> (→ Log in / Reset my password) or <b>Email administrator for access</b>. Just me: Check, or <b>I'm new, continue</b>. <b>Starting a new account skips this step</b>: the email is entered in About you.</p></div>
     <div class="row"><b>4 · Details</b><p><b>Joining:</b> about you + optional message → <b>Request access</b>. The request goes to the account administrator (by email), who approves and picks the role, or declines. Approved → set-password email; orders invoiced to the account's accounts payable. <b>Starting new:</b> about you + business (name auto-filled, type, brands, phone, <b>accounts payable email</b>) → Create account; you become its administrator. <b>Just me:</b> about you + address.</p></div>
     <div class="row"><b>5 · Done</b><p>"Check your email to set your password." The account admin is emailed when someone joins.</p></div>
@@ -401,11 +413,11 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05
 <script>
 function $(id){return document.getElementById(id)}
 function show(id,on){$(id).classList.toggle('hide',!on)}
-var who=null, picked=null, choice=null, exists=false;
+var who=null, picked=null, choice=null, exists=false, usedDealer=false;
 var ORDER=['who','find','email','details','done'];
 function steps(){if(who==='me')return ['who','email','details','done'];return choice==='join'?ORDER:['who','find','details','done']}
-function go2(p){ORDER.forEach(function(x){show('p-'+x,x===p)});if(p==='email')$('emailNext').textContent=nextLabel();
-  var st=steps(), cur=st.indexOf(p);
+function go2(p){var pk=p==='type'?'who':p;ORDER.forEach(function(x){show('p-'+x,x===p)});show('p-type',p==='type');if(p==='email')$('emailNext').textContent=nextLabel();
+  var st=steps(), cur=st.indexOf(pk);
   document.querySelectorAll('#steps>div').forEach(function(d){var k=steps().indexOf(d.dataset.s);d.className=(k<0?'hide':'')+(k===cur?' on':(k>=0&&k<cur?' done':''))});
   document.querySelectorAll('#steps .sf').forEach(function(x){x.classList.toggle('hide',who==='me')});
   document.querySelectorAll('#steps>div').forEach(function(d){var k=steps().indexOf(d.dataset.s);if(k>=0)d.querySelector('i').textContent=k+1});
@@ -419,17 +431,26 @@ document.querySelectorAll('#steps>div').forEach(function(d){d.onclick=function()
 document.querySelectorAll('[data-to]').forEach(function(b){b.onclick=function(){go2(b.dataset.to)}});
 
 // 1 · who
-$('who').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;who=b.dataset.v;
+$('who').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;who=b.dataset.v;usedDealer=false;
   $('who').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});$('whoNext').disabled=false});
 $('whoNext').onclick=function(){
+  usedDealer=false;
   if(who==='me'){go2('email');return}
+  if(who==='dealer'){$('dtype').querySelectorAll('button').forEach(function(x){x.classList.remove('on')});$('typeNext').disabled=true;go2('type');return}
+  startFind()};
+// 1b · new car = dealership flow (brand + address); used car = "another business" flow (address only)
+$('dtype').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  $('dtype').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});$('typeNext').dataset.v=b.dataset.v;$('typeNext').disabled=false});
+$('typeNext').onclick=function(){var used=this.dataset.v==='used';usedDealer=used;who=used?'biz':'dealer';startFind()};
+function startFind(){
   var d=who==='dealer';
-  $('findTitle').textContent=d?'Find your dealership':'Find your business';
-  show('brandWrap',d);$('brand').value='';resetFind();show('addrBox',!d);show('addrWhy',!d);go2('find')};
+  document.querySelector('#p-find .backlink').dataset.to=(d||usedDealer)?'type':'who';
+  $('findTitle').textContent=(d||usedDealer)?'Find your dealership':'Find your business';
+  show('brandWrap',d);$('brand').value='';resetFind();show('addrBox',!d);show('addrWhy',!d);go2('find')}
 
 // 2 · find: brand dropdown (dealerships) + address lookup
 var BRANDS=['Acura','Audi','BMW','Chevrolet Buick GMC','Honda','Hyundai','Infiniti','Kia','Mazda','Mercedes-Benz','Mini','Mitsubishi','Nissan','Subaru','Toyota','Volkswagen','Volvo'];
-$('brand').innerHTML='<option value="">Choose your brand</option>'+BRANDS.map(function(b){return '<option>'+b+'</option>'}).join('')+'<option value="Used">Used / independent dealership</option><option value="Other">Other brand</option>';
+$('brand').innerHTML='<option value="">Choose your brand</option>'+BRANDS.map(function(b){return '<option>'+b+'</option>'}).join('')+'<option value="Other">Other brand</option>';
 var ADDRS=[
  {a:'1200 Upper James St',c:'Hamilton, ON L9C 3B1',place:'Upper James Toyota',biz:[{n:'Upper James Toyota',t:'dealer',brand:'Toyota'}]},
  {a:'2000 Auto Mall Dr',c:'Burlington, ON L7L 6X9',place:'Burlington Kia',biz:[{n:'Burlington Honda',t:'dealer',brand:'Honda'},{n:'Burlington Kia',t:'dealer',brand:'Kia'},{n:'Auto Mall Pre-Owned',t:'dealer',brand:'Used'}]},
@@ -441,19 +462,19 @@ function resetFind(){picked=null;choice=null;exists=false;$('addr').value='';$('
   $('choice').querySelectorAll('.bizopt').forEach(function(x){x.classList.remove('on')});$('findNext').disabled=true}
 $('brand').onchange=function(){var has=!!$('brand').value||who!=='dealer';show('addrBox',has);show('addrWhy',has);if(picked)evaluate();else if(has)$('addr').focus()};
 function renderSugg(){var q=$('addr').value.trim().toLowerCase();if(q.length<2){show('sugg',false);return}
-  var hits=ADDRS.filter(function(x){var s=(x.place+' '+x.a+' '+x.c).toLowerCase();return q.split(/\s+/).every(function(w){return s.indexOf(w)>=0})});
+  var hits=ADDRS.filter(function(x){var s=(x.a+' '+x.c).toLowerCase();return q.split(/\s+/).every(function(w){return s.indexOf(w)>=0})});
   if(!hits.length)hits=[{a:$('addr').value.trim(),c:'Hamilton, ON',place:'',biz:[]}];
-  $('sugg').innerHTML=hits.map(function(x,i){return '<button data-i="'+i+'">'+(x.place?'<b>'+x.place+'</b> · ':'')+x.a+'<small>'+x.c+'</small></button>'}).join('')+'<div class="pw">Business &amp; address lookup (e.g. Google Places)</div>';
+  $('sugg').innerHTML=hits.map(function(x,i){return '<button data-i="'+i+'">'+x.a+'<small>'+x.c+'</small></button>'}).join('')+'<div class="pw">Address lookup (e.g. Google Places)</div>';
   $('sugg')._hits=hits;show('sugg',true)}
 $('addr').addEventListener('input',renderSugg);$('addr').addEventListener('focus',renderSugg);
 $('sugg').addEventListener('mousedown',function(e){var b=e.target.closest('button');if(!b)return;e.preventDefault();
   picked=$('sugg')._hits[+b.dataset.i];show('sugg',false);$('addr').closest('.look').classList.add('hide');
-  $('pickedTxt').innerHTML='📍 '+(picked.place?'<b>'+picked.place+'</b> · ':'')+picked.a+', '+picked.c;show('pickedWrap',true);evaluate()});
+  $('pickedTxt').innerHTML='📍 '+picked.a+', '+picked.c;show('pickedWrap',true);evaluate()});
 document.addEventListener('click',function(e){if(!e.target.closest('.look'))show('sugg',false)});
 $('changeAddr').onclick=function(){resetFind();$('addr').focus()};
-function kind(){return who==='dealer'?'dealership':'business'}
+function kind(){return (who==='dealer'||usedDealer)?'dealership':'business'}
 function evaluate(){
-  var hit=picked.biz.filter(function(b){return who==='dealer'?(b.t==='dealer'&&($('brand').value==='Other'||b.brand===$('brand').value)):b.t==='biz'})[0];
+  var hit=picked.biz.filter(function(b){return who==='dealer'?(b.t==='dealer'&&($('brand').value==='Other'||b.brand===$('brand').value)):(b.t==='biz'||(usedDealer&&b.brand==='Used'))})[0];
   exists=!!hit;choice=exists?null:'new';
   $('choice').querySelectorAll('.bizopt').forEach(function(x){x.classList.remove('on')});
   show('exists',exists);show('none',!exists);
@@ -515,7 +536,7 @@ $('sendInvite').onclick=function(){$('users').insertAdjacentHTML('beforeend','<t
 
 // preview bar + in-page jumps
 var NOTES={
- signup:'Click the step numbers to jump. Dealership: brand <b>Toyota</b> + <b>Upper James</b> = existing account. <b>Kia</b> + <b>Burlington Kia</b> = existing. <b>Hyundai</b> + <b>Centennial</b> or <b>Mazda</b> + <b>King West</b> = new (name fills in). Business: <b>Hamilton Collision</b>. Email <b>justindema76@gmail.com</b> = already has an account.',
+ signup:'Click the step numbers to jump. <b>New car</b> dealership: brand <b>Toyota</b> + <b>1200 Upper James</b> = existing account. <b>Kia</b> + <b>2000 Auto Mall</b> = existing. <b>Hyundai</b> + <b>500 Centennial</b> or <b>Mazda</b> + <b>88 King</b> = new. <b>Used car</b> dealership: <b>2000 Auto Mall</b> = existing. Business: <b>45 Collision Way</b>. Email <b>justindema76@gmail.com</b> = already has an account.',
 
  login:'Click <b>Forgot your password?</b> to see the reset flow.',
  team:'The account administrator\'s view. Approve Dave\'s request (pick a role) or decline. The emails are below.',
@@ -525,14 +546,13 @@ document.querySelectorAll('.pv [data-go]').forEach(function(b){b.onclick=functio
 document.querySelectorAll('[data-goto]').forEach(function(a){a.onclick=function(e){e.preventDefault();go(a.dataset.goto);if(a.hasAttribute('data-forgot'))$('forgot').click()}});
 $('pvNote').innerHTML=NOTES.signup;
 </script>
-
 <script>
 (function(){
   // [section title, note, [[source id, label, tag, sub-parts to show], ...], one-wide?]
   var SECS=[
     ['The workflow','How a person moves through sign-up.',[['v-flow','Whole workflow','overview',[]]],1],
-    ["1 · Who it's for",'First screen. The answer decides which questions come next.',[['p-who',"Who it's for",'everyone',[]]]],
-    ['2 · Find the business','Dealership or another business: brand first, then search by name or address.',[
+    ["1 · Who it's for",'First screen. A dealership is then asked: new or used? New car = brand + address. Used car = same as another business (address only).',[['p-who',"Who it's for",'everyone',[]],['p-type','New or used dealership','dealerships only',[]]]],
+    ['2 · Find the business','Search by address only (no business names). New car dealerships pick their brand first.',[
       ['p-find','Find · search','dealership / business',['sugg']],
       ['p-find','Find · already has an account','join or start new',['pickedWrap','exists']],
       ['p-find','Find · not found','add details later',['pickedWrap','none']]]],
