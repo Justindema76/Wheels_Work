@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage Class List</title>
+<!-- WHEELS · HOMEPAGE CLASS LIST: every CSS class we introduced for the homepage blocks and what it does.
+     Type them in Page Builder: element > Advanced > CSS Classes (separate classes with a SPACE, never a comma).
+     The styling for all of them lives in the theme file web/css/wheels-homepage.css.
+     Repo file: Website-Redesign/Homepage/HOMEPAGE-CLASS-LIST.html -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#d9161e;--ink:#141414;--ink2:#3a3a3a;--muted:#6b6b6b;--line:#e3e3e3;--bg:#f5f5f4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 Barlow,system-ui,sans-serif;color:var(--ink);background:#fff}
+.wrap{max-width:1100px;margin:0 auto;padding:34px 20px 80px}
+h1{font:800 40px/1 "Barlow Condensed",sans-serif;text-transform:uppercase}
+.lead{color:var(--muted);margin:8px 0 18px;max-width:760px}
+.how{background:var(--bg);border-radius:12px;padding:16px 18px;display:grid;gap:6px;font-size:14.5px;margin-bottom:10px}
+.how b{color:var(--ink)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.toc a{border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none}
+.toc a:hover{border-color:var(--ink)}
+section{margin-top:34px}
+h2{font:800 26px/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;padding-bottom:6px;border-bottom:3px solid var(--red);display:inline-block}
+.note{color:var(--muted);font-size:14px;margin:8px 0 12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{white-space:nowrap;width:1%}
+code{font:600 13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:#fff4f4;color:#b30f16;border:1px solid #f6d3d4;border-radius:6px;padding:2px 7px;display:inline-block;margin:1px 0}
+.sw{display:inline-block;width:16px;height:16px;border-radius:4px;vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
+.tag{font-size:12px;font-weight:700;border-radius:20px;padding:1px 8px;margin-left:6px;vertical-align:1px}
+.tag.off{background:#f1f1f1;color:var(--muted)}
+.ex{background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:14px}
+@media (max-width:640px){h1{font-size:32px}td:first-child{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Homepage class list</h1>
+  <p class="lead">Every CSS class we made for the homepage blocks, and what it does. The look of all of them comes from one theme file, <b>wheels-homepage.css</b>, so the blocks only need the class names.</p>
+
+  <div class="how">
+    <div><b>Where to type them:</b> click the element in Page Builder → ⚙ (settings) → <b>Advanced</b> → <b>CSS Classes</b>.</div>
+    <div><b>More than one class:</b> separate them with a <b>space</b>, never a comma. Example: <code>wcat-card wcat-i-flags</code></div>
+    <div><b>Works on:</b> rows, columns, headings, text, buttons and Products elements.</div>
+  </div>
+
+  <nav class="toc">
+    <a href="#sites">Which website it shows on</a><a href="#hero">1 · Hero</a><a href="#cat">2 · Shop by Category</a>
+    <a href="#pop">3 · Popular Products</a><a href="#wob">4 · Savings banner</a><a href="#deal">5 · Deal tiles</a>
+    <a href="#site">6 · Site styles</a><a href="#sq">8 · Colour squares</a>
+  </nav>
+
+  <section id="sites">
+    <h2>Which website it shows on</h2>
+    <p class="note">Put one of these on any row, column, heading, text, button or Products element. It then shows <b>only</b> on that website and is hidden on the others.</p>
+    <table>
+      <tr><th>Class</th><th>Shows on</th><th>Hidden on</th></tr>
+      <tr><td><code>lang-en</code></td><td>Canada English + US</td><td>French</td></tr>
+      <tr><td><code>lang-fr</code></td><td>French only</td><td>Canada English + US</td></tr>
+      <tr><td><code>lang-ca</code></td><td>Canada English only</td><td>French + US</td></tr>
+      <tr><td><code>lang-us</code></td><td>US only</td><td>Canada English + French</td></tr>
+    </table>
+    <div class="ex"><b>Typical use:</b> put the English text and the French text side by side in the same column, with <code>lang-en</code> on one and <code>lang-fr</code> on the other. One block then works for all three websites.<br>
+    <b>Not possible with these:</b> "both Canada sites but not US". Ask for a <code>hide-on-us</code> class if you need it.</div>
+  </section>
+
+  <section id="hero">
+    <h2>1 · Hero</h2>
+    <p class="note">The top banner: the Code Studio slider on the left (70%), with 2 product cards on the right.</p>
+    <table>
+      <tr><th>Class</th><th>Put it on</th><th>What it does</th></tr>
+      <tr><td><code>whero</code></td><td>The Columns (the whole hero row)</td><td>Slider on the left, 2 product cards stacked on the right. The cards line up with the banner height. On phones they stack.</td></tr>
+      <tr><td><code>lang-ca</code> <code>lang-fr</code> <code>lang-us</code></td><td>Each Code Studio banner (HTML Code element)</td><td>One banner per website. Or use <code>lang-en</code> for a single banner on both English sites.</td></tr>
+    </table>
+  </section>
+
+  <section id="cat">
+    <h2>2 · Shop by Category</h2>
+    <p class="note">The grid of category cards. Each card links to the category picked on its button, and the whole card is clickable.</p>
+    <table>
+      <tr><th>Class</th><th>Put it on</th><th>What it does</th></tr>
+      <tr><td><code>wcat-grid</code></td><td>The Columns group</td><td>Turns the columns into the card grid: 5 across on desktop, smaller wrapped cards on phones.</td></tr>
+      <tr><td><code>wcat-card</code></td><td>Each Column</td><td>Makes the column a category card (white card, icon, title, hover).</td></tr>
+      <tr><td><code>wcat-all</code></td><td>The last Column, together with <code>wcat-card</code></td><td>The dark "Browse the full catalogue" card.</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px"><b>Card icons:</b> add one of these to each card, next to <code>wcat-card</code>:</p>
+    <table>
+      <tr><th>Class</th><th>Icon for</th></tr>
+      <tr><td><code>wcat-i-marketing</code></td><td>Dealership Marketing</td></tr>
+      <tr><td><code>wcat-i-vehicle</code></td><td>Vehicle Advertising &amp; Display</td></tr>
+      <tr><td><code>wcat-i-flags</code></td><td>Flags &amp; Banners</td></tr>
+      <tr><td><code>wcat-i-plates</code></td><td>License &amp; Name Plates</td></tr>
+      <tr><td><code>wcat-i-showroom</code></td><td>Showroom Marketing &amp; Displays</td></tr>
+      <tr><td><code>wcat-i-outdoor</code></td><td>Outdoor Display Solutions</td></tr>
+      <tr><td><code>wcat-i-tags</code></td><td>Mirror Tags &amp; Hangers</td></tr>
+      <tr><td><code>wcat-i-service</code></td><td>Service &amp; Lot Solutions</td></tr>
+      <tr><td><code>wcat-i-oem</code></td><td>OEM Programs</td></tr>
+    </table>
+    <div class="ex"><b>Example card:</b> <code>wcat-card wcat-i-flags</code></div>
+  </section>
+
+  <section id="pop">
+    <h2>3 · Popular Products, On Sale Now + View All</h2>
+    <p class="note">No class needed on the Products elements. The theme styles every product row on the homepage (compact cards, scroll bar, auto-scrolling).</p>
+    <table>
+      <tr><th>Class</th><th>Put it on</th><th>What it does</th></tr>
+      <tr><td><i>(none)</i></td><td>Products element</td><td>Compact product cards in a row that scrolls by itself.</td></tr>
+      <tr><td><code>lang-en</code> / <code>lang-fr</code></td><td>The "View All" / "Voir tout" buttons</td><td>English button on the English sites, French button on the French site. The button style (bold, red underline) is automatic.</td></tr>
+    </table>
+  </section>
+
+  <section id="wob">
+    <h2>4 · Savings banner</h2>
+    <p class="note">"Our dealer discounts work together · Combine them on every order". This one is still built as custom HTML (the text lives in its HTML Code element). Its look comes from the theme.</p>
+    <table>
+      <tr><th>Class</th><th>What it is</th></tr>
+      <tr><td><code>wob</code></td><td>The whole banner</td></tr>
+      <tr><td><code>wob-sub</code></td><td>The heading area ("Our dealer discounts…")</td></tr>
+      <tr><td><code>wob-bot</code></td><td>The red bar holding the offers</td></tr>
+      <tr><td><code>wob-o</code></td><td>One offer box (Mix &amp; Match, Save 10%, Save 3%, Save $250)</td></tr>
+      <tr><td><code>wob-o rush</code></td><td>The black "Rush Service" box at the end</td></tr>
+      <tr><td><code>wob-ic</code></td><td>The icon in an offer box</td></tr>
+      <tr><td><code>wob-join</code></td><td>The + between the offers</td></tr>
+      <tr><td><code>wob-fine</code></td><td>The small print under the banner</td></tr>
+    </table>
+  </section>
+
+  <section id="deal">
+    <h2>5 · Deal tiles</h2>
+    <table>
+      <tr><th>Class</th><th>Put it on</th><th>What it does</th></tr>
+      <tr><td><code>wdeal</code></td><td>The Products element (Product Grid, pick the deals category)</td><td>Turns the products into black deal tiles: red line, big price, product name, "Shop now". 4 across on desktop, 2 on phones.</td></tr>
+    </table>
+  </section>
+
+  <section id="site">
+    <h2>6 · Site styles</h2>
+    <p class="note">Nothing to add. The theme automatically gives every homepage section title the Barlow Condensed heading style, and sets the 1320px page width on desktop.</p>
+  </section>
+
+  <section id="sq">
+    <h2>8 · Colour squares ("Shop more at Wheels")</h2>
+    <table>
+      <tr><th>Class</th><th>Put it on</th><th>What it does</th></tr>
+      <tr><td><code>wsq</code></td><td>The Columns (6 columns)</td><td>Makes the row of colour squares: 6 across on desktop, 3 on tablets, 2 on phones.</td></tr>
+      <tr><td><code>wsq-card</code></td><td>Each Column</td><td>Makes the column a square. The whole square is clickable (it follows its button's link).</td></tr>
+      <tr><td><code>wsq-xl</code></td><td>A square, together with <code>wsq-card</code></td><td>Bigger text, for short words like SAVE 10% ON 10.</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px"><b>Colour:</b> add one to each square:</p>
+    <table>
+      <tr><th>Class</th><th>Colour</th></tr>
+      <tr><td><code>wsq-red</code></td><td><span class="sw" style="background:#d9161e"></span>Red, white text</td></tr>
+      <tr><td><code>wsq-black</code></td><td><span class="sw" style="background:#000"></span>Black, white text, red line</td></tr>
+      <tr><td><code>wsq-charcoal</code></td><td><span class="sw" style="background:#2a2a2a"></span>Charcoal, white text</td></tr>
+      <tr><td><code>wsq-maroon</code></td><td><span class="sw" style="background:#6b0b0e"></span>Maroon, white text</td></tr>
+      <tr><td><code>wsq-lime</code></td><td><span class="sw" style="background:#d8ff1e"></span>Lime, black text</td></tr>
+      <tr><td><code>wsq-white</code></td><td><span class="sw" style="background:#fff"></span>White, black text, red icon</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px"><b>Icon (optional):</b> add one to show an icon at the top of the square:</p>
+    <table>
+      <tr><th>Class</th><th>Icon</th><th>Class</th><th>Icon</th></tr>
+      <tr><td><code>wsq-i-flag</code></td><td>Flag</td><td><code>wsq-i-star</code></td><td>Star</td></tr>
+      <tr><td><code>wsq-i-oem</code></td><td>OEM badge</td><td><code>wsq-i-percent</code></td><td>Percent</td></tr>
+      <tr><td><code>wsq-i-tag</code></td><td>Price tag</td><td><code>wsq-i-sparkle</code></td><td>Sparkle (new)</td></tr>
+      <tr><td><code>wsq-i-gift</code></td><td>Gift</td><td><code>wsq-i-folio</code></td><td>Folio</td></tr>
+      <tr><td><code>wsq-i-car</code></td><td>Car</td><td><code>wsq-i-card</code></td><td>Card</td></tr>
+      <tr><td><code>wsq-i-key</code></td><td>Key</td><td></td><td></td></tr>
+    </table>
+    <div class="ex"><b>Inside each square</b> (no class needed, Page Builder elements in this order): Heading 2 = big line · Heading 3 = medium line · Heading 4 = red tag · Paragraph = small line · Button = link to the category.<br>
+    <b>Example square:</b> <code>wsq-card wsq-black wsq-i-flag</code></div>
+  </section>
+
+  <section>
+    <h2>Not on the live homepage</h2>
+    <p class="note">Made but not in use. They're not in the theme file.</p>
+    <table>
+      <tr><th>Class</th><th>What it was for</th></tr>
+      <tr><td><code>wpromo</code> <code>wpromo-card</code> <code>wpromo-red</code> <code>wpromo-i-…</code><span class="tag off">not used</span></td><td>7 · Promo strip (4 promo tiles)</td></tr>
+    </table>
+  </section>
+</div>
+</body>
+</html>
